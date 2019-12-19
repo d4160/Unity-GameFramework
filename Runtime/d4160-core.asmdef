@@ -1,7 +1,8 @@
 {
     "name": "d4160-core",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:c956f17f16aa645919b704d986429054"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
