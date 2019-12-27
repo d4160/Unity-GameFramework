@@ -9,13 +9,12 @@ namespace d4160.Core
     public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         protected static T m_instance;
-        protected static bool m_instanced;
 
         public static T Instance
         {
             get
             {
-                if (!m_instance) 
+                if (!m_instance)
                     SetSingleton();
 
                 return m_instance;
@@ -24,17 +23,14 @@ namespace d4160.Core
             protected set
             {
                 m_instance = value;
-
-                if (m_instance)
-                    m_instanced = true;
             }
         }
 
-        public static bool Instanced => m_instanced;
+        public static bool Instanced => m_instance;
 
         protected virtual void Awake()
         {
-            if (!m_instanced)
+            if (!m_instance)
             {
                 Instance = this as T;
             }
@@ -47,11 +43,6 @@ namespace d4160.Core
                     DestroyImmediate(gameObject);
                 }
             }
-        }
-
-        protected virtual void OnDisable()
-        {
-            m_instanced = false;
         }
 
         protected virtual void OnDestroyImmediateCallback(){}
