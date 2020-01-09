@@ -1,8 +1,8 @@
 {
   "name": "d4160.game-framework-core",
   "displayName": "Unity GameFramework Core",
-  "version": "0.1.0",
-  "unity": "2019.1",
+  "version": "1.0.0",
+  "unity": "2018.1",
   "description": "Essential scripts for many use cases.",
   "keywords": [
     "utilities",
