@@ -12,6 +12,10 @@
   "author": {
     "name": "d4160(Maranatha2031)"
   },
+  "dependencies":{
+	"garettbass.unity-extensions.inspect-in-line": "0.2.1",
+	"com.unity.textmeshpro": "2.0.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/d4160/Unity-GameFramework-Core.git"
