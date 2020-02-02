@@ -28,6 +28,8 @@ namespace d4160.Core
 
         public static bool Instanced => m_instance;
 
+        public TConcrete As<TConcrete>() where TConcrete : class => m_instance as TConcrete;
+
         protected virtual void Awake()
         {
             if (!m_instance)
