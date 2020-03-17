@@ -32,6 +32,11 @@ namespace d4160.Core
 
         protected virtual void Awake()
         {
+            SetSingletonOnAwake();
+        }
+
+        protected virtual void SetSingletonOnAwake()
+        {
             if (!m_instance)
             {
                 Instance = this as T;

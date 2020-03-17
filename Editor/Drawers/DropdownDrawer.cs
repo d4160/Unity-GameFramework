@@ -29,7 +29,7 @@
 
                 if (attrib.IncludeNone)
                 {
-                    names = EditorUtilities.GetNoneSelectableFrom(names);
+                    names = Utilities.EditorUtility.GetNoneSelectableFrom(names);
                 }
 
                 if (attrib.ExceptionNames != null || attrib.ExceptionNames.Length != 0)

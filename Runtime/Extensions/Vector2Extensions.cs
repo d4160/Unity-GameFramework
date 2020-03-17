@@ -4,7 +4,7 @@
 
     /// <summary>
     /// <para>
-    /// A collection of extension methods (or one method) for Vector3s.
+    /// A collection of extension methods (or one method) for Vector2s.
     /// This is just here to show how C# Extension Methods work. They're cool!
     /// </para><para>
     /// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
@@ -52,19 +52,20 @@
             return vRes;
         }
 
-        static public float Random(this Vector2 v0)
+        public static float Random(this Vector2 v0)
         {
             if (v0.x > v0.y)
                 return UnityEngine.Random.Range(v0.y, v0.x);
-
             if (v0.x < v0.y)
                 return UnityEngine.Random.Range(v0.x, v0.y);
 
             return v0.x;
         }
 
-        static public int Random(this Vector2Int v0)
+        public static int Random(this Vector2Int v0)
         {
+            if (v0.x == v0.y) return v0.x;
+
             if (v0.x > v0.y)
                 return UnityEngine.Random.Range(v0.y, v0.x + 1);
 

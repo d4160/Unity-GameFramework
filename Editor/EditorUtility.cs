@@ -8,7 +8,7 @@ namespace d4160.Core.Editors.Utilities
     using UnityEditor;
     using UnityEngine;
 
-    public static class EditorUtilities
+    public static class EditorUtility
     {
         public static string[] GetNoneSelectableFrom(string[] names, string noneLabel = "None")
         {

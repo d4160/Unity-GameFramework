@@ -7,7 +7,18 @@
     {
         [SerializeField, InspectInline] protected T2 m_instancedMain;
 
-        public T2 InstancedMain => m_instancedMain;
+        public T2 InstancedMain
+        {
+            get
+            {
+                if (!m_instancedMain)
+                {
+                    m_instancedMain = FindObjectOfType<T2>();
+                }
+
+                return m_instancedMain;
+            }
+        }
 
         public virtual void SetInstanced(T2 instanced)
         {

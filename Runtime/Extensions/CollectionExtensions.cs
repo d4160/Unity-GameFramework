@@ -70,6 +70,11 @@
             return (list.Count - 1 == idx) ? true : false;
         }
 
+        public static bool IsLastOrInvalid<T>(this IList<T> list, int idx)
+        {
+            return (list.Count - 1 <= idx) ? true : false;
+        }
+
         public static int LastIndex<T>(this IList<T> list)
         {
             return list.Count - 1;
@@ -158,6 +163,8 @@
 
         public static int RandomIndex<T>(this IList<T> list, int min = 0, int max = 0)
         {
+            if (list.Count <= 1) return list.Count - 1;
+
             if (max == 0)
                 max = list.Count;
             return UnityEngine.Random.Range(min, max);

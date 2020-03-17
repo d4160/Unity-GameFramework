@@ -29,4 +29,11 @@
         LateUpdate,
         Manual
     }
+
+    public enum LoopType : byte
+    {
+        Random,
+        Restart,
+        PingPong
+    }
 }
