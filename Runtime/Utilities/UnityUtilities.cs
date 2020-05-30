@@ -80,6 +80,12 @@ namespace d4160.Utilities
             return null;
         }
 #endif
+
+        public static bool IsLayer(LayerMask mask, int layer)
+        {
+            return (mask.value & 1 << layer) != 0; 
+        }
+
         [System.Serializable]
         public class BoolEvent : UnityEvent<bool>
         {
