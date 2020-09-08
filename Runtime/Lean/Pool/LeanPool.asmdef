@@ -1,0 +1,17 @@
+{
+    "name": "LeanPool",
+    "references": [
+        "LeanCommon",
+        "UltEvents",
+        "d4160.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

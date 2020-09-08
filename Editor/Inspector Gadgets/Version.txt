@@ -1,0 +1,5 @@
+AssetStore -> Inspector Gadgets Lite
+
+released Jul 9, 2019
+
+v6.1.0

@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 8a81ad8eb6498584b9837bdaefa3a5e8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_PersistentViewDataDictionary: {instanceID: 0}
+  - SpriteMat: {fileID: 2100000, guid: 76cee66753bca4bf7a01a2c247ad30a8, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

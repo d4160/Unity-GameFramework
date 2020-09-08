@@ -1,0 +1,19 @@
+{
+    "name": "Auth.PlayFab",
+    "references": [
+        "GUID:0da6d172d18a54e4389d0dce1e1ffdf2",
+        "GUID:96af450922a291f4a858da1ec21b0ebd",
+        "GUID:680edcf8ae6014dddbef749555a96253",
+        "GUID:6075f2b89143c29469d261590bb2d083",
+        "GUID:831409e8f9d13b5479a3baef9822ad34"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

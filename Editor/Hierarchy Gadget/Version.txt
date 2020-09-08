@@ -1,0 +1,5 @@
+AssetStore -> Hierarchy Gadget
+
+released Jul 13, 2020
+
+v1.2.0
