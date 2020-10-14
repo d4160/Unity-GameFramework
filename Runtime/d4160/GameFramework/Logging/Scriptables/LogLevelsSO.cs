@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace d4160.GameFramework.Logging
 {
-    [CreateAssetMenu(menuName = "GameFramework/Logging")]
+    [CreateAssetMenu(menuName = "Game Framework/Logging Settings")]
     public class LogLevelsSO : ScriptableObject
     {
         [SerializeField] protected LogLevelDefinition[] _logLevels;

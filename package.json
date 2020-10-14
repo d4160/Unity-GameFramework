@@ -1,7 +1,7 @@
 {
   "name": "com.d4160.gameframework",
   "displayName": "Game Framework",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "unity": "2018.1",
   "description": "Essential scripts for many use cases.",
   "keywords": [

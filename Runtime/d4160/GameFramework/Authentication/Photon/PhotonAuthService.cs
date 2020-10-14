@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using d4160.GameFramework.Authentication;
+﻿#if PHOTON_UNITY_NETWORKING
+using System;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -63,7 +61,7 @@ namespace d4160.GameFramework.Authentication
 
         private static PhotonAuthService _instance;
 
-        public PhotonAuthService()
+        private PhotonAuthService()
         {
             _instance = this;
         }
@@ -139,3 +137,4 @@ namespace d4160.GameFramework.Authentication
         }
     }
 }
+#endif

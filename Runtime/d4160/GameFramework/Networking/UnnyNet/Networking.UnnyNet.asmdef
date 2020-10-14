@@ -1,0 +1,17 @@
+{
+    "name": "Networking.UnnyNet",
+    "references": [
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
+        "GUID:4d39b9c7363be9e488cd4e81d55d28e0",
+        "GUID:abd02ea2a3d741f48b1c16eb7025fec5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -34,7 +34,7 @@ namespace ManasparkAssets
 
 			private static void HandleHierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
 			{
-				if(spriteMatTransparent == null)
+                if(spriteMatTransparent == null)
 					LoadMaterials();
 
 				GameObject obj = (GameObject) EditorUtility.InstanceIDToObject(instanceID);
@@ -102,7 +102,7 @@ namespace ManasparkAssets
 							if (divider.hasRightSprite)
 							{
 								#if UNITY_2019_1_OR_NEWER
-								EditorGUI.DrawRect(new Rect(selectionRect.x, selectionRect.y, offsetRect.width - (spriteSize + 4) - 5, offsetRect.height), bgColor);
+								EditorGUI.DrawRect(new Rect(selectionRect.x - 2, selectionRect.y, offsetRect.width - (spriteSize + 4) - 5 - 8 - 16, offsetRect.height), bgColor);
 								#else
 								EditorGUI.DrawRect(new Rect(selectionRect.x, selectionRect.y, offsetRect.width - (spriteSize + 4), offsetRect.height), bgColor);
 								#endif
@@ -113,7 +113,7 @@ namespace ManasparkAssets
 									#if UNITY_2019_2
 									EditorGUI.DrawRect(new Rect(selectionRect.x, selectionRect.y, offsetRect.width + 2, offsetRect.height), bgColor);
 									#else
-									EditorGUI.DrawRect(new Rect(selectionRect.x, selectionRect.y, offsetRect.width, offsetRect.height), bgColor);
+									EditorGUI.DrawRect(new Rect(selectionRect.x - 2, selectionRect.y, offsetRect.width - 16, offsetRect.height), bgColor);
 									#endif
 								}
 
@@ -176,7 +176,7 @@ namespace ManasparkAssets
 
 						if (divider.hasRightSprite)
 						{
-							Rect _rightSpriteRect = new Rect(offsetRect.x + offsetRect.width - spriteSize - 3f,
+							Rect _rightSpriteRect = new Rect(offsetRect.x + offsetRect.width - spriteSize + 2,
 							                                 offsetRect.y - 2, spriteSize,
 							                                 EditorGUIUtility.singleLineHeight);
 							

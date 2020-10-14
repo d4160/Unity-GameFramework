@@ -166,7 +166,7 @@ MonoBehaviour:
     RightSprite: {fileID: 21300000, guid: feadb6bf5d3154b82bb07ca9bf7d318e, type: 3}
     LeftScale: 1
     RightScale: 1
-    foldOut: 0
+    foldOut: 1
   - Name: Objectpool
     ID: 0
     PreSuffix: '#'

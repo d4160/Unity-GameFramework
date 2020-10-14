@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if PHOTON_UNITY_NETWORKING
+using System.Collections;
 using System.Collections.Generic;
 using d4160.Core.MonoBehaviours;
 using ExitGames.Client.Photon;
@@ -368,3 +369,4 @@ namespace d4160.GameFramework.Networking
         }
     }
 }
+#endif

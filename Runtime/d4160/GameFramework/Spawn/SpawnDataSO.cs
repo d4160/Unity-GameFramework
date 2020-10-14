@@ -4,7 +4,7 @@ using WeightedRandomization;
 
 namespace d4160.Core
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "Game Framework/Spawn Settings")]
     public class SpawnDataSO : ScriptableObject
     {
         [SerializeField] protected Vector2 _minMaxSpawnRate;

@@ -13,6 +13,7 @@ namespace UltEvents
         /************************************************************************************************************************/
 
         [SerializeField]
+#pragma warning disable CS0649
         private UltEvent _enableEvent;
 
         /// <summary>Invokes <see cref="_enableEvent"/>.</summary>
@@ -32,6 +33,7 @@ namespace UltEvents
             _disableEvent?.Invoke();
         }
 
+#pragma warning restore CS0649
         /************************************************************************************************************************/
     }
 }
