@@ -1,5 +1,0 @@
-AssetStore -> Hierarchy Dividers
-
-released Aug 26, 2019
-
-v1.1.0

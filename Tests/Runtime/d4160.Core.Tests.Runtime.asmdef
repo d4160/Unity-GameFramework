@@ -1,12 +1,14 @@
 {
     "name": "d4160.Core.Tests.Runtime",
+    "rootNamespace": "",
     "references": [
         "GUID:abd02ea2a3d741f48b1c16eb7025fec5",
         "GUID:0acc523941302664db1f4e527237feb3",
         "GUID:27619889b8ba8c24980f49ee34dbb44a"
     ],
     "includePlatforms": [
-        "Editor"
+        "Editor",
+        "macOSStandalone"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

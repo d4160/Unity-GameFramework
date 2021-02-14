@@ -1,4 +1,0 @@
-AssetStore -> Color Picker Utility
-Readme.pdf was deleted
-
-v1.0.0 (current)released Feb 13, 2018
