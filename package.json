@@ -1,21 +1,21 @@
 {
   "name": "com.d4160.gameframework",
   "displayName": "Unity Game Framework (d4160)",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "unity": "2018.1",
-  "description": "Essential scripts and modules for any game, using the ScriptableObject architecture.",
+  "description": "Essential scripts and modules for common game stuff.",
   "keywords": [
     "utilities",
     "unity",
     "essential"
   ],
   "author": {
-    "name": "d4160 (Maranatha2031)"
+    "name": "d4160(Maranatha2031)"
   },
   "dependencies":{
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/d4160/Unity-GameFramework.git"
+    "url": "https://github.com/d4160/Unity-GameFramework-Core.git"
   }
 }
