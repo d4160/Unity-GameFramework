@@ -21,7 +21,9 @@ namespace d4160.SceneManagement
         [TextArea] public string description;
 
         [Space] public SceneReference loadingScene;
-        [ContextMenuItem("Open Pack Scenes Single", "OpenPackScenesSingle")]
+        public SceneInfoSO loadingSceneInfo;
+        
+        [Space][ContextMenuItem("Open Pack Scenes Single", "OpenPackScenesSingle")]
         [ContextMenuItem("Open Pack Scenes Additive", "OpenPackScenesAdditive")]
         public SceneReference[] packScenes;
         [DropdownIndex("SceneNames")]
@@ -95,6 +97,17 @@ namespace d4160.SceneManagement
                 yield return null;
             }
 
+            if (loadingSceneInfo)
+            {
+                loadingSceneInfo.scenePack = this;
+                loadingSceneInfo.SetLoadInfo(loadSceneMode, activateOnLoad);
+            }
+
+            // Call ContinueLoadAsync from SceneInfoSO
+        }
+
+        public void ContinueLoadAsync(LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
+        {
             LoadScenesAsyncInternal(loadSceneMode, activateOnLoad);
         }
 
@@ -152,7 +165,18 @@ namespace d4160.SceneManagement
             {
                 yield return null;
             }
+            
+            if (loadingSceneInfo)
+            {
+                loadingSceneInfo.scenePack = this;
+                loadingSceneInfo.SetLoadInfo(loadSceneMode, activateOnLoad);
+            }
 
+            // Call ContinueLoadAsyncAddressables from SceneInfoSO
+        }
+        
+        public void ContinueLoadAsyncAddressables(LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100)
+        {
             LoadScenesAsyncAddressablesInternal(loadSceneMode, activateOnLoad, priority);
         }
 

@@ -54,13 +54,13 @@ namespace d4160.SceneManagement
         /// </summary>
         public AsyncOperationHandle<SceneInstance> AddressablesOperationHandle => _addressablesOperation;
 
-        public bool IsAddresssablesDone => _addressablesOperation.IsDone;
+        public bool IsAddresssableDone => _addressablesOperation.IsDone;
 
         /// <summary>
         /// Returns the state of the internal operation.
         /// </summary>
         /// <returns>True if the operation is valid.</returns>
-        public bool IsAddressablesValid => _addressablesOperation.IsValid();
+        public bool IsAddressableValid => _addressablesOperation.IsValid();
 
         /// <summary>
         /// Loads the reference as a scene.
