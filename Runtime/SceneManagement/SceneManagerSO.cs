@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
-using UnityExtensions;
+using InspectInLine;
 
 namespace d4160.SceneManagement
 {

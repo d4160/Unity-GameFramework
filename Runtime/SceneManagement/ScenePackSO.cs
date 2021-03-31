@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
-using UnityExtensions;
+using InspectInLine;
 
 namespace d4160.SceneManagement
 {
