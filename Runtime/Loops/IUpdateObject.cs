@@ -1,7 +1,7 @@
 
 namespace d4160.Loops
 {
-    public interface IUpdateInstance
+    public interface IUpdateObject
     {
         void OnUpdate(float deltaTime);
     }

@@ -1,7 +1,7 @@
 {
   "name": "com.d4160.gameframework",
   "displayName": "Unity Game Framework (d4160)",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "unity": "2018.1",
   "description": "Essential scripts and modules for common game stuff.",
   "keywords": [

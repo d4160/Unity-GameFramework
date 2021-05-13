@@ -61,7 +61,7 @@ namespace d4160.Singleton
             InstanceSingleton();
         }
 
-        private static void InstanceSingleton()
+        public static void InstanceSingleton()
         {
             System.Type type = typeof(T);
 

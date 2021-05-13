@@ -6,16 +6,21 @@ namespace d4160.Loops
 {
     public sealed class UpdateManager : Singleton<UpdateManager>
     {
-        private static List<IUpdateInstance> _updates = new List<IUpdateInstance>();
+        private static List<IUpdateObject> _updates = new List<IUpdateObject>();
 
-        public static void AddInstance(IUpdateInstance instance)
+        public static void RegisterObject(IUpdateObject updateObj)
         {
-            _updates.Add(instance);
+            _updates.Add(updateObj);
+
+            if(!UpdateManager.Instanced)
+            {
+                UpdateManager.InstanceSingleton();
+            }
         }
 
-        public static void RemoveInstance(IUpdateInstance instance)
+        public static void UnregisterObject(IUpdateObject updateObj)
         {
-            _updates.Remove(instance);
+            _updates.Remove(updateObj);
         }
 
         private void Update()

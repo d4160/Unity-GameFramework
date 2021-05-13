@@ -13,7 +13,7 @@ namespace d4160.Coroutines
             base.Awake();
 
             gameObject.hideFlags = HideFlags.HideAndDontSave
-                                   | HideFlags.HideInInspector;
+                                | HideFlags.HideInInspector;
 
             DontDestroyOnLoad(gameObject);
         }
