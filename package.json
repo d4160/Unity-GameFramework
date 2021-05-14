@@ -1,9 +1,9 @@
 {
   "name": "com.d4160.gameframework",
   "displayName": "Unity Game Framework (d4160)",
-  "version": "3.0.4",
-  "unity": "2018.1",
-  "description": "Essential scripts and modules for common game stuff.",
+  "version": "3.0.5",
+  "unity": "2018.4",
+  "description": "Essential scripts and modules for game development.",
   "keywords": [
     "utilities",
     "unity",
@@ -12,7 +12,14 @@
   "author": {
     "name": "d4160(Maranatha2031)"
   },
-  "dependencies":{
+  "dependencies": {
+	"com.unity.addressables": "1.16.19",
+	"com.unity.game-foundation": "0.8.0-preview",
+	"com.unity.localization": "0.10.0-preview"
+  },
+  "gitDependencies": {
+	"com.dbrizov.naughtyattributes": "https://github.com/d4160/NaughtyAttributes.git#2.1.0",
+	"com.phangorr.unity3d-rainbow-folders": "https://github.com/d4160/unity3d-rainbow-folders.git#0.7.3"
   },
   "repository": {
     "type": "git",
