@@ -4,11 +4,9 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
-namespace d4160.SceneManagement
-{
+namespace d4160.SceneManagement {
     [System.Serializable]
-    public struct SceneReference : ISerializationCallbackReceiver
-    {
+    public struct SceneReference : ISerializationCallbackReceiver {
 #if UNITY_EDITOR 
         [SerializeField] private UnityEditor.SceneAsset _sceneAsset;
         [SerializeField] private UnityEditor.SceneAsset _prevSceneAsset;
@@ -18,7 +16,7 @@ namespace d4160.SceneManagement
         public string scenePath;
         public string sceneGUID;
 
-        public bool IsNull => string.IsNullOrEmpty(scenePath) || string.IsNullOrEmpty(sceneGUID);
+        public bool IsNull => string.IsNullOrEmpty (scenePath) || string.IsNullOrEmpty (sceneGUID);
 
         private AsyncOperation _sceneOperation;
         public AsyncOperation SceneOperationHandle => _sceneOperation;
@@ -28,22 +26,23 @@ namespace d4160.SceneManagement
         /// </summary>
         public bool IsDone => _sceneOperation?.isDone ?? false;
 
-        public AsyncOperation LoadSceneAsync(LoadSceneMode loadMode = LoadSceneMode.Single, bool activateOnLoad = true)
-        {
+        public AsyncOperation LoadSceneAsync (LoadSceneMode loadMode = LoadSceneMode.Single, bool activateOnLoad = true) {
             if (IsDone)
-                Debug.LogError("Attempting to load Scene that has already been loaded. Operation is exposed through getter SceneOperation");
-            else
-            {
-                _sceneOperation = SceneManager.LoadSceneAsync(scenePath, loadMode);
+                Debug.LogError ("Attempting to load Scene that has already been loaded. Operation is exposed through getter SceneOperation");
+            else {
+                _sceneOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync (scenePath, loadMode);
                 _sceneOperation.allowSceneActivation = activateOnLoad;
             }
 
             return _sceneOperation;
         }
 
-        public void UnloadSceneAsync()
-        {
-            SceneManager.UnloadSceneAsync(scenePath);
+        public void UnloadSceneAsync () {
+            UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync (scenePath);
+            _sceneOperation = null;
+        }
+
+        public void Clear () {
             _sceneOperation = null;
         }
 
@@ -60,7 +59,7 @@ namespace d4160.SceneManagement
         /// Returns the state of the internal operation.
         /// </summary>
         /// <returns>True if the operation is valid.</returns>
-        public bool IsAddressableValid => _addressablesOperation.IsValid();
+        public bool IsAddressableValid => _addressablesOperation.IsValid ();
 
         /// <summary>
         /// Loads the reference as a scene.
@@ -69,14 +68,12 @@ namespace d4160.SceneManagement
         /// <param name="activateOnLoad">If false, the scene will load but not activate (for background loading).  The SceneInstance returned has an Activate() method that can be called to do this at a later point.</param>
         /// <param name="priority">Async operation priority for scene loading.</param>
         /// <returns>The operation handle for the request if there is not a valid cached operation, otherwise return default operation</returns>
-        public AsyncOperationHandle<SceneInstance> LoadSceneAsyncAddressables(LoadSceneMode loadMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100)
-        {
+        public AsyncOperationHandle<SceneInstance> LoadSceneAsyncAddressables (LoadSceneMode loadMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100) {
             AsyncOperationHandle<SceneInstance> result = default;
-            if (_addressablesOperation.IsValid())
-                Debug.LogError("Attempting to load Scene that has already been loaded. Handle is exposed through getter OperationHandle");
-            else
-            {
-                result = Addressables.LoadSceneAsync(sceneGUID, loadMode, activateOnLoad, priority);
+            if (_addressablesOperation.IsValid ())
+                Debug.LogError ("Attempting to load Scene that has already been loaded. Handle is exposed through getter OperationHandle");
+            else {
+                result = Addressables.LoadSceneAsync (sceneGUID, loadMode, activateOnLoad, priority);
                 _addressablesOperation = result;
             }
             return result;
@@ -86,29 +83,22 @@ namespace d4160.SceneManagement
         /// Unloads the reference as a scene.
         /// </summary>
         /// <returns>The operation handle for the scene load.</returns>
-        public AsyncOperationHandle<SceneInstance> UnloadSceneAsyncAddressables()
-        {
-            return Addressables.UnloadSceneAsync(_addressablesOperation);
+        public AsyncOperationHandle<SceneInstance> UnloadSceneAsyncAddressables () {
+            return Addressables.UnloadSceneAsync (_addressablesOperation);
         }
 
-        public void OnBeforeSerialize()
-        {
+        public void OnBeforeSerialize () {
 #if UNITY_EDITOR
-            if (_sceneAsset && _sceneAsset != _prevSceneAsset)
-            {
-                scenePath = UnityEditor.AssetDatabase.GetAssetOrScenePath(_sceneAsset);
-                sceneGUID = UnityEditor.AssetDatabase.AssetPathToGUID(scenePath);
-            }
-            else
-            {
+            if (_sceneAsset && _sceneAsset != _prevSceneAsset) {
+                scenePath = UnityEditor.AssetDatabase.GetAssetOrScenePath (_sceneAsset);
+                sceneGUID = UnityEditor.AssetDatabase.AssetPathToGUID (scenePath);
+            } else {
                 scenePath = string.Empty;
                 sceneGUID = string.Empty;
             }
 #endif
         }
 
-        public void OnAfterDeserialize()
-        {
-        }
+        public void OnAfterDeserialize () { }
     }
 }
