@@ -1,0 +1,18 @@
+{
+    "name": "d4160.SceneManagement.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:fc9d152dc8e154e4c8bafd89314d25b0"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

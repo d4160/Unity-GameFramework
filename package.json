@@ -18,7 +18,9 @@
 	"com.unity.localization": "0.10.0-preview",
 	"com.kybernetik.ult-events": "2.1.1",
     "com.taras-osiris.better-defines": "0.1.5",
-    "com.truongnguyentungduy.hierarchy-2": "1.2.1"
+    "com.truongnguyentungduy.hierarchy-2": "1.2.1",
+	"com.sabresaurus.playerprefseditor": "1.2.0",
+    "com.tayx.graphy": "2.1.3"
   },
   "gitDependencies": {
 	"com.dbrizov.naughtyattributes": "https://github.com/d4160/NaughtyAttributes.git#2.1.0",

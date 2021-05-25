@@ -1,0 +1,18 @@
+{
+    "name": "Auth.Vivox",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f3f1532e2b5a9c14e84d5497a2ec90a8",
+        "GUID:680edcf8ae6014dddbef749555a96253",
+        "GUID:1ee715cb2758b48a5956d43b224b3e94"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

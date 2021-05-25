@@ -120,8 +120,10 @@ namespace d4160.SceneManagement {
         }
 
         private IEnumerator LoadScenesAsyncRoutine (LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activateOnLoad = true) {
+            _loadingScene.Clear ();
+            
             if (_loadingSceneInfo) {
-                _loadingScene.Clear ();
+                
                 _loadingSceneInfo.SceneCollection = this;
                 _loadingSceneInfo.SceneAssetType = AssetManagementType.Default;
                 _loadingSceneInfo.SetLoadInfo (loadSceneMode, activateOnLoad);

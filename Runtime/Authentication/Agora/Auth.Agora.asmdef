@@ -1,0 +1,17 @@
+{
+    "name": "Auth.Agora",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f3f1532e2b5a9c14e84d5497a2ec90a8",
+        "GUID:ac14623fa12af43459993b14d4fce20c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
