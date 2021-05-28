@@ -7,9 +7,11 @@ namespace d4160.Grid
 {
     public class GridMono<T> : Grid<T> where T: MonoBehaviour
     {
-        private GridMonoProcessValueType _processValueType = GridMonoProcessValueType.FixedPosition;
+        private Transform _parent;
+        private GridMonoProcessValueType _processValueType = GridMonoProcessValueType.None;
         private float _movementSpeedOrDuration;
 
+        public Transform Parent { get => _parent; set => _parent = value; }
         public GridMonoProcessValueType ProcessValueType { get => _processValueType; set => _processValueType = value; }
         /// <summary>
         /// The duration for movement
@@ -25,6 +27,8 @@ namespace d4160.Grid
         {
             if (value)
             {
+                if(_parent) value.transform.SetParent(_parent, false);
+
                 switch(_processValueType) {
                     case GridMonoProcessValueType.None: break;
                     case GridMonoProcessValueType.FixedPosition: 
@@ -40,6 +44,85 @@ namespace d4160.Grid
                 
             }
             return value;
+        }
+
+        public void Fill(Transform parent, bool fillHoles = true, bool forceReplace = false) {
+
+            if(_provider == null) return;
+
+            int childCount = parent.childCount;
+
+            if (childCount > 0 || (childCount == 0 && fillHoles))
+            {
+                int counter = 0;
+                for (var x = 0; x < _gridArray.GetLength(0); x++)
+                {
+                    for (var y = 0; y < _gridArray.GetLength(1); y++)
+                    {
+                        if (childCount > counter) {
+
+                            T current = GetGridObject(x, y);
+                            if (current == null || forceReplace)
+                            {
+                                if(current != null)
+                                    _provider.Destroy(current);
+
+                                SetGridObject(x, y, parent.GetChild(counter).GetComponent<T>());
+                                counter++;
+                            }
+                            else {
+                                Transform child = parent.GetChild(counter);
+                                T comp = child.GetComponent<T>();
+                                if (comp)
+                                {
+                                    _provider.Destroy(comp);
+                                }
+                                else
+                                {
+                                    if(Application.isPlaying) {
+                                        GameObject.Destroy(child);
+                                    }
+                                    else {
+                                        GameObject.DestroyImmediate(child);
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            if (fillHoles)
+                            {
+                                T current = GetGridObject(x, y);
+                                if (current == null || forceReplace)
+                                {
+                                    if(current != null)
+                                        _provider.Destroy(current);
+
+                                    T instance = _provider.Instantiate();
+                                    SetGridObject(x, y, instance);
+
+                                    counter++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (parent.childCount > counter)
+                {
+                    while (parent.childCount > counter)
+                    {
+                        Transform child = parent.GetChild(counter);
+                        if (Application.isPlaying)
+                        {
+                            GameObject.Destroy(child.gameObject);
+                        }
+                        else
+                        {
+                            GameObject.DestroyImmediate(child.gameObject);
+                        }
+                    }
+                }
+            }
         }
 
         public void MoveWithDuration (int sourceX, int sourceY, int targetX, int targetY, float duration)

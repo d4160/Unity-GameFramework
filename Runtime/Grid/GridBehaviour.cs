@@ -10,14 +10,14 @@ namespace d4160.Grid
     {
         protected Grid<T> _grid;
 
-        protected override void InstanceGrid(bool drawText = false, Color textColor = default, int textFontSize = 5, Transform textParent = null)
+        protected override void InstantiateGrid(bool drawText = false, Color textColor = default, int textFontSize = 5, Transform textParent = null)
         {
             _grid = new Grid<T>(_width, _height, _cellSize, transform.position, drawText, textColor, textFontSize, textParent);
         }
 
         protected override void DrawGizmos()
         {
-            if (_grid == null) InstanceGrid();
+            if (_grid == null) InstantiateGrid();
 
             _grid.CellSize = _cellSize;
             _grid.OriginPosition = transform.position;
@@ -36,22 +36,30 @@ namespace d4160.Grid
         [ShowIf("_toggleShowGizmosSettings")]
         [SerializeField] protected GridGizmosSettings _gizmosSettings;
 
-        protected abstract void InstanceGrid(bool drawText = false, Color textColor = default, int textFontSize = 5, Transform textParent = null);
+        protected abstract void InstantiateGrid(bool drawText = false, Color textColor = default, int textFontSize = 5, Transform textParent = null);
+
+        protected virtual void InstantiateProvider(){}
 
         [Button]
-        protected void UpdateGrid()
+        protected void ReinstantiateGrid()
         {
-            InstanceGrid();
+            InstantiateGrid();
+        }
+
+        [Button]
+        protected void ReinstantiateProvider()
+        {
+            InstantiateProvider();
         }
 
         protected virtual void Start()
         {
-            InstanceGrid(_gizmosSettings.drawDebugText, _gizmosSettings.textColor, _gizmosSettings.textFontSize, _gizmosSettings.textParent);
+            InstantiateGrid(_gizmosSettings.drawDebugText, _gizmosSettings.textColor, _gizmosSettings.textFontSize, _gizmosSettings.textParent);
         }
 
         protected virtual void OnDrawGizmos()
         {
-            if (!_gizmosSettings.onDrawGizmosSelected)
+            if (_gizmosSettings.gizmosEnabled && !_gizmosSettings.onDrawGizmosSelected)
             {
                 DrawGizmos();
             }
@@ -59,7 +67,7 @@ namespace d4160.Grid
 
         protected virtual void OnDrawGizmosSelected()
         {
-            if (_gizmosSettings.onDrawGizmosSelected)
+            if (_gizmosSettings.gizmosEnabled && _gizmosSettings.onDrawGizmosSelected)
             {
                 DrawGizmos();
             }

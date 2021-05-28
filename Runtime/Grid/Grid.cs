@@ -1,13 +1,12 @@
 using System;
 using CodeMonkey.Utils;
+using d4160.Instancers;
 using d4160.UnityUtils;
 using TMPro;
 using UnityEngine;
 
 namespace d4160.Grid {
-    public class Grid<T>
-    {
-
+    public class Grid<T>{
         public event EventHandler<OnGridValueChangedEventArgs> OnGridValueChanged;
         public class OnGridValueChangedEventArgs : EventArgs
         {
@@ -21,6 +20,7 @@ namespace d4160.Grid {
         protected Vector3 _originPosition;
         protected T[,] _gridArray;
         protected TextMeshPro[,] _debugTextArray = null;
+        protected IProvider<T> _provider;
 
         public int Width { get => _width; set => _width = value; }
         public int Height { get => _height; set => _height = value; }
@@ -31,6 +31,7 @@ namespace d4160.Grid {
         public Vector2 CellSize { get => _cellSize; set => _cellSize = value; }
         public Vector3 OriginPosition { get => _originPosition; set => _originPosition = value; }
         public T[,] GridArray { get => _gridArray; set => _gridArray = value; }
+        public IProvider<T> Provider { get => _provider; set => _provider = value;}
 
         public Grid (int width, int height, Vector2 cellSize, Vector3 originPosition = default, bool drawDebugText = true, Color? textColor = null, int textFontSize = 5, Transform textParent = null) {
             _width = width;
@@ -143,6 +144,46 @@ namespace d4160.Grid {
             SetGridObject(toX, toY, from);
         }
 
+        public void FillAll(bool forceReplace = false) {
+            if (_provider != null) {
+                for (var x = 0; x < _gridArray.GetLength (0); x++) {
+                    for (var y = 0; y < _gridArray.GetLength (1); y++) {
+                        T current = GetGridObject(x, y);
+                        if (current == null || forceReplace)
+                        {
+                            if(current != null)
+                                _provider.Destroy(current);
+
+                            T instance = _provider.Instantiate();
+                            SetGridObject(x, y, instance);
+                        }
+                    }
+                }
+            }
+            else {
+                Debug.LogWarning("Please, reinstantiate the Provider first.");
+            }
+        }
+
+        public void DestroyAll() {
+            if (_provider != null) {
+                for (var x = 0; x < _gridArray.GetLength (0); x++) {
+                    for (var y = 0; y < _gridArray.GetLength (1); y++) {
+
+                        T current = GetGridObject(x, y);
+                        if (current != null)
+                        {
+                            _provider.Destroy(GetGridObject(x, y));
+                            SetGridObject(x, y, default);
+                        }
+                    }
+                }
+            }
+            else {
+                Debug.LogWarning("Please, reinstantiate the Provider first.");
+            }
+        }
+
         public void DrawGizmos (Color color, float duration = 0) {
 
             for (var x = 0; x < _gridArray.GetLength (0); x++) {
@@ -175,6 +216,7 @@ namespace d4160.Grid {
 
     [System.Serializable]
     public struct GridGizmosSettings {
+        public bool gizmosEnabled;
         public bool onDrawGizmosSelected;
         public Color gridColor;
         public float gridDuration; //0 - 0.02
