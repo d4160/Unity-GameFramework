@@ -1,13 +1,11 @@
 ﻿#if VIVOX
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace d4160.Authentication
+namespace d4160.Auth.Vivox
 {
-    [CreateAssetMenu(menuName = "d4160/Authentication/Vivox/Auth Settings")]
-    public class VivoxAuthSettings : ScriptableObject
+    [CreateAssetMenu(menuName = "d4160/Vivox/Settings")]
+    public class VivoxAuthSettingsSO : ScriptableObject
     {
         public Uri ServerUri
         {

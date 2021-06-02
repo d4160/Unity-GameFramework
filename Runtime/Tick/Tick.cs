@@ -34,13 +34,13 @@ namespace d4160.Tick
 
         public void StartTick() {
             if (_tickRoutine == null)
-                _tickRoutine = CoroutineHelper.Instance.StartCoroutine(TickRoutine());
+                _tickRoutine = CoroutineStarter.Instance.StartCoroutine(TickRoutine());
         }
 
         public void StopTick() {
             if (_tickRoutine != null)
             {
-                CoroutineHelper.Instance.StopCoroutine(_tickRoutine);
+                CoroutineStarter.Instance.StopCoroutine(_tickRoutine);
                 _tickRoutine = null;
             }
         }

@@ -6,22 +6,22 @@ using UnityEngine;
 namespace d4160.SceneManagement {
     public class SceneCollectionLoaderBehaviour : MonoBehaviourUnityData<SceneCollectionSO> {
 
-        [SerializeField] private UnityLifetimeMethod _loadSceneAt;
+        [SerializeField] private UnityLifetimeMethodType _loadSceneAt;
 
         void Awake () {
-            if (_loadSceneAt == UnityLifetimeMethod.Awake) {
+            if (_loadSceneAt == UnityLifetimeMethodType.Awake) {
                 LoadScenesAsync ();
             }
         }
 
         void Start () {
-            if (_loadSceneAt == UnityLifetimeMethod.Start) {
+            if (_loadSceneAt == UnityLifetimeMethodType.Start) {
                 LoadScenesAsync ();
             }
         }
 
         void OnEnable () {
-            if (_loadSceneAt == UnityLifetimeMethod.OnEnable) {
+            if (_loadSceneAt == UnityLifetimeMethodType.OnEnable) {
                 LoadScenesAsync ();
             }
         }

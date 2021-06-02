@@ -19,8 +19,10 @@ namespace d4160.Authentication
         /// <param name="completer">
         /// When done, this completer is resolved or rejected.
         /// </param>
-        void Authenticate(Completer completer);
+        void Login(Completer completer);
 
-        void Unauthenticate();
+        void Register(Completer completer);
+
+        void Logout(Completer completer);
     }
 }

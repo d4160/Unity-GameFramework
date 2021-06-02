@@ -7,14 +7,16 @@ namespace d4160.Authentication
     /// </summary>
     public abstract class BaseAuthService : IAuthService
     {
-        public virtual string DisplayName { get; protected set; }
-        public virtual string Id { get; protected set; }
-        public virtual bool HasSession { get; protected set; }
-        public virtual string SessionTicket { get; protected set; }
+        public virtual string DisplayName { get; set; }
+        public virtual string Id { get; set; }
+        public virtual bool HasSession => !string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(SessionTicket);
+        public virtual string SessionTicket { get; set; }
 
         /// <inheritdoc />
-        public abstract void Authenticate(Completer completer);
+        public abstract void Login(Completer completer);
 
-        public abstract void Unauthenticate();
+        public abstract void Register(Completer completer);
+
+        public abstract void Logout(Completer completer);
     }
 }

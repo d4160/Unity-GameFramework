@@ -1,6 +1,6 @@
 ﻿namespace d4160.Core
 {
-    public enum UnityLifetimeMethod : byte
+    public enum UnityLifetimeMethodType : byte
     {
         Awake,
         OnEnable,
@@ -8,7 +8,7 @@
         Manual
     }
 
-    public enum UnityLoopMethod : byte
+    public enum UnityLoopMethodType : byte
     {
         FixedUpdate,
         Update,
@@ -23,7 +23,7 @@
         PingPong
     }
 
-    public enum RecicleOption
+    public enum RecicleOptionType : byte
     {
         None,
         Add,
@@ -32,10 +32,27 @@
         ReturnToPool
     }
 
-    public enum AssetManagementType
+    public enum AssetManagementType : byte
     {
         Default,
         AssetBundles,
         Addressables
+    }
+
+    public enum LogLevelType : byte
+    {
+        None,
+        Critical,
+        Error,
+        Warning,
+        Info,
+        Debug
+    }
+
+    public enum AuthType : byte {
+        Login,
+        Register,
+        Link,
+        Unlink
     }
 }

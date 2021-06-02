@@ -1,0 +1,17 @@
+{
+    "name": "d4160.Profile",
+    "rootNamespace": "",
+    "references": [
+        "GUID:abd02ea2a3d741f48b1c16eb7025fec5",
+        "GUID:680edcf8ae6014dddbef749555a96253"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

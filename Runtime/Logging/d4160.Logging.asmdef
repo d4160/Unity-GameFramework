@@ -1,0 +1,16 @@
+{
+    "name": "d4160.Logging",
+    "rootNamespace": "",
+    "references": [
+        "GUID:abd02ea2a3d741f48b1c16eb7025fec5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

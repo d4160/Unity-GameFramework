@@ -8,7 +8,7 @@ namespace d4160.SceneManagement {
 
         [Expandable]
         [SerializeField] protected SceneManagerSO _sceneManagerAsset;
-        [SerializeField] protected UnityLifetimeMethod _loadSceneAt;
+        [SerializeField] protected UnityLifetimeMethodType _loadSceneAt;
         [DropdownIndex("SceneCollectionsNames")]
         [SerializeField] protected int _sceneCollection;
 
@@ -69,19 +69,19 @@ namespace d4160.SceneManagement {
 
         protected override void Awake () {
             base.Awake();
-            if (_loadSceneAt == UnityLifetimeMethod.Awake) {
+            if (_loadSceneAt == UnityLifetimeMethodType.Awake) {
                 LoadSceneCollectionAsync(_sceneCollection);
             }
         }
 
         protected virtual void Start () {
-            if (_loadSceneAt == UnityLifetimeMethod.Start) {
+            if (_loadSceneAt == UnityLifetimeMethodType.Start) {
                 LoadSceneCollectionAsync(_sceneCollection);
             }
         }
 
         protected virtual void OnEnable () {
-            if (_loadSceneAt == UnityLifetimeMethod.OnEnable) {
+            if (_loadSceneAt == UnityLifetimeMethodType.OnEnable) {
                 LoadSceneCollectionAsync(_sceneCollection);
             }
         }

@@ -5,22 +5,22 @@ using UnityEngine;
 
 namespace d4160.SceneManagement {
     public class SceneLinkBehaviour : MonoBehaviourUnityData<SceneLinkSO> {
-        [SerializeField] private UnityLifetimeMethod _continueLoadAt;
+        [SerializeField] private UnityLifetimeMethodType _continueLoadAt;
         
         void Awake () {
-            if (_continueLoadAt == UnityLifetimeMethod.Awake) {
+            if (_continueLoadAt == UnityLifetimeMethodType.Awake) {
                 ContinueLoadAsync ();
             }
         }
 
         void Start () {
-            if (_continueLoadAt == UnityLifetimeMethod.Start) {
+            if (_continueLoadAt == UnityLifetimeMethodType.Start) {
                 ContinueLoadAsync ();
             }
         }
 
         void OnEnable () {
-            if (_continueLoadAt == UnityLifetimeMethod.OnEnable) {
+            if (_continueLoadAt == UnityLifetimeMethodType.OnEnable) {
                 ContinueLoadAsync ();
             }
         }

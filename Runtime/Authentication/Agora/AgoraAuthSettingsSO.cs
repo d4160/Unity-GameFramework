@@ -1,20 +1,13 @@
 #if AGORA
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class AgoraAuthSettingsSO : MonoBehaviour
+namespace d4160.Auth.Agora
 {
-    // Start is called before the first frame update
-    void Start()
+    [CreateAssetMenu(menuName = "d4160/Agora/Settings")]
+    public class AgoraAuthSettingsSO : ScriptableObject
     {
-        
-    }
+        [SerializeField] private string _appID = "your_appid";
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public string AppID => _appID;
     }
 }
 #endif

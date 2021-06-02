@@ -1,8 +1,9 @@
 ﻿#if PLAYFAB
-using System;
 using d4160.MonoBehaviourData;
 using NaughtyAttributes;
+using PlayFab;
 using PlayFab.ClientModels;
+using PlayFab.SharedModels;
 using UltEvents;
 using UnityEngine;
 
@@ -10,57 +11,66 @@ namespace d4160.Auth.PlayFab {
     public class PlayFabAuthBehaviour : MonoBehaviourUnityData<PlayFabAuthSO> {
 
         [Header ("EVENTS")]
-        [SerializeField] private UltEvent _onAuthSuccess;
-        [SerializeField] private UltEvent _onAuthFail;
-        [SerializeField] private UltEvent<string> _onDisplayNameSaved;
-        [SerializeField] private UltEvent _onContactEmailSaved;
-        [SerializeField] private UltEvent _onContactEmailRemoved;
+        [SerializeField] private UltEvent _onCancelAuthentication;
+        [SerializeField] private UltEvent<RegisterPlayFabUserResult> _onRegisterSuccess;
+        [SerializeField] private UltEvent<AddUsernamePasswordResult> _onAddAccountSuccess;
+        [SerializeField] private UltEvent<LoginResult> _onLoginSuccess;
+        [SerializeField] private UltEvent<PlayFabResultCommon> _onLinkSuccess;
+        [SerializeField] private UltEvent<PlayFabResultCommon> _onUnlinkSuccess;
+        [SerializeField] private UltEvent _onLogoutSuccess;
+        [SerializeField] private UltEvent<PlayFabError> _onPlayFabError;
+
+#if PHOTON_UNITY_NETWORKING
+        [SerializeField] private UltEvent<GetPhotonAuthenticationTokenResult> _onPhotonTokenObtained;
+#endif
 
         void OnEnable() {
             if (_data) {
-                _data.onAuthSuccess += _onAuthSuccess.Invoke;
-                _data.onAuthFail += _onAuthFail.Invoke;
-                _data.onDisplayNameSaved += _onDisplayNameSaved.Invoke;
-                _data.onContactEmailSaved += _onContactEmailSaved.Invoke;
-                _data.onContactEmailRemoved += _onContactEmailRemoved.Invoke;
+                _data.RegisterEvents();
+                _data.OnCancelAuthentication += _onCancelAuthentication.Invoke;
+                _data.OnLoginSuccess += _onLoginSuccess.Invoke;
+                _data.OnRegisterSuccess += _onRegisterSuccess.Invoke;
+                _data.OnAddAccountSuccess += _onAddAccountSuccess.Invoke;
+                _data.OnLinkSuccess += _onLinkSuccess.Invoke;
+                _data.OnUnlinkSuccess += _onUnlinkSuccess.Invoke;
+                _data.OnLogoutSuccess += _onLogoutSuccess.Invoke;
+                _data.OnPlayFabError += _onPlayFabError.Invoke;
             }
         }
 
         void OnDisable() {
             if (_data) {
-                _data.onAuthSuccess -= _onAuthSuccess.Invoke;
-                _data.onAuthFail -= _onAuthFail.Invoke;
-                _data.onDisplayNameSaved -= _onDisplayNameSaved.Invoke;
-                _data.onContactEmailSaved -= _onContactEmailSaved.Invoke;
-                _data.onContactEmailRemoved -= _onContactEmailRemoved.Invoke;
+                _data.UnregisterEvents();
+                _data.OnCancelAuthentication -= _onCancelAuthentication.Invoke;
+                _data.OnLoginSuccess -= _onLoginSuccess.Invoke;
+                _data.OnRegisterSuccess -= _onRegisterSuccess.Invoke;
+                _data.OnAddAccountSuccess -= _onAddAccountSuccess.Invoke;
+                _data.OnLinkSuccess -= _onLinkSuccess.Invoke;
+                _data.OnUnlinkSuccess -= _onUnlinkSuccess.Invoke;
+                _data.OnLogoutSuccess -= _onLogoutSuccess.Invoke;
+                _data.OnPlayFabError -= _onPlayFabError.Invoke;
             }
         }
 
-        public void AuthenticateEmailPassword (string email, string password, GetPlayerCombinedInfoRequestParams infoRequestParams, bool rememberMe = false, bool forceLink = false, Action onAuthSuccess = null, Action onAuthFail = null) {
-            _data.AuthenticateEmailPassword (email, password, infoRequestParams, rememberMe, forceLink, onAuthSuccess, onAuthFail);
-        }
-
-        public void RegisterPlayFabAccount (string email, string username, string password, string displayName, bool requireBothUsernameAndEmail = false, Action onAuthSuccess = null, Action onAuthFail = null) {
-            _data.RegisterPlayFabAccount (email, username, password, displayName, requireBothUsernameAndEmail, onAuthSuccess, onAuthFail);
+        [Button]
+        public void Login(){
+            if(_data) {
+                _data.Login();
+            }
         }
 
         [Button]
-        public void Unauthenticate () {
-            _data.Unauthenticate ();
-        }
-
-        public void UpdateDisplayName (string displayName, Action onSuccess = null, Action onFail = null) {
-            _data.UpdateDisplayName (displayName, onSuccess, onFail);
-        }
-
-        [Button]
-        public void AddOrUpdateContactEmail () {
-            _data.AddOrUpdateContactEmail ();
+        public void Register() {
+            if(_data) {
+                _data.Register();
+            }
         }
 
         [Button]
-        public void RemoveContactEmail () {
-            _data.RemoveContactEmail ();
+        public void Logout() {
+            if(_data) {
+                _data.Logout();
+            }
         }
     }
 }

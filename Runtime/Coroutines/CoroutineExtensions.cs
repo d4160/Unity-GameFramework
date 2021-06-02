@@ -7,17 +7,17 @@ namespace d4160.Coroutines
     {
         public static Coroutine StartCoroutine(this IEnumerator instance)
         {
-            return CoroutineHelper.Instance.StartCoroutine(instance);
+            return CoroutineStarter.Instance.StartCoroutine(instance);
         }
 
         public static void StopCoroutine(this IEnumerator instance)
         {
-            CoroutineHelper.Instance.StopCoroutine(instance);
+            CoroutineStarter.Instance.StopCoroutine(instance);
         }
 
         public static void StopCoroutine(this Coroutine instance)
         {
-            CoroutineHelper.Instance.StopCoroutine(instance);
+            CoroutineStarter.Instance.StopCoroutine(instance);
         }
     }
 }

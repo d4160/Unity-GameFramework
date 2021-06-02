@@ -3,6 +3,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
 using LoginResult = PlayFab.ClientModels.LoginResult;
+using PlayFab.SharedModels;
 using System;
 using d4160.Authentication;
 
@@ -23,47 +24,55 @@ namespace d4160.Auth.PlayFab {
     /// Note: Add types to there to support more AuthTypes
     /// See - https://api.playfab.com/documentation/client#Authentication
     /// </summary>
-    public enum PlayFabAuthTypes {
+    public enum PlayFabLoginType {
         None,
         Silent,
         UsernameAndPassword,
         EmailAndPassword,
-        RegisterPlayFabAccount,
-        AddPlayFabAccount,
         Steam,
         Facebook,
         Google
     }
 
-    public class PlayFabAuthService : BaseAuthService {
-        //Events to subscribe to for this service
-        public delegate void DisplayAuthenticationEvent ();
-        public static event DisplayAuthenticationEvent OnDisplayAuthentication;
+    public enum PlayFabRegisterType {
+        None,
+        RegisterPlayFabAccount,
+        AddPlayFabAccount
+    }
 
-        public delegate void RegisterSuccessEvent (RegisterPlayFabUserResult success);
-        public static event RegisterSuccessEvent OnRegisterSuccess;
+    public enum PlayFabLinkType {
+        None,
+        Device,
+        Steam,
+        Facebook,
+        Google
+    }
 
-        public delegate void LoginSuccessEvent (LoginResult success);
-        public static event LoginSuccessEvent OnLoginSuccess;
-
-        public delegate void PlayFabErrorEvent (PlayFabError error);
-        public static event PlayFabErrorEvent OnPlayFabError;
+    public class PlayFabAuthService : BaseAuthService 
+    {
+        public static event Action OnCancelAuthentication;
+        public static event Action<RegisterPlayFabUserResult> OnRegisterSuccess;
+        public static event Action<AddUsernamePasswordResult> OnAddAccountSuccess;
+        public static event Action<LoginResult> OnLoginSuccess;
+        public static event Action<PlayFabResultCommon> OnLinkSuccess;
+        public static event Action<PlayFabResultCommon> OnUnlinkSuccess;
+        public static event Action OnLogoutSuccess;
+        public static event Action<PlayFabError> OnPlayFabError;
 
 #if PHOTON_UNITY_NETWORKING
-        public delegate void PhotonAuthenticationTokenEvent (GetPhotonAuthenticationTokenResult result);
-
-        public static event PhotonAuthenticationTokenEvent OnPhotonTokenObtained;
+        public static event Action<GetPhotonAuthenticationTokenResult> OnPhotonTokenObtained;
 #endif
 
         //These are fields that we set when we are using the service.
         public string email;
         public string username;
         public string password;
+
 #if PHOTON_UNITY_NETWORKING
         public bool authenticateToPhotonAfterSuccess;
 #endif
-        public GetPlayerCombinedInfoRequestParams infoRequestParams;
 
+        public GetPlayerCombinedInfoRequestParams infoRequestParams;
         //this is a force link flag for custom ids for rememberme
         public bool forceLink = false;
         public bool requireBothUsernameAndEmail = false;
@@ -72,12 +81,11 @@ namespace d4160.Auth.PlayFab {
 
         public override bool HasSession => !string.IsNullOrEmpty (Id) && !string.IsNullOrEmpty (SessionTicket);
 
-        private const string LoginRememberKey = "PlayFabLoginRemember";
-        private const string PlayFabRememberMeIdKey = "PlayFabIdPassGuid";
-        private const string PlayFabAuthTypeKey = "PlayFabAuthType";
+        private const string LOGIN_REMEMBER_KEY = "PlayFabLoginRemember";
+        private const string PLAYFAB_REMEMBERME_IDKEY = "PlayFabIdPassGuid";
+        private const string PLAYFAB_LOGINTYPE_KEY = "PlayFabLoginType";
 
         public static PlayFabAuthService Instance => _instance ?? (_instance = new PlayFabAuthService ());
-
         private static PlayFabAuthService _instance;
 
         private PlayFabAuthService () {
@@ -89,158 +97,116 @@ namespace d4160.Auth.PlayFab {
         /// This is used for Auto-Login purpose.
         /// </summary>
         public bool RememberMe {
-            get => PlayerPrefs.GetInt (LoginRememberKey, 0) != 0;
-            set => PlayerPrefs.SetInt (LoginRememberKey, value ? 1 : 0);
+            get => PlayerPrefs.GetInt (LOGIN_REMEMBER_KEY, 0) != 0;
+            set => PlayerPrefs.SetInt (LOGIN_REMEMBER_KEY, value ? 1 : 0);
         }
 
         /// <summary>
         /// Remember the type of authenticate for the user
         /// </summary>
-        public PlayFabAuthTypes AuthType {
-            get => (PlayFabAuthTypes) PlayerPrefs.GetInt (PlayFabAuthTypeKey, 0);
-            set => PlayerPrefs.SetInt (PlayFabAuthTypeKey, (int) value);
+        public PlayFabLoginType LoginType {
+            get => (PlayFabLoginType) PlayerPrefs.GetInt (PLAYFAB_LOGINTYPE_KEY, 0);
+            set => PlayerPrefs.SetInt (PLAYFAB_LOGINTYPE_KEY, (int) value);
         }
+
+        /// <summary>
+        /// Remember the type of authenticate for the user
+        /// </summary>
+        public PlayFabRegisterType RegisterType { get; set; }
 
         /// <summary>
         /// Generated Remember Me ID
         /// Pass Null for a value to have one auto-generated.
         /// </summary>
         private string RememberMeId {
-            get => PlayerPrefs.GetString (PlayFabRememberMeIdKey, "");
+            get => PlayerPrefs.GetString (PLAYFAB_REMEMBERME_IDKEY, "");
             set {
                 var guid = string.IsNullOrEmpty (value) ? Guid.NewGuid ().ToString () : value;
-                PlayerPrefs.SetString (PlayFabRememberMeIdKey, guid);
+                PlayerPrefs.SetString (PLAYFAB_REMEMBERME_IDKEY, guid);
             }
         }
 
         public void ClearRememberMe () {
-            PlayerPrefs.DeleteKey (LoginRememberKey);
-            PlayerPrefs.DeleteKey (PlayFabRememberMeIdKey);
+            PlayerPrefs.DeleteKey (LOGIN_REMEMBER_KEY);
+            PlayerPrefs.DeleteKey (PLAYFAB_REMEMBERME_IDKEY);
         }
 
         /// <summary>
         /// Kick off the authentication process by specific authtype.
         /// </summary>
-        /// <param name="authType"></param>
-        public void Authenticate (PlayFabAuthTypes authType) {
-            AuthType = authType;
-            Authenticate ();
+        /// <param name="loginType"></param>
+        public void Login (PlayFabLoginType loginType) {
+            LoginType = loginType;
+            Login ();
+        }
+
+        public override void Login (Completer completer) {
+            _completer = completer;
+            Login ();
         }
 
         /// <summary>
         /// Authenticate the user by the Auth Type that was defined.
         /// </summary>
-        public void Authenticate () {
-            var authType = AuthType;
+        public void Login () {
+            var loginType = LoginType;
 
-            switch (authType) {
-                case PlayFabAuthTypes.None:
-                    OnDisplayAuthentication?.Invoke ();
+            switch (loginType) {
+                case PlayFabLoginType.None:
+                    OnCancelAuthentication?.Invoke ();
                     break;
-                case PlayFabAuthTypes.Silent:
+                case PlayFabLoginType.Silent:
                     SilentlyAuthenticate ();
                     break;
-                case PlayFabAuthTypes.EmailAndPassword:
+                case PlayFabLoginType.EmailAndPassword:
                     AuthenticateEmailPassword ();
                     break;
-                case PlayFabAuthTypes.AddPlayFabAccount:
-                    AddPlayFabAccount ();
-                    break;
-                case PlayFabAuthTypes.Steam:
+                case PlayFabLoginType.Steam:
                     AuthenticateSteam ();
                     break;
-                case PlayFabAuthTypes.Facebook:
+                case PlayFabLoginType.Facebook:
                     AuthenticateFacebook ();
                     break;
-                case PlayFabAuthTypes.Google:
+                case PlayFabLoginType.Google:
                     AuthenticateGooglePlayGames ();
                     break;
-                case PlayFabAuthTypes.UsernameAndPassword:
+                case PlayFabLoginType.UsernameAndPassword:
                     AuthenticateUsernamePassword ();
                     break;
-                case PlayFabAuthTypes.RegisterPlayFabAccount:
-                    RegisterPlayFabAccount ();
-                    break;
                 default:
-                    OnDisplayAuthentication?.Invoke ();
+                    OnCancelAuthentication?.Invoke ();
                     break;
             }
         }
 
-        public override void Authenticate (Completer completer) {
+        public override void Register(Completer completer)
+        {
             _completer = completer;
-
-            Authenticate ();
+            switch(RegisterType) {
+                case PlayFabRegisterType.None:
+                    break;
+                case PlayFabRegisterType.RegisterPlayFabAccount:
+                    RegisterPlayFabAccount();
+                    break;
+                case PlayFabRegisterType.AddPlayFabAccount:
+                    AddPlayFabAccount();
+                    break;
+            }
         }
 
-        public override void Unauthenticate () {
+        public override void Logout (Completer completer) {
             Id = null;
             SessionTicket = null;
             ClearRememberMe ();
 
             PlayFabClientAPI.ForgetAllCredentials ();
+
+            completer.Resolve();
+            OnLogoutSuccess?.Invoke();
         }
 
-        /// <summary>
-        /// Only sets this value for another methods, like register
-        /// </summary>
-        /// <param name="displayName"></param>
         public void SetDisplayName (string displayName) {
             DisplayName = displayName;
-        }
-
-        public void UpdateDisplayName (string displayName, Action<UpdateUserTitleDisplayNameResult> resultCallback = null, Action<PlayFabError> errorCallback = null) {
-            DisplayName = displayName;
-            PlayFabClientAPI.UpdateUserTitleDisplayName (new UpdateUserTitleDisplayNameRequest () {
-                    DisplayName = displayName
-                },
-                (result) => {
-#if PHOTON_UNITY_NETWORKING
-                    if (authenticateToPhotonAfterSuccess) {
-                        PhotonAuthService photonAuth = PhotonAuthService.Instance;
-                        photonAuth.SetDisplayName (DisplayName);
-                    }
-#endif
-                    resultCallback?.Invoke (result);
-                },
-                (error) => {
-                    errorCallback?.Invoke (error);
-                });
-        }
-
-        public void GetDisplayName (Action<string> resultCallback = null, Action<PlayFabError> errorCallback = null) {
-            PlayFabClientAPI.GetPlayerProfile (new GetPlayerProfileRequest () {
-                    PlayFabId = Id
-                },
-                (result) => {
-                    DisplayName = result.PlayerProfile.DisplayName;
-                    resultCallback?.Invoke (DisplayName);
-                },
-                (error) => {
-                    errorCallback?.Invoke (error);
-                });
-        }
-
-        public void AddOrUpdateContactEmail (Action<AddOrUpdateContactEmailResult> resultCallback = null, Action<PlayFabError> errorCallback = null) {
-            PlayFabClientAPI.AddOrUpdateContactEmail (new AddOrUpdateContactEmailRequest () {
-                    EmailAddress = email
-                },
-                (result) => {
-                    resultCallback?.Invoke (result);
-                },
-                (error) => {
-                    errorCallback?.Invoke (error);
-                });
-        }
-
-        public void RemoveContactEmail (Action<RemoveContactEmailResult> resultCallback = null, Action<PlayFabError> errorCallback = null) {
-            PlayFabClientAPI.RemoveContactEmail (new RemoveContactEmailRequest (),
-                (result) => {
-                    resultCallback?.Invoke (result);
-                },
-                (error) => {
-                    errorCallback?.Invoke (error);
-                });
         }
 
         /// <summary>
@@ -281,18 +247,16 @@ namespace d4160.Auth.PlayFab {
 
             //a good catch: If username & password is empty, then do not continue, and Call back to Authentication UI Display 
             if (!RememberMe && string.IsNullOrEmpty (email) && string.IsNullOrEmpty (password)) {
-                OnDisplayAuthentication?.Invoke ();
+                OnCancelAuthentication?.Invoke ();
                 return;
             }
-
-            //Debug.Log("Auth with Playfab");
 
             //We have not opted for remember me in a previous session, so now we have to login the user with email & password.
             PlayFabClientAPI.LoginWithEmailAddress (new LoginWithEmailAddressRequest () {
                 TitleId = PlayFabSettings.TitleId,
-                    Email = email,
-                    Password = password,
-                    InfoRequestParameters = infoRequestParams
+                Email = email,
+                Password = password,
+                InfoRequestParameters = infoRequestParams
             }, (result) => {
                 //store identity and session
                 Id = result.PlayFabId;
@@ -302,7 +266,7 @@ namespace d4160.Auth.PlayFab {
                 //If RememberMe is checked, then generate a new Guid for Login with CustomId.
                 if (RememberMe) {
                     RememberMeId = Guid.NewGuid ().ToString ();
-                    AuthType = PlayFabAuthTypes.EmailAndPassword;
+                    LoginType = PlayFabLoginType.EmailAndPassword;
                     //Fire and forget, but link a custom ID to this PlayFab Account.
                     PlayFabClientAPI.LinkCustomID (new LinkCustomIDRequest () {
                         CustomId = RememberMeId,
@@ -323,7 +287,6 @@ namespace d4160.Auth.PlayFab {
             }, (error) => {
                 //Report error back to subscriber
                 _completer.Reject (new Exception (error.GenerateErrorReport()));
-                // Debug.Log("Hi Error");
                 OnPlayFabError?.Invoke (error);
             });
         }
@@ -365,8 +328,8 @@ namespace d4160.Auth.PlayFab {
             }
 
             //a good catch: If username & password is empty, then do not continue, and Call back to Authentication UI Display 
-            if (!RememberMe && string.IsNullOrEmpty (email) && string.IsNullOrEmpty (password)) {
-                OnDisplayAuthentication?.Invoke ();
+            if (!RememberMe && string.IsNullOrEmpty (username) && string.IsNullOrEmpty (password)) {
+                OnCancelAuthentication?.Invoke ();
                 return;
             }
 
@@ -385,7 +348,7 @@ namespace d4160.Auth.PlayFab {
                 //If RememberMe is checked, then generate a new Guid for Login with CustomId.
                 if (RememberMe) {
                     RememberMeId = Guid.NewGuid ().ToString ();
-                    AuthType = PlayFabAuthTypes.UsernameAndPassword;
+                    LoginType = PlayFabLoginType.UsernameAndPassword;
                     //Fire and forget, but link a custom ID to this PlayFab Account.
                     PlayFabClientAPI.LinkCustomID (new LinkCustomIDRequest () {
                         CustomId = RememberMeId,
@@ -456,7 +419,7 @@ namespace d4160.Auth.PlayFab {
                     }
 
                     //Override the auth type to ensure next login is using this auth type.
-                    AuthType = PlayFabAuthTypes.EmailAndPassword;
+                    LoginType = PlayFabLoginType.EmailAndPassword;
 
                     //Report login result back to subscriber.
                     _completer.Resolve ();
@@ -481,9 +444,8 @@ namespace d4160.Auth.PlayFab {
         /// Note: We are not using the RegisterPlayFab API
         /// </summary>
         private void RegisterPlayFabAccount () {
-            var username = string.IsNullOrEmpty (this.username) ? null : this.username;
             var registerRequest = new RegisterPlayFabUserRequest () {
-                Username = username,
+                Username = string.IsNullOrEmpty (this.username) ? null : this.username,
                 Email = email, // Required
                 Password = password, // Required
                 DisplayName = string.IsNullOrEmpty (DisplayName) ? null : DisplayName,
@@ -575,49 +537,39 @@ namespace d4160.Auth.PlayFab {
 
         }
 
-        private void SilentlyAuthenticate (System.Action<LoginResult> callback = null) {
+        private void SilentlyAuthenticate(Action<LoginResult> onResult = null, Action<PlayFabError> onError = null) {
 #if UNITY_ANDROID && !UNITY_EDITOR
 
-            //Get the device id from native android
+            // Get the device id from native android
             AndroidJavaClass up = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
             AndroidJavaObject currentActivity = up.GetStatic<AndroidJavaObject> ("currentActivity");
             AndroidJavaObject contentResolver = currentActivity.Call<AndroidJavaObject> ("getContentResolver");
             AndroidJavaClass secure = new AndroidJavaClass ("android.provider.Settings$Secure");
             string deviceId = secure.CallStatic<string> ("getString", contentResolver, "android_id");
 
-            //Login with the android device ID
+            // Login with the android device ID
             PlayFabClientAPI.LoginWithAndroidDeviceID (new LoginWithAndroidDeviceIDRequest () {
                 TitleId = PlayFabSettings.TitleId,
-                    AndroidDevice = SystemInfo.deviceModel,
-                    OS = SystemInfo.operatingSystem,
-                    AndroidDeviceId = deviceId,
-                    CreateAccount = true,
-                    InfoRequestParameters = InfoRequestParams
+                AndroidDevice = SystemInfo.deviceModel,
+                OS = SystemInfo.operatingSystem,
+                AndroidDeviceId = deviceId,
+                CreateAccount = true,
+                InfoRequestParameters = InfoRequestParams
             }, (result) => {
 
-                //Store Identity and session
+                // Store Identity and session
                 Id = result.PlayFabId;
                 SessionTicket = result.SessionTicket;
 
-                //check if we want to get this callback directly or send to event subscribers.
-                if (callback == null && OnLoginSuccess != null) {
-                    //report login result back to the subscriber
-                    OnLoginSuccess.Invoke (result);
-                } else if (callback != null) {
-                    //report login result back to the caller
-                    callback.Invoke (result);
-                }
+                OnLoginSuccess?.Invoke(result);
+                onResult?.Invoke(result);
+
             }, (error) => {
 
-                //report errro back to the subscriber
-                if (callback == null && OnPlayFabError != null) {
-                    OnPlayFabError.Invoke (error);
-                } else {
-                    //make sure the loop completes, callback with null
-                    callback.Invoke (null);
-                    //Output what went wrong to the console.
-                    Debug.LogError (error.GenerateErrorReport ());
-                }
+                OnPlayFabError?.Invoke(error);
+                onError?.Invoke(null);
+                //Output what went wrong to the console.
+                Debug.LogError (error.GenerateErrorReport ());
             });
 
 #elif UNITY_IPHONE || UNITY_IOS && !UNITY_EDITOR
@@ -633,70 +585,39 @@ namespace d4160.Auth.PlayFab {
                 Id = result.PlayFabId;
                 SessionTicket = result.SessionTicket;
 
-                //check if we want to get this callback directly or send to event subscribers.
-                if (callback == null && OnLoginSuccess != null) {
-                    //report login result back to the subscriber
-                    OnLoginSuccess.Invoke (result);
-                } else if (callback != null) {
-                    //report login result back to the caller
-                    callback.Invoke (result);
-                }
+                OnLoginSuccess?.Invoke (result);
+                callback?.Invoke (result);
             }, (error) => {
-                //report errro back to the subscriber
-                if (callback == null && OnPlayFabError != null) {
-                    OnPlayFabError.Invoke (error);
-                } else {
-                    //make sure the loop completes, callback with null
-                    callback.Invoke (null);
-                    //Output what went wrong to the console.
-                    Debug.LogError (error.GenerateErrorReport ());
-                }
+
+                OnPlayFabError?.Invoke (error);
+                callback?.Invoke (null);
+
+                Debug.LogError (error.GenerateErrorReport ());
             });
 #else
             PlayFabClientAPI.LoginWithCustomID (new LoginWithCustomIDRequest () {
                 TitleId = PlayFabSettings.TitleId,
-                    CustomId = SystemInfo.deviceUniqueIdentifier,
-                    CreateAccount = true,
-                    InfoRequestParameters = infoRequestParams
+                CustomId = SystemInfo.deviceUniqueIdentifier,
+                CreateAccount = true,
+                InfoRequestParameters = infoRequestParams
             }, (result) => {
                 //Store Identity and session
                 Id = result.PlayFabId;
                 SessionTicket = result.SessionTicket;
 
-                //check if we want to get this callback directly or send to event subscribers.
-                if (callback == null && OnLoginSuccess != null) {
-                    //report login result back to the subscriber
-                    _completer.Resolve ();
-                    OnLoginSuccess.Invoke (result);
+                OnLoginSuccess?.Invoke (result);
+                onResult?.Invoke (result);
+                _completer.Resolve ();
 
 #if PHOTON_UNITY_NETWORKING
-                    if (authenticateToPhotonAfterSuccess) {
-                        RequestPhotonToken ();
-                    }
-#endif
-                } else {
-                    if (callback != null)
-                        callback.Invoke (result);
-                    else {
-                        _completer.Resolve ();
-
-#if PHOTON_UNITY_NETWORKING
-                        if (authenticateToPhotonAfterSuccess) {
-                            RequestPhotonToken ();
-                        }
-#endif
-                    }
+                if (authenticateToPhotonAfterSuccess) {
+                    RequestPhotonToken ();
                 }
+#endif
             }, (error) => {
-                //report errro back to the subscriber
-                if (callback == null && OnPlayFabError != null) {
-                    OnPlayFabError.Invoke (error);
-                } else {
-                    //make sure the loop completes, callback with null
-                    callback?.Invoke (null);
-                    //Output what went wrong to the console.
-                    Debug.LogError (error.GenerateErrorReport ());
-                }
+                OnPlayFabError?.Invoke (error);
+                onResult?.Invoke (null);
+                Debug.LogError (error.GenerateErrorReport ());
 
                 _completer.Reject (new Exception (error.GenerateErrorReport()));
             });
@@ -749,15 +670,17 @@ namespace d4160.Auth.PlayFab {
                 PhotonApplicationId = PhotonAuthService.AppIdRealtime
             }, (rc) => {
                 photonAuth.AuthType = CustomAuthenticationType.Custom;
-                photonAuth.Token = rc.PhotonCustomAuthenticationToken;
-                photonAuth.CustomServiceId = Id;
-                photonAuth.SetDisplayName (DisplayName);
-                photonAuth.Authenticate ();
+                photonAuth.SessionTicket = rc.PhotonCustomAuthenticationToken;
+                photonAuth.Id = Id;
+                photonAuth.DisplayName = DisplayName;
+                photonAuth.Login ();
 
                 result?.Invoke (rc);
-
                 OnPhotonTokenObtained?.Invoke (rc);
-            }, onError);
+            }, (error) => {
+                onError?.Invoke(error);
+                OnPlayFabError?.Invoke(error);
+            });
         }
 #endif
     }

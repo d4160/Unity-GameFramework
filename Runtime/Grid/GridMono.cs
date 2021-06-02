@@ -143,7 +143,7 @@ namespace d4160.Grid
         {
             if (source)
             {
-                CoroutineHelper.Instance.StartCoroutine(SmoothLerp(source, targetX, targetY, duration));
+                CoroutineStarter.Instance.StartCoroutine(SmoothLerp(source, targetX, targetY, duration));
             }
         }
 
@@ -165,7 +165,7 @@ namespace d4160.Grid
         {
             if (source)
             {
-                CoroutineHelper.Instance.StartCoroutine(SmoothMoveTowards(source, targetX, targetY, speed));
+                CoroutineStarter.Instance.StartCoroutine(SmoothMoveTowards(source, targetX, targetY, speed));
             }
         }
 

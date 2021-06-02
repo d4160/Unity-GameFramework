@@ -1,33 +1,44 @@
 #if PLAYFAB
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using d4160.Authentication;
-using d4160.Coroutines;
+using d4160.Core;
 using NaughtyAttributes;
+using PlayFab;
 using PlayFab.ClientModels;
-using UltEvents;
+using PlayFab.SharedModels;
 using UnityEngine;
-using UnityEngine.Promise;
 
 namespace d4160.Auth.PlayFab {
 
     [CreateAssetMenu (menuName = "d4160/Authentication/PlayFab")]
     public class PlayFabAuthSO : ScriptableObject {
 
-        [SerializeField] private PlayFabAuthTypes _authType;
+        [SerializeField] private AuthType _authType;
+        [ShowIf("_authType", AuthType.Login)]
+        [SerializeField] private PlayFabLoginType _loginType;
+        [ShowIf("_authType", AuthType.Register)]
+        [SerializeField] private PlayFabRegisterType _registerType;
+
+        [ShowIf(EConditionOperator.Or, "IsEmailAndPasswordAuthType", "IsRegisterPlayFabAccountAuthType", "IsAddPlayFabAccountAuthType")]
         [SerializeField] private string _email;
+        [ShowIf(EConditionOperator.Or, "IsUsernameAndPasswordAuthType", "IsRegisterPlayFabAccountAuthType", "IsAddPlayFabAccountAuthType")]
         [SerializeField] private string _username;
+        [ShowIf("IsRegisterPlayFabAccountAuthType")]
+        [SerializeField] private bool _requireBothUsernameAndEmail;
+        [ShowIf(EConditionOperator.Or, "IsEmailUsernameAddPlayFabAccountAuthTypes", "IsRegisterPlayFabAccountAuthType")]
         [SerializeField] private string _password;
+        [ShowIf(EConditionOperator.Or, "IsEmailAndPasswordAuthType", "IsUsernameAndPasswordAuthType", "IsSilentAuthType")]
         [SerializeField] private GetPlayerCombinedInfoRequestParams _infoRequestParams;
 
         [Space]
+        [ShowIf("IsEmailUsernameAddPlayFabAccountAuthTypes")]
         [SerializeField] private bool _rememberMe;
         [Tooltip ("When remember me flag is true")]
+        [ShowIf(EConditionOperator.And, "_rememberMe", "IsEmailUsernameAddPlayFabAccountAuthTypes")]
         [SerializeField] private bool _forceLink;
-        [SerializeField] private bool _requireBothUsernameAndEmail;
-
+    
         [Space]
+        [ShowIf("IsRegisterPlayFabAccountAuthType")]
         [SerializeField] private string _displayName;
 
 #if PHOTON_UNITY_NETWORKING
@@ -35,178 +46,97 @@ namespace d4160.Auth.PlayFab {
         [SerializeField] private bool _authenticateToPhotonAfterSuccess;
 #endif
 
-        public event Action onAuthSuccess;
-        public event Action onAuthFail;
-        public event Action<string> onDisplayNameSaved;
-        public event Action onContactEmailSaved;
-        public event Action onContactEmailRemoved;
+#if UNITY_EDITOR
+        private bool IsEmailUsernameAddPlayFabAccountAuthTypes => IsEmailAndPasswordAuthType || IsUsernameAndPasswordAuthType || IsAddPlayFabAccountAuthType;
+        private bool IsEmailAndPasswordAuthType => _authType == AuthType.Login && _loginType == PlayFabLoginType.EmailAndPassword;
+        private bool IsUsernameAndPasswordAuthType => _authType == AuthType.Login && _loginType == PlayFabLoginType.UsernameAndPassword;
+        private bool IsRegisterPlayFabAccountAuthType => _authType == AuthType.Register && _registerType == PlayFabRegisterType.RegisterPlayFabAccount;
+        private bool IsAddPlayFabAccountAuthType => _authType == AuthType.Register && _registerType == PlayFabRegisterType.AddPlayFabAccount;
+        private bool IsSilentAuthType => _authType == AuthType.Login && _loginType == PlayFabLoginType.Silent;
+#endif
+
+        public event Action OnCancelAuthentication;
+        public event Action<RegisterPlayFabUserResult> OnRegisterSuccess;
+        public event Action<AddUsernamePasswordResult> OnAddAccountSuccess;
+        public event Action<LoginResult> OnLoginSuccess;
+        public event Action<PlayFabResultCommon> OnLinkSuccess;
+        public event Action<PlayFabResultCommon> OnUnlinkSuccess;
+        public event Action OnLogoutSuccess;
+        public event Action<PlayFabError> OnPlayFabError;
+
+#if PHOTON_UNITY_NETWORKING
+        public event Action<GetPhotonAuthenticationTokenResult> OnPhotonTokenObtained;
+#endif
 
         private readonly PlayFabAuthService _authService = PlayFabAuthService.Instance;
 
-        public PlayFabAuthTypes PlayFabAuthTypes { get => _authType; set => _authType = value; }
+        public PlayFabLoginType LoginType { get => _loginType; set => _loginType = value; }
         public string DisplayName { get => _displayName; set => _displayName = value; }
+        public string Email { get => _email; set => _email = value; }
+        public string Password { get => _password; set => _password = value; }
         public GetPlayerCombinedInfoRequestParams InfoRequestParams { get => _infoRequestParams; set => _infoRequestParams = value; }
 #if PHOTON_UNITY_NETWORKING
         public bool AuthenticateToPhotonAfterSuccess { get => _authenticateToPhotonAfterSuccess; set => _authenticateToPhotonAfterSuccess = value; }
 #endif
 
-        [Button]
-        public void Authenticate () {
-            Authenticate (null, null);
-        }
+        public void RegisterEvents() {
+            PlayFabAuthService.OnCancelAuthentication += OnCancelAuthentication.Invoke;
+            PlayFabAuthService.OnLoginSuccess += OnLoginSuccess.Invoke;
+            PlayFabAuthService.OnRegisterSuccess += OnRegisterSuccess.Invoke;
+            PlayFabAuthService.OnAddAccountSuccess += OnAddAccountSuccess.Invoke;
+            PlayFabAuthService.OnLinkSuccess += OnLinkSuccess.Invoke;
+            PlayFabAuthService.OnUnlinkSuccess += OnUnlinkSuccess.Invoke;
+            PlayFabAuthService.OnLogoutSuccess += OnLogoutSuccess.Invoke;
+            PlayFabAuthService.OnPlayFabError += OnPlayFabError.Invoke;
 
-        public void Authenticate (Action onAuthSuccess, Action onAuthFail) {
-            Authenticate (_authType, _email, _username, _password, _infoRequestParams, _rememberMe, _forceLink, _requireBothUsernameAndEmail, _displayName, onAuthSuccess, onAuthFail);
-        }
-
-        public void AuthenticateEmailPassword (string email, string password, GetPlayerCombinedInfoRequestParams infoRequestParams, bool rememberMe = false, bool forceLink = false, Action onAuthSuccess = null, Action onAuthFail = null) {
-            _authType = PlayFabAuthTypes.EmailAndPassword;
-            _email = email;
-            _password = password;
-            _infoRequestParams = infoRequestParams;
-            _rememberMe = rememberMe;
-            _forceLink = forceLink;
-
-            Authenticate (onAuthSuccess, onAuthFail);
-        }
-
-        public void RegisterPlayFabAccount (string email, string username, string password, string displayName, bool requireBothUsernameAndEmail = false, Action onAuthSuccess = null, Action onAuthFail = null) {
-            _authType = PlayFabAuthTypes.RegisterPlayFabAccount;
-            _email = email;
-            _password = password;
-            _username = username;
-            _displayName = displayName;
-            _requireBothUsernameAndEmail = requireBothUsernameAndEmail;
-
-            Authenticate (onAuthSuccess, onAuthFail);
-        }
-
-        public void Authenticate (PlayFabAuthTypes authType, string email, string username, string password, GetPlayerCombinedInfoRequestParams infoRequestParams, bool rememberMe, bool forceLink, bool requireBothUsernameAndEmail, string displayName, Action onAuthSuccess = null, Action onAuthFail = null) {
-            _authService.AuthType = authType;
-            _authService.email = email;
-            _authService.username = username;
-            _authService.password = password;
-            _authService.infoRequestParams = infoRequestParams;
-            _authService.RememberMe = rememberMe;
-            _authService.forceLink = forceLink;
-            _authService.requireBothUsernameAndEmail = requireBothUsernameAndEmail;
-            _authService.SetDisplayName (_displayName);
 #if PHOTON_UNITY_NETWORKING
-            _authService.authenticateToPhotonAfterSuccess = _authenticateToPhotonAfterSuccess;
+            PlayFabAuthService.OnPhotonTokenObtained += OnPhotonTokenObtained.Invoke;
 #endif
-
-            AuthenticateInternal (onAuthSuccess, onAuthFail);
         }
 
-        private void AuthenticateInternal (Action onAuthSuccess = null, Action onAuthFail = null) {
-            Deferred def = GameAuthSdk.Authenticate (_authService);
+        public void UnregisterEvents() {
+            PlayFabAuthService.OnCancelAuthentication -= OnCancelAuthentication.Invoke;
+            PlayFabAuthService.OnLoginSuccess -= OnLoginSuccess.Invoke;
+            PlayFabAuthService.OnRegisterSuccess -= OnRegisterSuccess.Invoke;
+            PlayFabAuthService.OnAddAccountSuccess -= OnAddAccountSuccess.Invoke;
+            PlayFabAuthService.OnLinkSuccess -= OnLinkSuccess.Invoke;
+            PlayFabAuthService.OnUnlinkSuccess -= OnUnlinkSuccess.Invoke;
+            PlayFabAuthService.OnLogoutSuccess -= OnLogoutSuccess.Invoke;
+            PlayFabAuthService.OnPlayFabError -= OnPlayFabError.Invoke;
 
-            if (def.isDone) {
-                if (def.isFulfilled) {
-                    onAuthSuccess?.Invoke ();
-                    onAuthSuccess?.Invoke ();
-                } else {
-                    Debug.LogError (def.error.Message);
-                    onAuthFail?.Invoke ();
-                    onAuthFail?.Invoke ();
-                }
-            } else {
-                IEnumerator Routine (Deferred aDef) {
-                    yield return aDef.Wait ();
-
-                    if (aDef.isFulfilled) {
-                        onAuthSuccess?.Invoke ();
-                        onAuthSuccess?.Invoke ();
-                    } else {
-                        Debug.LogError (aDef.error.Message);
-                        onAuthFail?.Invoke ();
-                        onAuthFail?.Invoke ();
-                    }
-                }
-
-                Routine (def).StartCoroutine ();
-            }
+#if PHOTON_UNITY_NETWORKING
+            PlayFabAuthService.OnPhotonTokenObtained -= OnPhotonTokenObtained.Invoke;
+#endif
         }
 
         [Button]
-        public void Unauthenticate () {
-            GameAuthSdk.Unauthenticate ();
+        public void Login(){
+            _authService.LoginType = _loginType;
+            _authService.email = _email;
+            _authService.username = _username;
+            _authService.password = _password;
+            _authService.infoRequestParams = _infoRequestParams;
+            _authService.RememberMe = _rememberMe;
+            _authService.forceLink = _forceLink;
+
+            AuthManager.Login(_authService);
         }
 
         [Button]
-        public void UpdateDisplayName () {
-            UpdateDisplayName (_displayName, null, null);
-        }
+        public void Register() {
+            _authService.RegisterType = _registerType;
+            _authService.email = _email;
+            _authService.username = _username;
+            _authService.password = _password;
+            _authService.requireBothUsernameAndEmail = _requireBothUsernameAndEmail;
+            _authService.SetDisplayName(_displayName);
 
-        public void UpdateDisplayName (Action onSuccess, Action onFail) {
-            UpdateDisplayName (_displayName, onSuccess, onFail);
-        }
-
-        public void UpdateDisplayName (string displayName, Action onSuccess = null, Action onFail = null) {
-
-            _authService.UpdateDisplayName (displayName,
-                (r) => {
-                    Debug.Log ($"DisplayName updated to: {r.DisplayName}");
-                    onSuccess?.Invoke ();
-                    onDisplayNameSaved?.Invoke (r.DisplayName);
-                }, (e) => {
-                    Debug.LogError (e.GenerateErrorReport ());
-                    onFail?.Invoke ();
-                });
+            AuthManager.Register(_authService);
         }
 
         [Button]
-        public void GetDisplayName () {
-            GetDisplayName (null);
-        }
-
-        public void GetDisplayName (Action<string> onSuccess, Action onFail = null) {
-            _authService.GetDisplayName ((r) => {
-                onSuccess?.Invoke (r);
-                _displayName = r;
-            }, (e) => {
-                Debug.Log (e.ErrorMessage);
-                onFail?.Invoke ();
-            });
-        }
-
-        [Button]
-        public void AddOrUpdateContactEmail () {
-            AddOrUpdateContactEmail (_email, null, null);
-        }
-
-        public void AddOrUpdateContactEmail (Action onSuccess, Action onFail) {
-            AddOrUpdateContactEmail (_email, onSuccess, onFail);
-        }
-
-        public void AddOrUpdateContactEmail (string email, Action onSuccess = null, Action onFail = null) {
-
-            _authService.email = email;
-            _authService.AddOrUpdateContactEmail ((r) => {
-                Debug.Log ($"Contact email saved: {r.ToJson()}");
-                onSuccess?.Invoke ();
-                onContactEmailSaved?.Invoke ();
-            }, (e) => {
-                Debug.LogError (e.GenerateErrorReport ());
-                onFail?.Invoke ();
-            });
-        }
-
-        [Button]
-        public void RemoveContactEmail () {
-            RemoveContactEmail (null, null);
-        }
-
-        public void RemoveContactEmail (Action onSuccess, Action onFail = null) {
-
-            _authService.RemoveContactEmail ((r) => {
-                Debug.Log ($"Contact email removed: {r.ToJson()}");
-                onSuccess?.Invoke ();
-                onContactEmailSaved?.Invoke ();
-            }, (e) => {
-                Debug.LogError (e.GenerateErrorReport ());
-                onFail?.Invoke ();
-            });
+        public void Logout() {
+            AuthManager.Logout();
         }
     }
 }
