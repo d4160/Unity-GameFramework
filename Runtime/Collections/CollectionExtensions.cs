@@ -24,6 +24,11 @@
             return (list != null && idx >= 0 && idx < list.Count) ? true : false;
         }
 
+        public static bool IsValidIndex(this string list, int idx)
+        {
+            return (list != null && idx >= 0 && idx < list.Length) ? true : false;
+        }
+
         public static bool IsLastIndex<T>(this IList<T> list, int idx)
         {
             return (list.Count - 1 == idx) ? true : false;
@@ -62,18 +67,18 @@
 
         public static void Iterate<T>(this T[,,] source, Action<T> callback)
         {
-            for (int z = 0; z < source.GetLength(0); z++)
+            for (int x = 0; x < source.GetLength(0); x++)
                 for (int y = 0; y < source.GetLength(1); y++)
-                    for (int x = 0; x < source.GetLength(2); x++)
-                        callback(source[z, y, x]);
+                    for (int z = 0; z < source.GetLength(2); z++)
+                        callback(source[x, y, z]);
         }
 
         public static void Iterate<T>(this T[,,] source, Action<T, Vector3Int> callback)
         {
-            for (int z = 0; z < source.GetLength(0); z++)
+            for (int x = 0; x < source.GetLength(0); x++)
                 for (int y = 0; y < source.GetLength(1); y++)
-                    for (int x = 0; x < source.GetLength(2); x++)
-                        callback(source[z, y, x], new Vector3Int(x, y, z));
+                    for (int z = 0; z < source.GetLength(2); z++)
+                        callback(source[x, y, z], new Vector3Int(x, y, z));
         }
 
         public static void Iterate<T>(this T[,,] source, Action<T, Vector3Int, int> callback)
@@ -81,11 +86,11 @@
             int index = 0;
             if (source == null) return;
 
-            for (int z = 0; z < source.GetLength(0); z++)
+            for (int x = 0; x < source.GetLength(0); x++)
                 for (int y = 0; y < source.GetLength(1); y++)
-                    for (int x = 0; x < source.GetLength(2); x++)
+                    for (int z = 0; z < source.GetLength(2); z++)
                     {
-                        callback(source[z, y, x], new Vector3Int(x, y, z), index);
+                        callback(source[x, y, z], new Vector3Int(x, y, z), index);
                         index++;
                     }
         }
@@ -97,25 +102,25 @@
 
         public static void Iterate<T>(this T[,] source, Action<T> callback)
         {
-            for (int y = 0; y < source.GetLength(1); y++)
-                for (int x = 0; x < source.GetLength(2); x++)
-                    callback(source[y, x]);
+            for (int x = 0; x < source.GetLength(0); x++)
+                for (int y = 0; y < source.GetLength(1); y++)
+                    callback(source[x, y]);
         }
 
         public static void Iterate<T>(this T[,] source, Action<T, Vector2Int> callback)
         {
-            for (int y = 0; y < source.GetLength(1); y++)
-                for (int x = 0; x < source.GetLength(2); x++)
-                    callback(source[y, x], new Vector2Int(x, y));
+            for (int x = 0; x < source.GetLength(0); x++)
+                for (int y = 0; y < source.GetLength(1); y++)
+                    callback(source[x, y], new Vector2Int(x, y));
         }
 
         public static void Iterate<T>(this T[,] source, Action<T, Vector2Int, int> callback)
         {
             int index = 0;
-            for (int y = 0; y < source.GetLength(1); y++)
-                for (int x = 0; x < source.GetLength(2); x++)
+            for (int x = 0; x < source.GetLength(0); x++)
+                for (int y = 0; y < source.GetLength(1); y++)
                 {
-                    callback(source[y, x], new Vector2Int(x, y), index);
+                    callback(source[x, y], new Vector2Int(x, y), index);
                     index++;
                 }
         }

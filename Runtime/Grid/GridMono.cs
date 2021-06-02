@@ -52,6 +52,8 @@ namespace d4160.Grid
 
             int childCount = parent.childCount;
 
+            _iterator = 0;
+
             if (childCount > 0 || (childCount == 0 && fillHoles))
             {
                 int counter = 0;
@@ -104,6 +106,8 @@ namespace d4160.Grid
                                 }
                             }
                         }
+
+                        _iterator++;
                     }
                 }
 

@@ -21,6 +21,7 @@ namespace d4160.Grid {
         protected T[,] _gridArray;
         protected TextMeshPro[,] _debugTextArray = null;
         protected IProvider<T> _provider;
+        protected int _iterator;
 
         public int Width { get => _width; set => _width = value; }
         public int Height { get => _height; set => _height = value; }
@@ -31,7 +32,8 @@ namespace d4160.Grid {
         public Vector2 CellSize { get => _cellSize; set => _cellSize = value; }
         public Vector3 OriginPosition { get => _originPosition; set => _originPosition = value; }
         public T[,] GridArray { get => _gridArray; set => _gridArray = value; }
-        public IProvider<T> Provider { get => _provider; set => _provider = value;}
+        public IProvider<T> Provider { get => _provider; set => _provider = value; }
+        public int Iterator { get => _iterator; }
 
         public Grid (int width, int height, Vector2 cellSize, Vector3 originPosition = default, bool drawDebugText = true, Color? textColor = null, int textFontSize = 5, Transform textParent = null) {
             _width = width;
@@ -145,6 +147,7 @@ namespace d4160.Grid {
         }
 
         public void FillAll(bool forceReplace = false) {
+            _iterator = 0;
             if (_provider != null) {
                 for (var x = 0; x < _gridArray.GetLength (0); x++) {
                     for (var y = 0; y < _gridArray.GetLength (1); y++) {
@@ -157,6 +160,8 @@ namespace d4160.Grid {
                             T instance = _provider.Instantiate();
                             SetGridObject(x, y, instance);
                         }
+
+                        _iterator++;
                     }
                 }
             }
