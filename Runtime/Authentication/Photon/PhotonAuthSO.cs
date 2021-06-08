@@ -45,17 +45,33 @@ namespace d4160.Auth.Photon
             _authService.SessionTicket = _token;
             _authService.DisplayName = _nickname;
 
-            AuthManager.Login(_authService);
+            CheckAndExecute(() => { 
+                AuthManager.Login(_authService);
+            });
         }
 
         [Button]
         public void SetNickname(){
-            _authService.DisplayName = _nickname;
+            CheckAndExecute(() => { 
+                _authService.DisplayName = _nickname;
+            });
         }
 
         [Button]
         public void Logout(){
-            AuthManager.Logout();
+            CheckAndExecute(() => { 
+                AuthManager.Logout();
+            });
+        }
+
+        private void CheckAndExecute(Action toExecute){
+            if (Application.isPlaying)
+            {
+                toExecute.Invoke();
+            }
+            else {
+                Debug.LogWarning("Photon can only be executed in playing mode");
+            }
         }
     }
 }

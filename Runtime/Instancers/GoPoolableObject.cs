@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace d4160.Instancers
 {
-    public class GoPoolObject : MonoBehaviour, IPoolObject<GameObject>
+    public class GoPoolableObject : MonoBehaviour, IPoolableObject<GameObject>
     {
         public IObjectPool<GameObject> Pool { get; set; }
 

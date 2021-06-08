@@ -40,11 +40,11 @@ namespace d4160.Instancers
             newComp.gameObject.SetActive(false);
             if(_parent) newComp.transform.SetParent(_parent);
             
-            if(newComp is IPoolObject<T> poolObj) {
+            if(newComp is IPoolableObject<T> poolObj) {
                 poolObj.Pool = this;
             }
             else {
-                poolObj = newComp.GetComponent<IPoolObject<T>>();
+                poolObj = newComp.GetComponent<IPoolableObject<T>>();
                 if(poolObj != null) {
                     poolObj.Pool = this;
                 }

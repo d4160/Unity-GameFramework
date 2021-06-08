@@ -1,6 +1,8 @@
+using System;
 using d4160.Core;
 using d4160.Singleton;
 using NaughtyAttributes;
+using UltEvents;
 using UnityEngine;
 
 namespace d4160.SceneManagement {
@@ -15,6 +17,11 @@ namespace d4160.SceneManagement {
 #if UNITY_EDITOR
         private string[] SceneCollectionsNames => _sceneManagerAsset?.GetSceneCollectionNames;
 #endif
+
+        public SceneManagerSO SceneManagerAsset => _sceneManagerAsset;
+
+        [Header("EVENTS")]
+        [SerializeField] private UltEvent<int, string> _onCollectionLoaded;
 
         /* LOAD */
         public static void LoadSceneCollectionAsync (string label) {
@@ -80,10 +87,30 @@ namespace d4160.SceneManagement {
             }
         }
 
-        protected virtual void OnEnable () {
+        protected virtual void OnEnable()
+        {
             if (_loadSceneAt == UnityLifetimeMethodType.OnEnable) {
                 LoadSceneCollectionAsync(_sceneCollection);
             }
+
+            if (_sceneManagerAsset)
+            {
+                _sceneManagerAsset.RegisterEvents();
+                _sceneManagerAsset.OnCollectionLoaded += OnCollectionLoadedCallback;
+            }
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (_sceneManagerAsset)
+            {
+                _sceneManagerAsset.UnregisterEvents();
+                _sceneManagerAsset.OnCollectionLoaded -= OnCollectionLoadedCallback;
+            }
+        }
+
+        private void OnCollectionLoadedCallback(int index, string label){
+            _onCollectionLoaded?.Invoke(index, label);
         }
 
         [Button]

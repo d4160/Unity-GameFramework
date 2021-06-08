@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace d4160.Instancers
 {
-    public class ComponentPoolObject<T> : MonoBehaviour, IPoolObject<T> where T : Component
+    public class ComponentPoolableObject<T> : MonoBehaviour, IPoolableObject<T> where T : Component
     {
         public IObjectPool<T> Pool { get; set; }
 

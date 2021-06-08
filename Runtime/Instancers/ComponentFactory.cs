@@ -5,7 +5,7 @@ namespace d4160.Instancers
 {
     public class ComponentFactory<T> : IObjectFactory<T> where T : Component
     {
-        private T _prefab;
+        protected T _prefab;
 
         public T Prefab { get => _prefab; set => _prefab = value; }
 

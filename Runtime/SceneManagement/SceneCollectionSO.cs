@@ -12,6 +12,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using d4160.Core;
+using System;
 
 namespace d4160.SceneManagement {
     [CreateAssetMenu (menuName = "d4160/SceneManagement/Scene Collection")]
@@ -32,7 +33,16 @@ namespace d4160.SceneManagement {
         [InspectInline (canEditRemoteTarget = true)]
         [SerializeField] [Space] private ScriptableObject _additionalData;
 
+        public event Action<int, string> OnCollectionLoaded;
+
+        private SceneManagerSO _sceneManager;
+        private int _managerIndex;
+        private int _loadedCount;
+        private int _loadedCountTarget;
+
         public string Label => _label;
+        public SceneManagerSO SceneManager { get => _sceneManager;  set => _sceneManager = value; }
+        public int ManagerIndex { get => _managerIndex; set => _managerIndex = value; }
 
         private readonly List<AsyncOperation> _sceneOperations = new List<AsyncOperation> ();
         private readonly List<AsyncOperationHandle<SceneInstance>> _addressablesOperation = new List<AsyncOperationHandle<SceneInstance>> ();
@@ -149,14 +159,27 @@ namespace d4160.SceneManagement {
                 ClearOperations ();
             }
 
+            _loadedCountTarget = _sceneCollection.Length;
+            _loadedCount = 0;
             _sceneOperations.Clear ();
-            for (int i = 0; i < _sceneCollection.Length; i++) {
+            for (int i = 0; i < _loadedCountTarget; i++) {
                 if (!activateOnLoad) {
-                    _sceneOperations.Add (_sceneCollection[i]
-                        .LoadSceneAsync (i == 0 ? loadSceneMode : LoadSceneMode.Additive, false));
+                    AsyncOperation opNoLoad = _sceneCollection[i].LoadSceneAsync(i == 0 ? loadSceneMode : LoadSceneMode.Additive, false);
+                    _sceneOperations.Add (opNoLoad);
+                    opNoLoad.completed += OnSceneLoadedDefault;
                 } else {
-                    _sceneOperations.Add (_sceneCollection[i].LoadSceneAsync (i == 0 ? loadSceneMode : LoadSceneMode.Additive));
+                    AsyncOperation opLoad = _sceneCollection[i].LoadSceneAsync(i == 0 ? loadSceneMode : LoadSceneMode.Additive);
+                    _sceneOperations.Add (opLoad);
+                    opLoad.completed += OnSceneLoadedDefault;
                 }
+            }
+        }
+
+        private void OnSceneLoadedDefault(AsyncOperation asyncOp) {
+            _loadedCount++;
+
+            if(_loadedCount >= _loadedCountTarget) {
+                OnCollectionLoaded?.Invoke(_managerIndex, _label);
             }
         }
 
@@ -207,14 +230,28 @@ namespace d4160.SceneManagement {
         }
 
         private void LoadScenesAsyncAddressablesInternal (LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100) {
+            _loadedCountTarget = _sceneCollection.Length;
+            _loadedCount = 0;
             _addressablesOperation.Clear ();
-            for (int i = 0; i < _sceneCollection.Length; i++) {
+            for (int i = 0; i < _loadedCountTarget; i++) {
                 if (!activateOnLoad) {
-                    _addressablesOperation.Add (_sceneCollection[i]
-                        .LoadSceneAsyncAddressables (i == 0 ? loadSceneMode : LoadSceneMode.Additive, false, priority));
+                    AsyncOperationHandle<SceneInstance> opNoLoad = _sceneCollection[i]
+                        .LoadSceneAsyncAddressables(i == 0 ? loadSceneMode : LoadSceneMode.Additive, false, priority);
+                    _addressablesOperation.Add (opNoLoad);
+                    if(opNoLoad.IsValid()) opNoLoad.CompletedTypeless += OnSceneLoadedAddressables;
                 } else {
-                    _addressablesOperation.Add (_sceneCollection[i].LoadSceneAsyncAddressables (i == 0 ? loadSceneMode : LoadSceneMode.Additive, true, priority));
+                    AsyncOperationHandle<SceneInstance> opLoad = _sceneCollection[i].LoadSceneAsyncAddressables(i == 0 ? loadSceneMode : LoadSceneMode.Additive, true, priority);
+                    _addressablesOperation.Add (opLoad);
+                    if(opLoad.IsValid()) opLoad.CompletedTypeless += OnSceneLoadedAddressables;
                 }
+            }
+        }
+
+        private void OnSceneLoadedAddressables(AsyncOperationHandle asyncOp) {
+            _loadedCount++;
+
+            if(_loadedCount >= _loadedCountTarget) {
+                OnCollectionLoaded?.Invoke(_managerIndex, _label);
             }
         }
 

@@ -40,7 +40,7 @@ namespace d4160.Instancers
             newGo.SetActive(false);
             if(_parent) newGo.transform.SetParent(_parent);
 
-            var poolObj = newGo.GetComponent<IPoolObject<GameObject>>();
+            var poolObj = newGo.GetComponent<IPoolableObject<GameObject>>();
             if(poolObj != null) {
                 poolObj.Pool = this;
             }

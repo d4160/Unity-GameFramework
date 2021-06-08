@@ -55,4 +55,12 @@
         Link,
         Unlink
     }
+
+    public enum CommonType : byte {
+        Boolean,
+        Integer,
+        Float,
+        Char,
+        String
+    }
 }

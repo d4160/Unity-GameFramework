@@ -6,6 +6,9 @@ using UnityEngine.Promise;
 using d4160.Coroutines;
 using d4160.Core;
 using Logger = d4160.Logging.Logger;
+#if UNITY_EDITOR
+using Unity.EditorCoroutines.Editor;
+#endif
 
 namespace d4160.Authentication
 {
@@ -82,23 +85,25 @@ namespace d4160.Authentication
             }
             else
             {
+
 #if UNITY_EDITOR
+                EditorCoroutineUtility.StartCoroutineOwnerless(routine);
                 // Force initialization in editor (can happen for editor tests)
-                void PlayCoroutine(IEnumerator coroutine)
-                {
-                    bool hasNext;
-                    do
-                    {
-                        if (coroutine.Current is IEnumerator subRoutine)
-                        {
-                            PlayCoroutine(subRoutine);
-                        }
+                // void PlayCoroutine(IEnumerator coroutine)
+                // {
+                //     bool hasNext;
+                //     do
+                //     {
+                //         if (coroutine.Current is IEnumerator subRoutine)
+                //         {
+                //             PlayCoroutine(subRoutine);
+                //         }
 
-                        hasNext = coroutine.MoveNext();
-                    } while (hasNext);
-                }
+                //         hasNext = coroutine.MoveNext();
+                //     } while (hasNext);
+                // }
 
-                PlayCoroutine(routine);
+                // PlayCoroutine(routine);
 #endif
             }
         }
@@ -133,14 +138,15 @@ namespace d4160.Authentication
                 return;
             }
 
-            LoginRoutine(authService).StartCoroutine();
+            StartCoroutine(LoginRoutine(authService));
         }
 
         private static IEnumerator LoginRoutine(IAuthService authService) {
-
+            
             using (var loginDeferred = LoginInternal(authService))
             {
                 yield return loginDeferred.Wait();
+
             }
         }
 
@@ -179,7 +185,7 @@ namespace d4160.Authentication
                 return;
             }
 
-            RegisterRoutine(authService).StartCoroutine();
+            StartCoroutine(RegisterRoutine(authService));
         }
 
         private static IEnumerator RegisterRoutine(IAuthService authService) {
@@ -220,12 +226,12 @@ namespace d4160.Authentication
 
         public static void Logout() {
 
-            if(IsSignedUp){
+            if(IsNotAuthenticated){
                 Logger.LogWarning("You are not authenticated.", LogLevel);
                 return;
             }
 
-            LogoutRoutine().StartCoroutine();
+            StartCoroutine(LogoutRoutine());
         }
 
         private static IEnumerator LogoutRoutine() {
@@ -289,7 +295,7 @@ namespace d4160.Authentication
 
             _authenticationStatus = AuthenticationStatus.LoggedIn;
 
-            Logger.LogInfo($"Successfully logged on AuthManager version {CurrentVersion}", LogLevel);
+            Logger.LogInfo($"Successfully logged in AuthManager version {CurrentVersion}", LogLevel);
 
             completer.Resolve();
             OnLoggedOn?.Invoke();
@@ -324,7 +330,7 @@ namespace d4160.Authentication
 
             _authenticationStatus = AuthenticationStatus.SignedUp;
 
-            Logger.LogInfo($"Successfully registered AuthManager version {CurrentVersion}", LogLevel);
+            Logger.LogInfo($"Successfully signed up AuthManager version {CurrentVersion}", LogLevel);
 
             completer.Resolve();
             OnLoggedOn?.Invoke();

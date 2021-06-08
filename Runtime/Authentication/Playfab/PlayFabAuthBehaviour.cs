@@ -22,6 +22,8 @@ namespace d4160.Auth.PlayFab {
 
 #if PHOTON_UNITY_NETWORKING
         [SerializeField] private UltEvent<GetPhotonAuthenticationTokenResult> _onPhotonTokenObtained;
+
+        public string PhotonCustomAuthenticationToken => _data?.PhotonCustomAuthenticationToken;
 #endif
 
         void OnEnable() {
@@ -35,6 +37,9 @@ namespace d4160.Auth.PlayFab {
                 _data.OnUnlinkSuccess += _onUnlinkSuccess.Invoke;
                 _data.OnLogoutSuccess += _onLogoutSuccess.Invoke;
                 _data.OnPlayFabError += _onPlayFabError.Invoke;
+#if PHOTON_UNITY_NETWORKING
+                _data.OnPhotonTokenObtained += _onPhotonTokenObtained.Invoke;
+#endif
             }
         }
 
@@ -49,6 +54,9 @@ namespace d4160.Auth.PlayFab {
                 _data.OnUnlinkSuccess -= _onUnlinkSuccess.Invoke;
                 _data.OnLogoutSuccess -= _onLogoutSuccess.Invoke;
                 _data.OnPlayFabError -= _onPlayFabError.Invoke;
+#if PHOTON_UNITY_NETWORKING
+                _data.OnPhotonTokenObtained -= _onPhotonTokenObtained.Invoke;
+#endif
             }
         }
 
@@ -70,6 +78,13 @@ namespace d4160.Auth.PlayFab {
         public void Logout() {
             if(_data) {
                 _data.Logout();
+            }
+        }
+
+        [Button]
+        public void SetLogLevel() {
+            if(_data) {
+                _data.SetLogLevel();
             }
         }
     }

@@ -40,7 +40,7 @@ namespace d4160.Logging
         }
 
         public static void Log(string message, LogLevelType currentLogLevel, LogLevelType logLevelToCheck) {
-            if((int)logLevelToCheck >= (int)currentLogLevel) {
+            if((int)currentLogLevel >= (int)logLevelToCheck) {
                 switch(logLevelToCheck) {
                     case LogLevelType.None:
                         break;

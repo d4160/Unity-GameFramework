@@ -15,6 +15,8 @@ namespace d4160.Auth.Photon
         public static event Action OnLogoutSuccess;
         public static event Action<Exception> OnAuthError;
 
+        public Player LocalPlayer => PhotonNetwork.LocalPlayer; 
+
         private string _token;
         private string _customServiceId;
         private Completer _completer;
@@ -40,6 +42,8 @@ namespace d4160.Auth.Photon
                 PhotonNetwork.NickName = value;
 
                 PlayerPrefs.SetString(PhotonNickNameKey, value);
+
+                Debug.Log("Nickname is set correctly");
             }
         }
         public override string Id { get => _customServiceId; set => _customServiceId = value; }

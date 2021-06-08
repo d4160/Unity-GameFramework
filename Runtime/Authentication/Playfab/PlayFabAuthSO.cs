@@ -1,4 +1,5 @@
 #if PLAYFAB
+using System.Diagnostics;
 using System;
 using d4160.Authentication;
 using d4160.Core;
@@ -10,8 +11,8 @@ using UnityEngine;
 
 namespace d4160.Auth.PlayFab {
 
-    [CreateAssetMenu (menuName = "d4160/Authentication/PlayFab")]
-    public class PlayFabAuthSO : ScriptableObject {
+        [CreateAssetMenu (menuName = "d4160/Authentication/PlayFab")]
+        public class PlayFabAuthSO : ScriptableObject {
 
         [SerializeField] private AuthType _authType;
         [ShowIf("_authType", AuthType.Login)]
@@ -36,7 +37,7 @@ namespace d4160.Auth.PlayFab {
         [Tooltip ("When remember me flag is true")]
         [ShowIf(EConditionOperator.And, "_rememberMe", "IsEmailUsernameAddPlayFabAccountAuthTypes")]
         [SerializeField] private bool _forceLink;
-    
+
         [Space]
         [ShowIf("IsRegisterPlayFabAccountAuthType")]
         [SerializeField] private string _displayName;
@@ -45,6 +46,9 @@ namespace d4160.Auth.PlayFab {
         [Space]
         [SerializeField] private bool _authenticateToPhotonAfterSuccess;
 #endif
+
+        [Header("DEBUG")]
+        [SerializeField] private LogLevelType _logLevel = LogLevelType.Debug;
 
 #if UNITY_EDITOR
         private bool IsEmailUsernameAddPlayFabAccountAuthTypes => IsEmailAndPasswordAuthType || IsUsernameAndPasswordAuthType || IsAddPlayFabAccountAuthType;
@@ -77,67 +81,92 @@ namespace d4160.Auth.PlayFab {
         public GetPlayerCombinedInfoRequestParams InfoRequestParams { get => _infoRequestParams; set => _infoRequestParams = value; }
 #if PHOTON_UNITY_NETWORKING
         public bool AuthenticateToPhotonAfterSuccess { get => _authenticateToPhotonAfterSuccess; set => _authenticateToPhotonAfterSuccess = value; }
+        public string PhotonCustomAuthenticationToken => _authService.PhotonCustomAuthenticationToken;
+#endif
+
+        private void CallOnCancelAuthentication() => OnCancelAuthentication?.Invoke();
+        private void CallOnLoginSuccess(LoginResult result) => OnLoginSuccess?.Invoke(result);
+        private void CallOnRegisterSuccess(RegisterPlayFabUserResult result) => OnRegisterSuccess?.Invoke(result);
+        private void CallOnAddAccountSuccess(AddUsernamePasswordResult result) => OnAddAccountSuccess?.Invoke(result);
+        private void CallOnLinkSuccess(PlayFabResultCommon result) => OnLinkSuccess?.Invoke(result);
+        private void CallOnUnlinkSuccess(PlayFabResultCommon result) => OnUnlinkSuccess?.Invoke(result);
+        private void CallOnLogoutSuccess() => OnLogoutSuccess?.Invoke();
+        private void CallOnPlayFabError(PlayFabError error) => OnPlayFabError?.Invoke(error);
+
+#if PHOTON_UNITY_NETWORKING
+        private void CallOnPhotonTokenObtained(GetPhotonAuthenticationTokenResult result) => OnPhotonTokenObtained?.Invoke(result);
 #endif
 
         public void RegisterEvents() {
-            PlayFabAuthService.OnCancelAuthentication += OnCancelAuthentication.Invoke;
-            PlayFabAuthService.OnLoginSuccess += OnLoginSuccess.Invoke;
-            PlayFabAuthService.OnRegisterSuccess += OnRegisterSuccess.Invoke;
-            PlayFabAuthService.OnAddAccountSuccess += OnAddAccountSuccess.Invoke;
-            PlayFabAuthService.OnLinkSuccess += OnLinkSuccess.Invoke;
-            PlayFabAuthService.OnUnlinkSuccess += OnUnlinkSuccess.Invoke;
-            PlayFabAuthService.OnLogoutSuccess += OnLogoutSuccess.Invoke;
-            PlayFabAuthService.OnPlayFabError += OnPlayFabError.Invoke;
+            PlayFabAuthService.OnCancelAuthentication += CallOnCancelAuthentication;
+            PlayFabAuthService.OnLoginSuccess += CallOnLoginSuccess;
+            PlayFabAuthService.OnRegisterSuccess += CallOnRegisterSuccess;
+            PlayFabAuthService.OnAddAccountSuccess += CallOnAddAccountSuccess;
+            PlayFabAuthService.OnLinkSuccess += CallOnLinkSuccess;
+            PlayFabAuthService.OnUnlinkSuccess += CallOnUnlinkSuccess;
+            PlayFabAuthService.OnLogoutSuccess += CallOnLogoutSuccess;
+            PlayFabAuthService.OnPlayFabError += CallOnPlayFabError;
 
 #if PHOTON_UNITY_NETWORKING
-            PlayFabAuthService.OnPhotonTokenObtained += OnPhotonTokenObtained.Invoke;
+            PlayFabAuthService.OnPhotonTokenObtained += CallOnPhotonTokenObtained;
 #endif
         }
 
         public void UnregisterEvents() {
-            PlayFabAuthService.OnCancelAuthentication -= OnCancelAuthentication.Invoke;
-            PlayFabAuthService.OnLoginSuccess -= OnLoginSuccess.Invoke;
-            PlayFabAuthService.OnRegisterSuccess -= OnRegisterSuccess.Invoke;
-            PlayFabAuthService.OnAddAccountSuccess -= OnAddAccountSuccess.Invoke;
-            PlayFabAuthService.OnLinkSuccess -= OnLinkSuccess.Invoke;
-            PlayFabAuthService.OnUnlinkSuccess -= OnUnlinkSuccess.Invoke;
-            PlayFabAuthService.OnLogoutSuccess -= OnLogoutSuccess.Invoke;
-            PlayFabAuthService.OnPlayFabError -= OnPlayFabError.Invoke;
+            PlayFabAuthService.OnCancelAuthentication -= CallOnCancelAuthentication;
+            PlayFabAuthService.OnLoginSuccess -= CallOnLoginSuccess;
+            PlayFabAuthService.OnRegisterSuccess -= CallOnRegisterSuccess;
+            PlayFabAuthService.OnAddAccountSuccess -= CallOnAddAccountSuccess;
+            PlayFabAuthService.OnLinkSuccess -= CallOnLinkSuccess;
+            PlayFabAuthService.OnUnlinkSuccess -= CallOnUnlinkSuccess;
+            PlayFabAuthService.OnLogoutSuccess -= CallOnLogoutSuccess;
+            PlayFabAuthService.OnPlayFabError -= CallOnPlayFabError;
 
 #if PHOTON_UNITY_NETWORKING
-            PlayFabAuthService.OnPhotonTokenObtained -= OnPhotonTokenObtained.Invoke;
+            PlayFabAuthService.OnPhotonTokenObtained -= CallOnPhotonTokenObtained;
 #endif
         }
 
         [Button]
         public void Login(){
-            _authService.LoginType = _loginType;
-            _authService.email = _email;
-            _authService.username = _username;
-            _authService.password = _password;
-            _authService.infoRequestParams = _infoRequestParams;
-            _authService.RememberMe = _rememberMe;
-            _authService.forceLink = _forceLink;
+                _authService.LoginType = _loginType;
+                _authService.email = _email;
+                _authService.username = _username;
+                _authService.password = _password;
+                _authService.infoRequestParams = _infoRequestParams;
+                _authService.RememberMe = _rememberMe;
+                _authService.forceLink = _forceLink;
+#if PHOTON_UNITY_NETWORKING
+                _authService.authenticateToPhotonAfterSuccess = _authenticateToPhotonAfterSuccess;
+#endif
 
-            AuthManager.Login(_authService);
+                AuthManager.Login(_authService);
         }
 
         [Button]
         public void Register() {
-            _authService.RegisterType = _registerType;
-            _authService.email = _email;
-            _authService.username = _username;
-            _authService.password = _password;
-            _authService.requireBothUsernameAndEmail = _requireBothUsernameAndEmail;
-            _authService.SetDisplayName(_displayName);
+                _authService.RegisterType = _registerType;
+                _authService.email = _email;
+                _authService.username = _username;
+                _authService.password = _password;
+                _authService.requireBothUsernameAndEmail = _requireBothUsernameAndEmail;
+                _authService.SetDisplayName(_displayName);
+#if PHOTON_UNITY_NETWORKING
+                _authService.authenticateToPhotonAfterSuccess = _authenticateToPhotonAfterSuccess;
+#endif
 
-            AuthManager.Register(_authService);
+                AuthManager.Register(_authService);
         }
 
         [Button]
         public void Logout() {
-            AuthManager.Logout();
+                AuthManager.Logout();
         }
-    }
+        
+        [Button]
+        public void SetLogLevel(){
+                AuthManager.LogLevel = _logLevel;
+        }
+}
 }
 #endif

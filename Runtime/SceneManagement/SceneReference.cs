@@ -73,7 +73,7 @@ namespace d4160.SceneManagement {
             if (_addressablesOperation.IsValid ())
                 Debug.LogError ("Attempting to load Scene that has already been loaded. Handle is exposed through getter OperationHandle");
             else {
-                result = Addressables.LoadSceneAsync (sceneGUID, loadMode, activateOnLoad, priority);
+                result = Addressables.LoadSceneAsync(sceneGUID, loadMode, activateOnLoad, priority);
                 _addressablesOperation = result;
             }
             return result;
