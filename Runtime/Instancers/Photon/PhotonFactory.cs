@@ -1,3 +1,4 @@
+#if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 using UnityEngine;
 
@@ -45,3 +46,4 @@ namespace d4160.Instancers.Photon
         }
     }
 }
+#endif

@@ -16,6 +16,8 @@ namespace d4160.Profile.PlayFab {
         [SerializeField] private UltEvent<RemoveContactEmailResult> _onRemoveContactEmail;
         [SerializeField] private UltEvent<PlayFabError> _onPlayFabError;
 
+        public string DisplayName => _data?.DisplayName;
+
         void OnEnable() {
             if (_data) {
                 _data.RegisterEvents();
@@ -51,6 +53,14 @@ namespace d4160.Profile.PlayFab {
             if (_data)
             {
                 _data.GetPlayerProfile();
+            }
+        }
+
+        [Button]
+        public void UpdateAvatarUrl() {
+            if (_data)
+            {
+                _data.UpdateAvatarUrl();
             }
         }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace d4160.Logging
 {
-    public static class Logger
+    public static class M31Logger
     {
         public static LogLevelType LogLevelGlobal { get; set; } 
 

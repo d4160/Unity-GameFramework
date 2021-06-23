@@ -25,6 +25,8 @@ namespace d4160.Auth.PlayFab {
 
         public string PhotonCustomAuthenticationToken => _data?.PhotonCustomAuthenticationToken;
 #endif
+        public string PlayFabId => _data?.Id;
+        public string LoginResultDisplayName => _data?.LoginResultPayload?.PlayerProfile?.DisplayName;
 
         void OnEnable() {
             if (_data) {

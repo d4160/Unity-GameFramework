@@ -1,18 +1,19 @@
 #if PLAYFAB
+using System;
 using PlayFab;
 using PlayFab.ClientModels;
-using UnityEngine;
-using LoginResult = PlayFab.ClientModels.LoginResult;
-using System;
 using UnityEngine.Promise;
-using Logger = d4160.Logging.Logger;
+using M31Logger = d4160.Logging.M31Logger;
 using d4160.Auth.PlayFab;
 using d4160.Core;
+using UnityEngine;
+#if PHOTON_UNITY_NETWORKING
+using d4160.Auth.Photon;
+#endif
 
 namespace d4160.Profile.PlayFab {
 
-    public sealed class PlayFabProfileService : BaseProfileService 
-    {
+    public sealed class PlayFabProfileService : BaseProfileService {
         public static event Action<GetPlayerProfileResult> OnGetPlayerProfile;
         public static event Action<UpdateUserTitleDisplayNameResult> OnUpdateDisplayName;
         public static event Action<AddOrUpdateContactEmailResult> OnAddOrUpdateContactEmail;
@@ -31,97 +32,116 @@ namespace d4160.Profile.PlayFab {
 #endif
         public string Email { get => _email; set => _email = value; }
         public PlayerProfileModel PlayerProfile { get; private set; }
+        public PlayerProfileViewConstraints ProfileConstraints { get; set; } = null;
         public LogLevelType LogLevel { get; private set; } = LogLevelType.Debug;
 
         private readonly PlayFabAuthService _authService = PlayFabAuthService.Instance;
         public static PlayFabProfileService Instance => _instance ?? (_instance = new PlayFabProfileService ());
         private static PlayFabProfileService _instance;
 
-        private PlayFabProfileService () {
-        }
+        private PlayFabProfileService () { }
 
         public void SetDisplayName (string displayName) {
             DisplayName = displayName;
         }
 
         public void UpdateDisplayName (string displayName, Action<UpdateUserTitleDisplayNameResult> resultCallback = null, Action<PlayFabError> errorCallback = null) {
-            PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest () {
+            PlayFabClientAPI.UpdateUserTitleDisplayName (new UpdateUserTitleDisplayNameRequest () {
                     DisplayName = displayName
                 },
                 (result) => {
 #if PHOTON_UNITY_NETWORKING
-                // TODO
+                    // TODO
                     if (_authenticateToPhotonAfterSuccess) {
-                        // PhotonAuthService photonAuth = PhotonAuthService.Instance;
-                        // photonAuth.SetDisplayName(DisplayName);
+                        PhotonAuthService photonAuth = PhotonAuthService.Instance;
+                        photonAuth.DisplayName = DisplayName;
                     }
 #endif              
+                    M31Logger.LogInfo ($"PLAYFAB PROFILE: DisplayName updated to '{result.DisplayName}'", LogLevel);
                     DisplayName = result.DisplayName;
-                    resultCallback?.Invoke(result);
-                    OnUpdateDisplayName?.Invoke(result);
+                    resultCallback?.Invoke (result);
+                    OnUpdateDisplayName?.Invoke (result);
                 },
                 (error) => {
-                    errorCallback?.Invoke(error);
-                    OnPlayFabError?.Invoke(error);
+                    M31Logger.LogError (error.GenerateErrorReport (), LogLevel);
+                    errorCallback?.Invoke (error);
+                    OnPlayFabError?.Invoke (error);
                 });
         }
 
         public void GetPlayerProfile (Action<GetPlayerProfileResult> resultCallback = null, Action<PlayFabError> errorCallback = null) {
 
-            if (string.IsNullOrEmpty(_authService.Id))
-            {
-                Logger.LogWarning("PLAYFAB PROFILE: You need to login first", LogLevel);
-                errorCallback?.Invoke(new PlayFabError{ Error = PlayFabErrorCode.Unknown });
+            if (string.IsNullOrEmpty (_authService.Id)) {
+                M31Logger.LogWarning ("PLAYFAB PROFILE: You need to login first", LogLevel);
+                errorCallback?.Invoke (new PlayFabError { Error = PlayFabErrorCode.Unknown });
                 return;
             }
 
-            PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest () {
-                    PlayFabId = _authService.Id
+            PlayFabClientAPI.GetPlayerProfile (new GetPlayerProfileRequest () {
+                    PlayFabId = _authService.Id,
+                    ProfileConstraints = ProfileConstraints
                 },
                 (result) => {
                     PlayerProfile = result.PlayerProfile;
                     DisplayName = PlayerProfile.DisplayName;
-                    resultCallback?.Invoke(result);
-                    OnGetPlayerProfile?.Invoke(result);
+                    if (PlayerProfile.ContactEmailAddresses != null && PlayerProfile.ContactEmailAddresses.Count > 0) {
+                        Email = PlayerProfile.ContactEmailAddresses[0].EmailAddress;
+                    }
+                    resultCallback?.Invoke (result);
+                    OnGetPlayerProfile?.Invoke (result);
                 },
                 (error) => {
-                    errorCallback?.Invoke(error);
-                    OnPlayFabError?.Invoke(error);
+                    M31Logger.LogError (error.GenerateErrorReport (), LogLevel);
+                    errorCallback?.Invoke (error);
+                    OnPlayFabError?.Invoke (error);
                 });
         }
 
         public void AddOrUpdateContactEmail (Action<AddOrUpdateContactEmailResult> resultCallback = null, Action<PlayFabError> errorCallback = null) {
-            PlayFabClientAPI.AddOrUpdateContactEmail(new AddOrUpdateContactEmailRequest () {
+            PlayFabClientAPI.AddOrUpdateContactEmail (new AddOrUpdateContactEmailRequest () {
                     EmailAddress = _email
                 },
                 (result) => {
-                    resultCallback?.Invoke(result);
-                    OnAddOrUpdateContactEmail?.Invoke(result);
+                    M31Logger.LogInfo ($"PLAYFAB PROFILE: ContactEmail updated to '{_email}'", LogLevel);
+                    resultCallback?.Invoke (result);
+                    OnAddOrUpdateContactEmail?.Invoke (result);
                 },
                 (error) => {
-                    errorCallback?.Invoke(error);
-                    OnPlayFabError?.Invoke(error);
+                    M31Logger.LogError (error.GenerateErrorReport (), LogLevel);
+                    errorCallback?.Invoke (error);
+                    OnPlayFabError?.Invoke (error);
                 });
         }
 
         public void RemoveContactEmail (Action<RemoveContactEmailResult> resultCallback = null, Action<PlayFabError> errorCallback = null) {
             PlayFabClientAPI.RemoveContactEmail (new RemoveContactEmailRequest (),
                 (result) => {
+                    M31Logger.LogInfo ($"PLAYFAB PROFILE: ContactEmail removed", LogLevel);
                     resultCallback?.Invoke (result);
-                    OnRemoveContactEmail?.Invoke(result);
+                    OnRemoveContactEmail?.Invoke (result);
                 },
                 (error) => {
+                    M31Logger.LogError (error.GenerateErrorReport (), LogLevel);
                     errorCallback?.Invoke (error);
+                    OnPlayFabError?.Invoke (error);
                 });
         }
 
-        public override void GetPlayerProfile(Completer completer)
-        {
-            GetPlayerProfile((result) =>
-            {
-                completer.Resolve();
+        public void UpdateAvatarUrl (string imageUrl) {
+            PlayFabClientAPI.UpdateAvatarUrl (new UpdateAvatarUrlRequest () {
+                ImageUrl = imageUrl
+            }, (result) => {
+                M31Logger.LogInfo ($"PLAYFAB PROFILE: AvatarUrl updated", LogLevel);
             }, (error) => {
-                completer.Reject(new Exception(error.GenerateErrorReport()));
+                M31Logger.LogError (error.GenerateErrorReport (), LogLevel);
+            });
+        }
+
+        public override void GetPlayerProfile (Completer completer) {
+            GetPlayerProfile ((result) => {
+                completer.Resolve ();
+            }, (error) => {
+                completer.Reject (new Exception (error.GenerateErrorReport ()));
             });
         }
     }

@@ -9,7 +9,7 @@ namespace d4160.Auth.Agora
     [CreateAssetMenu(menuName = "d4160/Authentication/Agora")]
     public class AgoraAuthSO : ScriptableObject
     {
-        [SerializeField] private AgoraAuthSettingsSO _agoraSettings;
+        [Expandable, SerializeField] private AgoraAuthSettingsSO _agoraSettings;
         [SerializeField] private string _userAccount;
 
         private readonly AgoraAuthService _authService = AgoraAuthService.Instance;

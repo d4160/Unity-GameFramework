@@ -4,7 +4,7 @@ using d4160.Core;
 using agora_gaming_rtc;
 using d4160.Authentication;
 using UnityEngine;
-using Logger = d4160.Logging.Logger;
+using M31Logger = d4160.Logging.M31Logger;
 
 namespace d4160.Auth.Agora
 {
@@ -53,16 +53,24 @@ namespace d4160.Auth.Agora
         {
             UnloadEngine();
             completer.Resolve();
+
+            M31Logger.LogInfo("AGORA: Successfully RTCEngine unloaded", LogLevel);
         }
 
         private bool CheckErrors(){
+            
+            if(!Application.isPlaying) {
+                M31Logger.LogWarning("AGORA: Cannot use Agora in EditMode.", LogLevel);
+                return true;
+            }
+
             if(!AgoraSettings) {
-                Logger.LogWarning("You need to pass an AgoraAuthSettingsSO asset to AgoraAuthService", LogLevel);
+                M31Logger.LogWarning("You need to pass an AgoraAuthSettingsSO asset to AgoraAuthService", LogLevel);
                 return true;
             }
 
             if(AgoraSettings.AppID.Length < 10) {
-                Logger.LogWarning("You need to specify an AppID in the AgoraAuthSettingsSO", LogLevel);
+                M31Logger.LogWarning("You need to specify an AppID in the AgoraAuthSettingsSO", LogLevel);
                 return true;
             }
 
@@ -92,6 +100,8 @@ namespace d4160.Auth.Agora
             };
 
             _RtcEngine.SetLogFilter(GetAgoraLogLevel(LogLevel));
+
+            M31Logger.LogInfo("AGORA: Successfully RTCEngine loaded", LogLevel);
         }
 
         private void UnloadEngine() {
@@ -105,7 +115,7 @@ namespace d4160.Auth.Agora
         private static LOG_FILTER GetAgoraLogLevel(LogLevelType logLevel) {
             switch(logLevel){
                 case LogLevelType.Debug:
-                    return LOG_FILTER.DEBUG;
+                    return LOG_FILTER.DEBUG | LOG_FILTER.INFO | LOG_FILTER.WARNING | LOG_FILTER.ERROR | LOG_FILTER.CRITICAL;
                 case LogLevelType.Info:
                     return LOG_FILTER.INFO;
                 case LogLevelType.Warning:

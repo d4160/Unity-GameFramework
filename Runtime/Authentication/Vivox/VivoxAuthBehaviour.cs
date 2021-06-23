@@ -16,7 +16,7 @@ namespace d4160.Auth.Vivox
         [SerializeField] private UltEvent _onLogoutSuccess;
         [SerializeField] private UltEvent<Exception> _onAuthError;
 
-        public void RegisterEvents(){
+        void OnEnable(){
             if (_data)
             {
                 _data.RegisterEvents();
@@ -27,7 +27,7 @@ namespace d4160.Auth.Vivox
             }
         }
 
-        public void UnregisterEvents(){
+        void OnDisable(){
             if (_data)
             {
                 _data.UnregisterEvents();
@@ -36,6 +36,10 @@ namespace d4160.Auth.Vivox
                 _data.OnLogoutSuccess -= _onLogoutSuccess.Invoke;
                 _data.OnAuthError -= _onAuthError.Invoke;
             }
+        }
+
+        void OnApplicationQuit(){
+            CleanUp();
         }
 
         [Button]
@@ -50,6 +54,18 @@ namespace d4160.Auth.Vivox
             if(_data) {
                 _data.Logout();
             }
+        }
+
+        [Button]
+        public void CleanUp(){
+            if(_data) {
+                _data.CleanUp();
+            }
+        }
+
+        public void SetUniqueIdAndDisplayName(string uniqueId, string displayName) {
+            if (_data)
+                _data.SetUniqueIdAndDisplayName(uniqueId, displayName);
         }
     }
 }

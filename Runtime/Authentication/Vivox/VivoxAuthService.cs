@@ -6,7 +6,7 @@ using d4160.Core;
 using UnityEngine;
 using UnityEngine.Promise;
 using VivoxUnity;
-using Logger = d4160.Logging.Logger;
+using M31Logger = d4160.Logging.M31Logger;
 
 namespace d4160.Auth.Vivox
 {
@@ -54,39 +54,58 @@ namespace d4160.Auth.Vivox
         public override string Id { get => _accountId.ToString(); set => _id = value; }
         public override string SessionTicket => _loginSession.LoginSessionId.ToString();
 
-        public static Client Client => _client ?? (_client = new Client());
+        public static Client Client {
+            get {
+                if (_client == null)
+                {
+                    if (!Application.isPlaying) {
+                        M31Logger.LogWarning("VIVOX: Client can only be set in playing mode", Instance.LogLevel);
+                        return _client;
+                    }
+                    _client = new Client();
+
+                    _client.Uninitialize();
+                    _client.Initialize();
+                }
+
+                return _client;
+            }
+        }
         public static VivoxAuthService Instance => _instance ?? (_instance = new VivoxAuthService());
 
         private static VivoxAuthService _instance;
         private static Client _client;
         
-        public VivoxAuthService()
+        private VivoxAuthService()
         {
             _instance = this;
-            _client = new Client();
-
-            _client.Uninitialize();
-            _client.Initialize();
         }
 
         public override void Login(Completer completer)
-        {       
+        {
+            if (!Application.isPlaying) {
+                M31Logger.LogWarning("VIVOX: Only can use this function in playing mode", LogLevel);
+                return;
+            }
+
             if (!AuthSettings)
             {
-                Logger.LogWarning("Vivox Auth Settings is null, set the property before authenticate.", LogLevel);
+                M31Logger.LogWarning("VIVOX: Auth Settings is null, set the property before authenticate.", LogLevel);
                 return;
             }
 
             _completer = completer;
 
-            string uniqueId = string.IsNullOrEmpty(_id) ? Guid.NewGuid().ToString() : Id;
+            string uniqueId = string.IsNullOrEmpty(_id) ? Guid.NewGuid().ToString() : _id;
             string displayName = string.IsNullOrEmpty(DisplayName) ? "Maranatha 2031" : DisplayName;
+
+            // Logger.LogInfo($"VIVOX: AccountId: TokenIssuer: {AuthSettings.TokenIssuer}, UniqueId: {uniqueId}, Domain: {AuthSettings.Domain}, DisplayName: {displayName}");
 
             //for proto purposes only, need to get a real token from server eventually
             _accountId = new AccountId(AuthSettings.TokenIssuer, uniqueId, AuthSettings.Domain, displayName);
             _loginSession = Client.GetLoginSession(_accountId);
             _loginSession.PropertyChanged += OnLoginSessionPropertyChangedCallback;
-            _loginSession.PropertyChanged += OnLoginSessionPropertyChanged.Invoke;
+            _loginSession.PropertyChanged += CallOnLoginSessionPropertyChanged;
 
             _loginSession.BeginLogin(AuthSettings.ServerUri, _loginSession.GetLoginToken(AuthSettings.TokenKey, AuthSettings.TokenExpiration),
                 SubscriptionMode.Accept, null, null, null, ar =>
@@ -102,7 +121,7 @@ namespace d4160.Auth.Vivox
                         OnAuthError?.Invoke(e);
                         // Unbind if we failed to login.
                         _loginSession.PropertyChanged -= OnLoginSessionPropertyChangedCallback;
-                        _loginSession.PropertyChanged -= OnLoginSessionPropertyChanged.Invoke;
+                        _loginSession.PropertyChanged -= CallOnLoginSessionPropertyChanged;
                         return;
                     }
                 });
@@ -110,15 +129,24 @@ namespace d4160.Auth.Vivox
 
         public override void Logout(Completer completer)
         {
+            if (!Application.isPlaying) {
+                M31Logger.LogWarning("VIVOX: Only can use this function in playing mode", Instance.LogLevel);
+                return;
+            }
+
             if (_loginSession != null && LoginState != LoginState.LoggedOut && LoginState != LoginState.LoggingOut)
             {
                 OnLogoutSuccess?.Invoke();
                 _loginSession.PropertyChanged -= OnLoginSessionPropertyChangedCallback;
-                _loginSession.PropertyChanged -= OnLoginSessionPropertyChanged.Invoke;
+                _loginSession.PropertyChanged -= CallOnLoginSessionPropertyChanged;
                 _loginSession.Logout();
 
                 VivoxLog("Logged out");
             }
+        }
+
+        private void CallOnLoginSessionPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+            OnLoginSessionPropertyChanged?.Invoke(sender, propertyChangedEventArgs);
         }
 
         private void OnLoginSessionPropertyChangedCallback(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -153,7 +181,7 @@ namespace d4160.Auth.Vivox
                 {
                     VivoxLog("Logged out");
                     _loginSession.PropertyChanged -= OnLoginSessionPropertyChangedCallback;
-                    _loginSession.PropertyChanged -= OnLoginSessionPropertyChanged.Invoke;
+                    _loginSession.PropertyChanged -= CallOnLoginSessionPropertyChanged;
                     break;
                 }
                 default:
@@ -174,6 +202,18 @@ namespace d4160.Auth.Vivox
         public override void Register(Completer completer)
         {
             completer.Reject(new Exception("Vivox cannot support register of new users"));
+        }
+
+        public void CleanUp()
+        {
+            // Needed to add this to prevent some unsuccessful uninit, we can revisit to do better -carlo
+            Client.Cleanup();
+            if (_client != null)
+            {
+                VivoxLog("Uninitializing client.");
+                _client.Uninitialize();
+                _client = null;
+            }
         }
     }
 }

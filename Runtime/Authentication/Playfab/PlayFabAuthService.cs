@@ -3,9 +3,9 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
 using LoginResult = PlayFab.ClientModels.LoginResult;
-using PlayFab.SharedModels;
 using System;
 using d4160.Authentication;
+using PlayFab.SharedModels;
 
 #if PHOTON_UNITY_NETWORKING
 using d4160.Auth.Photon;
@@ -48,8 +48,7 @@ namespace d4160.Auth.PlayFab {
         Google
     }
 
-    public class PlayFabAuthService : BaseAuthService 
-    {
+    public class PlayFabAuthService : BaseAuthService {
         public static event Action OnCancelAuthentication;
         public static event Action<RegisterPlayFabUserResult> OnRegisterSuccess;
         public static event Action<AddUsernamePasswordResult> OnAddAccountSuccess;
@@ -83,6 +82,7 @@ namespace d4160.Auth.PlayFab {
 #if PHOTON_UNITY_NETWORKING
         public string PhotonCustomAuthenticationToken { get; private set; }
 #endif
+        public GetPlayerCombinedInfoResultPayload LoginResultPayload { get; private set; }
 
         private const string LOGIN_REMEMBER_KEY = "PlayFabLoginRemember";
         private const string PLAYFAB_REMEMBERME_IDKEY = "PlayFabIdPassGuid";
@@ -182,17 +182,16 @@ namespace d4160.Auth.PlayFab {
             }
         }
 
-        public override void Register(Completer completer)
-        {
+        public override void Register (Completer completer) {
             _completer = completer;
-            switch(RegisterType) {
+            switch (RegisterType) {
                 case PlayFabRegisterType.None:
                     break;
                 case PlayFabRegisterType.RegisterPlayFabAccount:
-                    RegisterPlayFabAccount();
+                    RegisterPlayFabAccount ();
                     break;
                 case PlayFabRegisterType.AddPlayFabAccount:
-                    AddPlayFabAccount();
+                    AddPlayFabAccount ();
                     break;
             }
         }
@@ -204,8 +203,8 @@ namespace d4160.Auth.PlayFab {
 
             PlayFabClientAPI.ForgetAllCredentials ();
 
-            completer.Resolve();
-            OnLogoutSuccess?.Invoke();
+            completer.Resolve ();
+            OnLogoutSuccess?.Invoke ();
         }
 
         public void SetDisplayName (string displayName) {
@@ -231,6 +230,8 @@ namespace d4160.Auth.PlayFab {
                     Id = result.PlayFabId;
                     SessionTicket = result.SessionTicket;
 
+                    LoginResultPayload = result.InfoResultPayload;
+                    
                     //report login result back to subscriber
                     _completer.Resolve ();
                     OnLoginSuccess?.Invoke (result);
@@ -242,7 +243,7 @@ namespace d4160.Auth.PlayFab {
 #endif
                 }, (error) => {
                     //report error back to subscriber
-                    _completer.Reject (new Exception (error.GenerateErrorReport()));
+                    _completer.Reject (new Exception (error.GenerateErrorReport ()));
                     // Debug.Log("Hi Error RememberMe");
                     OnPlayFabError?.Invoke (error);
                 });
@@ -258,9 +259,9 @@ namespace d4160.Auth.PlayFab {
             //We have not opted for remember me in a previous session, so now we have to login the user with email & password.
             PlayFabClientAPI.LoginWithEmailAddress (new LoginWithEmailAddressRequest () {
                 TitleId = PlayFabSettings.TitleId,
-                Email = email,
-                Password = password,
-                InfoRequestParameters = infoRequestParams
+                    Email = email,
+                    Password = password,
+                    InfoRequestParameters = infoRequestParams
             }, (result) => {
                 //store identity and session
                 Id = result.PlayFabId;
@@ -278,6 +279,8 @@ namespace d4160.Auth.PlayFab {
                     }, null, null);
                 }
 
+                LoginResultPayload = result.InfoResultPayload;
+
                 //report login result back to subscriber
                 _completer.Resolve ();
                 OnLoginSuccess?.Invoke (result);
@@ -290,7 +293,7 @@ namespace d4160.Auth.PlayFab {
 
             }, (error) => {
                 //Report error back to subscriber
-                _completer.Reject (new Exception (error.GenerateErrorReport()));
+                _completer.Reject (new Exception (error.GenerateErrorReport ()));
                 OnPlayFabError?.Invoke (error);
             });
         }
@@ -312,6 +315,7 @@ namespace d4160.Auth.PlayFab {
                     //Store identity and session
                     Id = result.PlayFabId;
                     SessionTicket = result.SessionTicket;
+                    LoginResultPayload = result.InfoResultPayload;
 
                     //report login result back to subscriber
                     _completer.Resolve ();
@@ -325,7 +329,7 @@ namespace d4160.Auth.PlayFab {
 
                 }, (error) => {
                     //report error back to subscriber
-                    _completer.Reject (new Exception (error.GenerateErrorReport()));
+                    _completer.Reject (new Exception (error.GenerateErrorReport ()));
                     OnPlayFabError?.Invoke (error);
                 });
                 return;
@@ -347,6 +351,7 @@ namespace d4160.Auth.PlayFab {
                 //store identity and session
                 Id = result.PlayFabId;
                 SessionTicket = result.SessionTicket;
+                LoginResultPayload = result.InfoResultPayload;
 
                 //Note: At this point, they already have an account with PlayFab using a Username (email) & Password
                 //If RememberMe is checked, then generate a new Guid for Login with CustomId.
@@ -372,7 +377,7 @@ namespace d4160.Auth.PlayFab {
 
             }, (error) => {
                 //Report error back to subscriber
-                _completer.Reject (new Exception (error.GenerateErrorReport()));
+                _completer.Reject (new Exception (error.GenerateErrorReport ()));
                 OnPlayFabError?.Invoke (error);
             });
         }
@@ -436,7 +441,7 @@ namespace d4160.Auth.PlayFab {
 #endif
                 }, (error) => {
                     //Report error result back to subscriber
-                    _completer.Reject (new Exception (error.GenerateErrorReport()));
+                    _completer.Reject (new Exception (error.GenerateErrorReport ()));
                     OnPlayFabError?.Invoke (error);
                 });
 
@@ -472,7 +477,7 @@ namespace d4160.Auth.PlayFab {
 #endif
             }, (error) => {
                 //Report error result back to subscriber
-                _completer.Reject (new Exception (error.GenerateErrorReport()));
+                _completer.Reject (new Exception (error.GenerateErrorReport ()));
                 OnPlayFabError?.Invoke (error);
             });
         }
@@ -484,11 +489,12 @@ namespace d4160.Auth.PlayFab {
                     TitleId = PlayFabSettings.TitleId,
                         AccessToken = AuthTicket,
                         CreateAccount = true,
-                        InfoRequestParameters = InfoRequestParams
+                        InfoRequestParameters = infoRequestParams
                 }, (result) => {
                     //Store Identity and session
                     Id = result.PlayFabId;
                     SessionTicket = result.SessionTicket;
+                    LoginResultPayload = result.InfoResultPayload;
 
                     //check if we want to get this callback directly or send to event subscribers.
                     if (OnLoginSuccess != null) {
@@ -515,12 +521,13 @@ namespace d4160.Auth.PlayFab {
             PlayFabClientAPI.LoginWithGoogleAccount (new LoginWithGoogleAccountRequest () {
                 TitleId = PlayFabSettings.TitleId,
                     ServerAuthCode = AuthTicket,
-                    InfoRequestParameters = InfoRequestParams,
+                    InfoRequestParameters = infoRequestParams,
                     CreateAccount = true
             }, (result) => {
                 //Store Identity and session
                 Id = result.PlayFabId;
                 SessionTicket = result.SessionTicket;
+                LoginResultPayload = result.InfoResultPayload;
 
                 //check if we want to get this callback directly or send to event subscribers.
                 if (OnLoginSuccess != null) {
@@ -541,7 +548,7 @@ namespace d4160.Auth.PlayFab {
 
         }
 
-        private void SilentlyAuthenticate(Action<LoginResult> onResult = null, Action<PlayFabError> onError = null) {
+        private void SilentlyAuthenticate (Action<LoginResult> onResult = null, Action<PlayFabError> onError = null) {
 #if UNITY_ANDROID && !UNITY_EDITOR
 
             // Get the device id from native android
@@ -554,24 +561,25 @@ namespace d4160.Auth.PlayFab {
             // Login with the android device ID
             PlayFabClientAPI.LoginWithAndroidDeviceID (new LoginWithAndroidDeviceIDRequest () {
                 TitleId = PlayFabSettings.TitleId,
-                AndroidDevice = SystemInfo.deviceModel,
-                OS = SystemInfo.operatingSystem,
-                AndroidDeviceId = deviceId,
-                CreateAccount = true,
-                InfoRequestParameters = InfoRequestParams
+                    AndroidDevice = SystemInfo.deviceModel,
+                    OS = SystemInfo.operatingSystem,
+                    AndroidDeviceId = deviceId,
+                    CreateAccount = true,
+                    InfoRequestParameters = infoRequestParams
             }, (result) => {
 
                 // Store Identity and session
                 Id = result.PlayFabId;
                 SessionTicket = result.SessionTicket;
+                LoginResultPayload = result.InfoResultPayload;
 
-                OnLoginSuccess?.Invoke(result);
-                onResult?.Invoke(result);
+                OnLoginSuccess?.Invoke (result);
+                onResult?.Invoke (result);
 
             }, (error) => {
 
-                OnPlayFabError?.Invoke(error);
-                onError?.Invoke(null);
+                OnPlayFabError?.Invoke (error);
+                onError?.Invoke (null);
                 //Output what went wrong to the console.
                 Debug.LogError (error.GenerateErrorReport ());
             });
@@ -583,11 +591,12 @@ namespace d4160.Auth.PlayFab {
                     OS = SystemInfo.operatingSystem,
                     DeviceId = SystemInfo.deviceUniqueIdentifier,
                     CreateAccount = true,
-                    InfoRequestParameters = InfoRequestParams
+                    InfoRequestParameters = infoRequestParams
             }, (result) => {
                 //Store Identity and session
                 Id = result.PlayFabId;
                 SessionTicket = result.SessionTicket;
+                LoginResultPayload = result.InfoResultPayload;
 
                 OnLoginSuccess?.Invoke (result);
                 callback?.Invoke (result);
@@ -601,13 +610,14 @@ namespace d4160.Auth.PlayFab {
 #else
             PlayFabClientAPI.LoginWithCustomID (new LoginWithCustomIDRequest () {
                 TitleId = PlayFabSettings.TitleId,
-                CustomId = SystemInfo.deviceUniqueIdentifier,
-                CreateAccount = true,
-                InfoRequestParameters = infoRequestParams
+                    CustomId = SystemInfo.deviceUniqueIdentifier,
+                    CreateAccount = true,
+                    InfoRequestParameters = infoRequestParams
             }, (result) => {
                 //Store Identity and session
                 Id = result.PlayFabId;
                 SessionTicket = result.SessionTicket;
+                LoginResultPayload = result.InfoResultPayload;
 
                 OnLoginSuccess?.Invoke (result);
                 onResult?.Invoke (result);
@@ -623,7 +633,7 @@ namespace d4160.Auth.PlayFab {
                 onResult?.Invoke (null);
                 Debug.LogError (error.GenerateErrorReport ());
 
-                _completer.Reject (new Exception (error.GenerateErrorReport()));
+                _completer.Reject (new Exception (error.GenerateErrorReport ()));
             });
 #endif
         }
@@ -684,8 +694,8 @@ namespace d4160.Auth.PlayFab {
                 OnPhotonTokenObtained?.Invoke (rc);
             }, (error) => {
 
-                onError?.Invoke(error);
-                OnPlayFabError?.Invoke(error);
+                onError?.Invoke (error);
+                OnPlayFabError?.Invoke (error);
             });
         }
 #endif

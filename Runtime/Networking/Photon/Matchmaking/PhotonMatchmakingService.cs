@@ -6,13 +6,11 @@ using d4160.Core;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using Logger = d4160.Logging.Logger;
+using M31Logger = d4160.Logging.M31Logger;
 
-namespace d4160.Networking.Photon
-{
-    public class PhotonMatchmakingService : IMatchmakingCallbacks
-    {
-        public static PhotonMatchmakingService Instance => _instance ?? (_instance = new PhotonMatchmakingService());
+namespace d4160.Networking.Photon {
+    public class PhotonMatchmakingService : IMatchmakingCallbacks {
+        public static PhotonMatchmakingService Instance => _instance ?? (_instance = new PhotonMatchmakingService ());
         private static PhotonMatchmakingService _instance;
 
         private JoinRoomOptions _joinRoomOption = JoinRoomOptions.JoinRandom;
@@ -28,7 +26,7 @@ namespace d4160.Networking.Photon
         public string[] ExpectedUsers { get; set; }
         public byte ExpectedMaxPlayers { get; set; } = 0;
         public MatchmakingMode MatchmakingMode { get; set; } = MatchmakingMode.FillRoom;
-        public string SqlLobbyFilter { get; set; } 
+        public string SqlLobbyFilter { get; set; }
 
         public int CountOfPlayersInRooms => PhotonNetwork.CountOfPlayersInRooms; // In rooms
         public int CountOfPlayersOnMaster => PhotonNetwork.CountOfPlayersOnMaster; // Wait for room
@@ -43,98 +41,116 @@ namespace d4160.Networking.Photon
         public static event Action<short, string> OnJoinRandomFailedEvent;
         public static event Action OnLeftRoomEvent;
 
-        private PhotonMatchmakingService()
-        {
+        private PhotonMatchmakingService () {
             _instance = this;
         }
 
-        public void RegisterEvents()
-        {
-            PhotonNetwork.AddCallbackTarget(this);
+        public void RegisterEvents () {
+            PhotonNetwork.AddCallbackTarget (this);
         }
 
-        public void UnregisterEvents()
-        {
-            PhotonNetwork.RemoveCallbackTarget(this);
+        public void UnregisterEvents () {
+            PhotonNetwork.RemoveCallbackTarget (this);
         }
 
-        public bool JoinRoom()
-        {
-            switch (_joinRoomOption)
-            {
-                case JoinRoomOptions.JoinRandom:
-                    return PhotonNetwork.JoinRandomRoom(RoomOptions.HasValue ? RoomOptions.Value.MakePhotonHashtable() : null, ExpectedMaxPlayers, MatchmakingMode, TypedLobby, SqlLobbyFilter, ExpectedUsers);
-                case JoinRoomOptions.Create:
-                    return PhotonNetwork.CreateRoom(_roomName, RoomOptions.HasValue ? RoomOptions.Value.GetRoomOptions() : null, TypedLobby, ExpectedUsers);
-                case JoinRoomOptions.JoinOrCreate:
-                    return PhotonNetwork.JoinOrCreateRoom(_roomName, RoomOptions.HasValue ? RoomOptions.Value.GetRoomOptions() : null, TypedLobby, ExpectedUsers);
-                case JoinRoomOptions.Join:
-                default:
-                    return PhotonNetwork.JoinRoom(_roomName, ExpectedUsers);
+        public bool JoinRoom () {
+            return CheckAndExecute (() => {
+                switch (_joinRoomOption) {
+                    case JoinRoomOptions.JoinRandom:
+                        return PhotonNetwork.JoinRandomRoom (RoomOptions.HasValue ? RoomOptions.Value.MakePhotonHashtable () : null, ExpectedMaxPlayers, MatchmakingMode, TypedLobby, SqlLobbyFilter, ExpectedUsers);
+                    case JoinRoomOptions.Create:
+                        return PhotonNetwork.CreateRoom (_roomName, RoomOptions.HasValue ? RoomOptions.Value.GetRoomOptions () : null, TypedLobby, ExpectedUsers);
+                    case JoinRoomOptions.JoinOrCreate:
+                        return PhotonNetwork.JoinOrCreateRoom (_roomName, RoomOptions.HasValue ? RoomOptions.Value.GetRoomOptions () : null, TypedLobby, ExpectedUsers);
+                    case JoinRoomOptions.Join:
+                    default:
+                        return PhotonNetwork.JoinRoom (_roomName, ExpectedUsers);
+                }
+            });
+        }
+
+        public void RejoinRoom () {
+            // Need playerTtl to work
+            // First Reconnect() and them -> or use ReconnectAndRejoin()
+            CheckAndExecute (() => {
+                PhotonNetwork.RejoinRoom (_roomName);
+            });
+
+        }
+
+        public void LeaveRoom () {
+            CheckAndExecute (() => {
+                // becomeInactiveWhenLeaveRoom used for possibility to Rejoin
+                PhotonNetwork.LeaveRoom (_becomeInactiveWhenLeaveRoom);
+            });
+        }
+
+        public bool ReconnectAndRejoin () {
+            return CheckAndExecute (() => {
+                return PhotonNetwork.ReconnectAndRejoin ();
+            });
+        }
+
+        public bool FindFriends (string[] friendsToFind) {
+            return CheckAndExecute (() => { 
+                return PhotonNetwork.FindFriends (friendsToFind);
+            });
+        }
+
+        private void CheckAndExecute (Action executeAction) {
+            if (Application.isPlaying) {
+                executeAction?.Invoke ();
+            } else {
+                M31Logger.LogWarning ("PHOTON: This function only can be used in playing mode", LogLevel);
             }
         }
 
-        public void RejoinRoom()
-        {
-            // Need playerTtl to work
-            // First Reconnect() and them -> or use ReconnectAndRejoin()
-            PhotonNetwork.RejoinRoom(_roomName);
+        private bool CheckAndExecute (Func<bool> executeAction) {
+            if (Application.isPlaying) {
+                return executeAction.Invoke ();
+            } else {
+                M31Logger.LogWarning ("PHOTON: This function only can be used in playing mode", LogLevel);
+                return false;
+            }
         }
 
-        public void LeaveRoom()
-        {
-            // becomeInactiveWhenLeaveRoom used for possibility to Rejoin
-            PhotonNetwork.LeaveRoom(_becomeInactiveWhenLeaveRoom);
+        public void OnFriendListUpdate (List<FriendInfo> friendList) {
+            FriendList = friendList;
+            OnFriendListUpdateEvent?.Invoke (friendList);
         }
 
-        public bool ReconnectAndRejoin()
-        {
-            return PhotonNetwork.ReconnectAndRejoin();
+        public void OnCreatedRoom () {
+            M31Logger.LogInfo ("PHOTON: OnCreatedRoom", LogLevel);
+            OnCreatedRoomEvent?.Invoke ();
         }
 
-        public bool FindFriends(string[] friendsToFind){
-            return PhotonNetwork.FindFriends(friendsToFind);
+        public void OnCreateRoomFailed (short returnCode, string message) {
+            M31Logger.LogInfo ("PHOTON: OnCreateRoomFailed", LogLevel);
+            OnCreateRoomFailedEvent?.Invoke (returnCode, message);
         }
 
-        public void OnFriendListUpdate(List<FriendInfo> friendList)
-        {
-            FriendList =  friendList;
-            OnFriendListUpdateEvent?.Invoke(friendList);
+        public void OnJoinedRoom () {
+            OnJoinedRoomEvent?.Invoke ();
+            M31Logger.LogInfo ("PHOTON: OnJoinedRoom", LogLevel);
         }
 
-        public void OnCreatedRoom()
-        {
-            OnCreatedRoomEvent?.Invoke();
+        public void OnJoinRoomFailed (short returnCode, string message) {
+            OnJoinRoomFailedEvent?.Invoke (returnCode, message);
+            M31Logger.LogInfo ("PHOTON: OnJoinRoomFailed", LogLevel);
         }
 
-        public void OnCreateRoomFailed(short returnCode, string message)
-        {
-            OnCreateRoomFailedEvent?.Invoke(returnCode, message);
+        public void OnJoinRandomFailed (short returnCode, string message) {
+            OnJoinRandomFailedEvent?.Invoke (returnCode, message);
+            M31Logger.LogInfo ("PHOTON: OnJoinRandomFailed", LogLevel);
         }
 
-        public void OnJoinedRoom()
-        {
-            OnJoinedRoomEvent?.Invoke();
-        }
-
-        public void OnJoinRoomFailed(short returnCode, string message)
-        {
-            OnJoinRoomFailedEvent?.Invoke(returnCode, message);
-        }
-
-        public void OnJoinRandomFailed(short returnCode, string message)
-        {
-            OnJoinRandomFailedEvent?.Invoke(returnCode, message);
-        }
-
-        public void OnLeftRoom()
-        {
-            OnLeftRoomEvent?.Invoke();
+        public void OnLeftRoom () {
+            OnLeftRoomEvent?.Invoke ();
+            M31Logger.LogInfo ("PHOTON: OnLeftRoom", LogLevel);
         }
     }
 
-    public enum JoinRoomOptions
-    {
+    public enum JoinRoomOptions {
         JoinRandom,
         Create,
         JoinOrCreate,
@@ -142,11 +158,10 @@ namespace d4160.Networking.Photon
     }
 
     [Serializable]
-    public struct RoomOptionsStruct
-    {
+    public struct RoomOptionsStruct {
         public bool isVisible; // true, if false no random only name
         public bool isOpen; // true
-        [Range(0, 255)]
+        [Range (0, 255)]
         public byte maxPlayers; // 0 no limit
         public int playerTtl; // time to live millis
         public int emptyRoomTtl; // millis
@@ -162,28 +177,28 @@ namespace d4160.Networking.Photon
 
         public ExitGames.Client.Photon.Hashtable CustomRoomProperties { get; private set; }
 
-        public ExitGames.Client.Photon.Hashtable MakePhotonHashtable(){
-            CustomRoomProperties = HashtableStruct.GetPhotonHashtable(customRoomProperties);
+        public ExitGames.Client.Photon.Hashtable MakePhotonHashtable () {
+            CustomRoomProperties = HashtableStruct.GetPhotonHashtable (customRoomProperties);
             return CustomRoomProperties;
         }
 
-        public RoomOptions GetRoomOptions(){
-            MakePhotonHashtable();
-            return new RoomOptions() { 
+        public RoomOptions GetRoomOptions () {
+            MakePhotonHashtable ();
+            return new RoomOptions () {
                 IsVisible = isVisible,
-                IsOpen = isOpen,
-                MaxPlayers = maxPlayers,
-                PlayerTtl = playerTtl,
-                EmptyRoomTtl = emptyRoomTtl,
-                CleanupCacheOnLeave = cleanupCacheOnLeave,
-                CustomRoomProperties = CustomRoomProperties,
-                CustomRoomPropertiesForLobby = customRoomPropertiesForLobby,
-                Plugins = plugins,
-                SuppressRoomEvents = suppressRoomEvents,
-                SuppressPlayerInfo = suppressPlayerInfo,
-                PublishUserId = publishUserId,
-                DeleteNullProperties = deleteNullProperties,
-                BroadcastPropsChangeToAll = broadcastPropsChangeToAll
+                    IsOpen = isOpen,
+                    MaxPlayers = maxPlayers,
+                    PlayerTtl = playerTtl,
+                    EmptyRoomTtl = emptyRoomTtl,
+                    CleanupCacheOnLeave = cleanupCacheOnLeave,
+                    CustomRoomProperties = CustomRoomProperties,
+                    CustomRoomPropertiesForLobby = customRoomPropertiesForLobby,
+                    Plugins = plugins,
+                    SuppressRoomEvents = suppressRoomEvents,
+                    SuppressPlayerInfo = suppressPlayerInfo,
+                    PublishUserId = publishUserId,
+                    DeleteNullProperties = deleteNullProperties,
+                    BroadcastPropsChangeToAll = broadcastPropsChangeToAll
             };
         }
     }
@@ -191,33 +206,50 @@ namespace d4160.Networking.Photon
     [Serializable]
     public struct HashtableStruct {
         public string key;
-        [Tooltip("The type to try to parse from value")]
+        [TextArea]
+        public string description;
+        [Tooltip ("The type to try to parse from value")]
         public CommonType valueType;
         public string value;
 
-        private int IntValue => int.Parse(value);
-        private float FloatValue => float.Parse(value);
-        private bool BoolValue => bool.Parse(value);
-        private char CharValue => char.Parse(value);
+        private int IntValue => int.Parse (value);
+        private float FloatValue => float.Parse (value);
+        private bool BoolValue => bool.Parse (value);
+        private char CharValue => char.Parse (value);
 
-        public object GetValue(){
-            switch(valueType){
-                case CommonType.Boolean: return BoolValue;
-                case CommonType.Integer: return IntValue;
-                case CommonType.Float: return FloatValue;
-                case CommonType.Char: return CharValue;
-                case CommonType.String: default: return value;
+        public bool SetValue(string key, CommonType type, string value) {
+            if (this.key == key) {
+                this.valueType = type;
+                this.value = value;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public object GetValue () {
+            switch (valueType) {
+                case CommonType.Boolean:
+                    return BoolValue;
+                case CommonType.Integer:
+                    return IntValue;
+                case CommonType.Float:
+                    return FloatValue;
+                case CommonType.Char:
+                    return CharValue;
+                case CommonType.String:
+                default:
+                    return value;
             }
         }
 
-        public static ExitGames.Client.Photon.Hashtable GetPhotonHashtable(HashtableStruct[] hastableArray) {
+        public static ExitGames.Client.Photon.Hashtable GetPhotonHashtable (HashtableStruct[] hastableArray) {
 
-            if (hastableArray.Length > 0)
-            {
-                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-                for (var i = 0; i < hastableArray.Length; i++)
-                {
-                    hashtable.Add(hastableArray[i].key, hastableArray[i].GetValue());
+            if (hastableArray.Length > 0) {
+                ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable ();
+                for (var i = 0; i < hastableArray.Length; i++) {
+                    hashtable.Add (hastableArray[i].key, hastableArray[i].GetValue ());
                 }
 
                 return hashtable;

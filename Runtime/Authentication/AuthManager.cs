@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Promise;
 using d4160.Coroutines;
 using d4160.Core;
-using Logger = d4160.Logging.Logger;
+using M31Logger = d4160.Logging.M31Logger;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 #endif
@@ -30,7 +30,7 @@ namespace d4160.Authentication
         /// <summary>
         ///     Event raised when Game Auth is successfully authenticated.
         /// </summary>
-        public static event Action OnLoggedOn;
+        public static event Action OnLoggedIn;
         public static event Action OnSignedUp;
         public static event Action OnLoggedOut;
 
@@ -112,7 +112,7 @@ namespace d4160.Authentication
         {
             Clear();
 
-            Logger.Log(message, LogLevel, logLevelToCheck);
+            M31Logger.Log(message, LogLevel, logLevelToCheck);
 
             _authenticationStatus = newStatus;
 
@@ -134,7 +134,7 @@ namespace d4160.Authentication
         public static void Login(IAuthService authService) {
 
             if(IsLoggedOn){
-                Logger.LogWarning("You are already logged on.", LogLevel);
+                M31Logger.LogWarning("You are already logged on.", LogLevel);
                 return;
             }
 
@@ -160,7 +160,7 @@ namespace d4160.Authentication
                 _authenticationStatus == AuthenticationStatus.LoggedIn)
             {
                 string message = "AuthManager is already logged on and cannot be logged on again.";
-                Logger.LogWarning(message, LogLevel);
+                M31Logger.LogWarning(message, LogLevel);
 
                 completer.Reject(new Exception(message));
 
@@ -181,7 +181,7 @@ namespace d4160.Authentication
         public static void Register(IAuthService authService) {
 
             if(IsSignedUp){
-                Logger.LogWarning("You are already signed up.", LogLevel);
+                M31Logger.LogWarning("You are already signed up.", LogLevel);
                 return;
             }
 
@@ -206,7 +206,7 @@ namespace d4160.Authentication
                 _authenticationStatus == AuthenticationStatus.SignedUp)
             {
                 string message = "AuthManager is already signed up and cannot be signed up again.";
-                Logger.Log(message, LogLevel, LogLevelType.Warning);
+                M31Logger.Log(message, LogLevel, LogLevelType.Warning);
 
                 completer.Reject(new Exception(message));
 
@@ -227,7 +227,7 @@ namespace d4160.Authentication
         public static void Logout() {
 
             if(IsNotAuthenticated){
-                Logger.LogWarning("You are not authenticated.", LogLevel);
+                M31Logger.LogWarning("You are not authenticated.", LogLevel);
                 return;
             }
 
@@ -251,7 +251,7 @@ namespace d4160.Authentication
             if (_authenticationStatus == AuthenticationStatus.NotAuthenticated)
             {
                 string message = "AuthManager is already not authenticated and cannot do anything.";
-                Logger.Log(message, LogLevel, LogLevelType.Warning);
+                M31Logger.Log(message, LogLevel, LogLevelType.Warning);
 
                 completer.Reject(new Exception(message));
 
@@ -295,10 +295,10 @@ namespace d4160.Authentication
 
             _authenticationStatus = AuthenticationStatus.LoggedIn;
 
-            Logger.LogInfo($"Successfully logged in AuthManager version {CurrentVersion}", LogLevel);
+            M31Logger.LogInfo($"Successfully logged in AuthManager version {CurrentVersion}", LogLevel);
 
             completer.Resolve();
-            OnLoggedOn?.Invoke();
+            OnLoggedIn?.Invoke();
         }
 
         static IEnumerator RegisterRoutine(Completer completer)
@@ -330,10 +330,10 @@ namespace d4160.Authentication
 
             _authenticationStatus = AuthenticationStatus.SignedUp;
 
-            Logger.LogInfo($"Successfully signed up AuthManager version {CurrentVersion}", LogLevel);
+            M31Logger.LogInfo($"Successfully signed up AuthManager version {CurrentVersion}", LogLevel);
 
             completer.Resolve();
-            OnLoggedOn?.Invoke();
+            OnLoggedIn?.Invoke();
         }
 
         static IEnumerator LogoutRoutine(Completer completer)
@@ -365,7 +365,7 @@ namespace d4160.Authentication
 
             _authenticationStatus = AuthenticationStatus.NotAuthenticated;
 
-            Logger.LogInfo($"Successfully logged out AuthManager version {CurrentVersion}", LogLevel);
+            M31Logger.LogInfo($"Successfully logged out AuthManager version {CurrentVersion}", LogLevel);
 
             completer.Resolve();
             OnLoggedOut?.Invoke();

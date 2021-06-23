@@ -65,13 +65,7 @@ namespace d4160.Auth.Photon
         }
 
         private void CheckAndExecute(Action toExecute){
-            if (Application.isPlaying)
-            {
-                toExecute.Invoke();
-            }
-            else {
-                Debug.LogWarning("Photon can only be executed in playing mode");
-            }
+            toExecute.Invoke();
         }
     }
 }

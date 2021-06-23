@@ -5,27 +5,35 @@ using d4160.Core;
 using d4160.MonoBehaviourData;
 using NaughtyAttributes;
 using Photon.Realtime;
+using UltEvents;
+using UnityEngine;
 
 namespace d4160.Networking.Photon
 {
     public class PhotonConnectionBehaviour : MonoBehaviourUnityData<PhotonConnectionSO>
     {
-        public event Action OnConnectedEvent;
-        public event Action OnConnectedToMasterEvent;
-        public event Action<DisconnectCause> OnDisconnectedEvent;
-        public event Action<RegionHandler> OnRegionListReceivedEvent;
-        public event Action<Dictionary<string, object>> OnCustomAuthenticationResponseEvent;
-        public event Action<string> OnCustomAuthenticationFailedEvent;
+        [SerializeField] private UltEvent OnConnectedEvent;
+        [SerializeField] private UltEvent OnConnectedToMasterEvent;
+        [SerializeField] private UltEvent<DisconnectCause> OnDisconnectedEvent;
+        [SerializeField] private UltEvent<RegionHandler> OnRegionListReceivedEvent;
+        [SerializeField] private UltEvent<Dictionary<string, object>> OnCustomAuthenticationResponseEvent;
+        [SerializeField] private UltEvent<string> OnCustomAuthenticationFailedEvent;
 
         private void Start(){
             PhotonConnectionService.Instance.RegisterEvents();
+            PhotonLobbyService.Instance.RegisterEvents();
+            PhotonMatchmakingService.Instance.RegisterEvents();
+            PhotonRoomService.Instance.RegisterEvents();
         }
 
         private void OnDestroy(){
             PhotonConnectionService.Instance.UnregisterEvents();
+            PhotonLobbyService.Instance.UnregisterEvents();
+            PhotonMatchmakingService.Instance.UnregisterEvents();
+            PhotonRoomService.Instance.UnregisterEvents();
         }
 
-        public void RegisterEvents() {
+        void OnEnable() {
 
             if (_data)
             {
@@ -39,7 +47,7 @@ namespace d4160.Networking.Photon
             }
         }
 
-        public void UnregisterEvents() {
+        void OnDisable() {
             if (_data)
             {
                 _data.UnregisterEvents();

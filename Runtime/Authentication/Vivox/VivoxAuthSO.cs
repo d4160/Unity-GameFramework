@@ -11,11 +11,10 @@ namespace d4160.Auth.Vivox
     [CreateAssetMenu(menuName = "d4160/Authentication/Vivox")]
     public class VivoxAuthSO : ScriptableObject
     {
-        [SerializeField] private VivoxAuthSettingsSO _vivoxSettings;
+        [Expandable, SerializeField] private VivoxAuthSettingsSO _vivoxSettings;
+        [Tooltip("Valid characters: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890=+-_.!~()%")]
         [SerializeField] private string _uniqueId;
         [SerializeField] private string _displayName;
-
-        private readonly VivoxAuthService _authService = VivoxAuthService.Instance;
 
         public event Action<object, PropertyChangedEventArgs> OnLoginSessionPropertyChanged;
         public event Action OnLoginSuccess;
@@ -25,33 +24,50 @@ namespace d4160.Auth.Vivox
         public string UniqueId { get => _uniqueId; set => _uniqueId = value; }
         public string DisplayName { get => _displayName; set => _displayName = value; }
 
+        private void CallOnLoginSessionPropertyChanged (object obj, PropertyChangedEventArgs args) => OnLoginSessionPropertyChanged?.Invoke (obj, args);
+        private void CallOnLoginSuccess () => OnLoginSuccess?.Invoke ();
+        private void CallOnLogoutSuccess () => OnLogoutSuccess?.Invoke ();
+        private void CallOnAuthError (Exception ex) => OnAuthError?.Invoke (ex);
+
+        private readonly VivoxAuthService _authService = VivoxAuthService.Instance;
+
         public void RegisterEvents(){
-            VivoxAuthService.OnLoginSessionPropertyChanged += OnLoginSessionPropertyChanged.Invoke;
-            VivoxAuthService.OnLoginSuccess += OnLoginSuccess.Invoke;
-            VivoxAuthService.OnLogoutSuccess += OnLogoutSuccess.Invoke;
-            VivoxAuthService.OnAuthError += OnAuthError.Invoke;
+            VivoxAuthService.OnLoginSessionPropertyChanged += CallOnLoginSessionPropertyChanged;
+            VivoxAuthService.OnLoginSuccess += CallOnLoginSuccess;
+            VivoxAuthService.OnLogoutSuccess += CallOnLogoutSuccess;
+            VivoxAuthService.OnAuthError += CallOnAuthError;
         }
 
         public void UnregisterEvents(){
-            VivoxAuthService.OnLoginSessionPropertyChanged -= OnLoginSessionPropertyChanged.Invoke;
-            VivoxAuthService.OnLoginSuccess -= OnLoginSuccess.Invoke;
-            VivoxAuthService.OnLogoutSuccess -= OnLogoutSuccess.Invoke;
-            VivoxAuthService.OnAuthError -= OnAuthError.Invoke;
+            VivoxAuthService.OnLoginSessionPropertyChanged -= CallOnLoginSessionPropertyChanged;
+            VivoxAuthService.OnLoginSuccess -= CallOnLoginSuccess;
+            VivoxAuthService.OnLogoutSuccess -= CallOnLogoutSuccess;
+            VivoxAuthService.OnAuthError -= CallOnAuthError;
+        }
+
+        public void SetUniqueIdAndDisplayName(string uniqueId, string displayName) {
+            UniqueId = uniqueId;;
+            DisplayName = displayName;
         }
 
         [Button]
         public void Login(){
+            
             _authService.AuthSettings = _vivoxSettings;
             _authService.Id = _uniqueId;
             _authService.DisplayName = _displayName;
 
-            // AuthManager.Login(_authService);
             _authService.Login(default);
         }
 
         [Button]
         public void Logout(){
             _authService.Logout(default);
+        }
+
+        [Button]
+        public void CleanUp(){
+            _authService.CleanUp();
         }
     }
 }

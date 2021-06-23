@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace d4160.Core.Extensions
+namespace d4160.Extensions
 {
 	/// <summary>
 	/// Float extensions. From Unity Standard Characters.

@@ -6,23 +6,21 @@ using d4160.Core;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using Logger = d4160.Logging.Logger;
+using M31Logger = d4160.Logging.M31Logger;
 
-namespace d4160.Networking.Photon
-{
-    public class PhotonLobbyService : ILobbyCallbacks
-    {
-        public static PhotonLobbyService Instance => _instance ?? (_instance = new PhotonLobbyService());
+namespace d4160.Networking.Photon {
+    public class PhotonLobbyService : ILobbyCallbacks {
+        public static PhotonLobbyService Instance => _instance ?? (_instance = new PhotonLobbyService ());
         private static PhotonLobbyService _instance;
 
-        private JoinLobbyOptions _joinLobbyOption = JoinLobbyOptions.JoinDefault;
+        private JoinLobbyType _joinLobbyType = JoinLobbyType.JoinDefault;
         private string _lobbyName;
         private List<RoomInfo> _roomList = null;
         private List<TypedLobbyInfo> _lobbyStatistics = null;
 
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
 
-        public JoinLobbyOptions JoinLobbyOptions { get => _joinLobbyOption; set => _joinLobbyOption = value; }
+        public JoinLobbyType JoinLobbyType { get => _joinLobbyType; set => _joinLobbyType = value; }
         public string LobbyName { get => _lobbyName; set => _lobbyName = value; }
         public bool EnableLobbyStatistics { get => PhotonNetwork.NetworkingClient.EnableLobbyStatistics; set => PhotonNetwork.NetworkingClient.EnableLobbyStatistics = value; }
 
@@ -36,71 +34,83 @@ namespace d4160.Networking.Photon
         public static event Action<List<RoomInfo>> OnRoomListUpdateEvent;
         public static event Action<List<TypedLobbyInfo>> OnLobbyStatisticsUpdateEvent;
 
-        private PhotonLobbyService()
-        {
+        private PhotonLobbyService () {
             _instance = this;
         }
 
-        public void RegisterEvents()
-        {
-            PhotonNetwork.AddCallbackTarget(this);
+        public void RegisterEvents () {
+            PhotonNetwork.AddCallbackTarget (this);
         }
 
-        public void UnregisterEvents()
-        {
-            PhotonNetwork.RemoveCallbackTarget(this);
+        public void UnregisterEvents () {
+            PhotonNetwork.RemoveCallbackTarget (this);
         }
 
-        public void JoinLobby()
-        {
-            switch (_joinLobbyOption)
-            {
-                case JoinLobbyOptions.JoinDefault:
-                    PhotonNetwork.JoinLobby(TypedLobby.Default);
-                    break;
-                case JoinLobbyOptions.Join:
-                default:
-                    PhotonNetwork.JoinLobby(new TypedLobby(_lobbyName, LobbyType.Default));
-                    break;
+        public void JoinLobby () {
+            CheckAndExecute (() => {
+                switch (_joinLobbyType) {
+                    case JoinLobbyType.JoinDefault:
+                        PhotonNetwork.JoinLobby (TypedLobby.Default);
+                        break;
+                    case JoinLobbyType.Join:
+                    default:
+                        PhotonNetwork.JoinLobby (new TypedLobby (_lobbyName, LobbyType.Default));
+                        break;
+                }
+            });
+        }
+
+        public void LeaveLobby () {
+            CheckAndExecute (() => {
+                PhotonNetwork.LeaveLobby ();
+            });
+        }
+
+        public bool GetCustomRoomList (TypedLobby lobby, string sqlFilter) {
+            return CheckAndExecute (() => {
+                // Only for Sql Lobbies, return OnRoomListUpdate
+                return PhotonNetwork.GetCustomRoomList (lobby, sqlFilter);
+            });
+        }
+
+        private void CheckAndExecute (Action executeAction) {
+            if (Application.isPlaying) {
+                executeAction?.Invoke ();
+            } else {
+                M31Logger.LogWarning ("PHOTON: This function only can be used in playing mode", LogLevel);
             }
         }
 
-        public void LeaveLobby()
-        {
-            PhotonNetwork.LeaveLobby();
+        private bool CheckAndExecute (Func<bool> executeAction) {
+            if (Application.isPlaying) {
+                return executeAction.Invoke ();
+            } else {
+                M31Logger.LogWarning ("PHOTON: This function only can be used in playing mode", LogLevel);
+                return false;
+            }
         }
 
-        public bool GetCustomRoomList(TypedLobby lobby, string sqlFilter){
-            // Only for Sql Lobbies, return OnRoomListUpdate
-            return PhotonNetwork.GetCustomRoomList(lobby, sqlFilter);
+        public void OnJoinedLobby () {
+            OnJoinedLobbyEvent?.Invoke ();
         }
 
-        public void OnJoinedLobby()
-        {
-            OnJoinedLobbyEvent?.Invoke();
+        public void OnLeftLobby () {
+            OnLeftLobbyEvent?.Invoke ();
         }
 
-        public void OnLeftLobby()
-        {
-            OnLeftLobbyEvent?.Invoke();
-        }
+        public void OnRoomListUpdate (List<RoomInfo> roomList) {
 
-        public void OnRoomListUpdate(List<RoomInfo> roomList)
-        {
-            
             _roomList = roomList;
-            OnRoomListUpdateEvent?.Invoke(roomList);
+            OnRoomListUpdateEvent?.Invoke (roomList);
         }
 
-        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
-        {
+        public void OnLobbyStatisticsUpdate (List<TypedLobbyInfo> lobbyStatistics) {
             _lobbyStatistics = lobbyStatistics;
-            OnLobbyStatisticsUpdateEvent?.Invoke(lobbyStatistics);
+            OnLobbyStatisticsUpdateEvent?.Invoke (lobbyStatistics);
         }
     }
 
-    public enum JoinLobbyOptions
-    {
+    public enum JoinLobbyType {
         JoinDefault,
         Join
     }
