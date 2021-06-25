@@ -7,7 +7,7 @@ using UltEvents;
 
 namespace d4160.Chat.Vivox
 {
-    public class VivoxChannelBehaviour : MonoBehaviourData<VivoxChannelSO>
+    public class VivoxChannelBehaviour : MonoBehaviourUnityData<VivoxChannelSO>
     {
         [SerializeField] private UltEvent<ChannelId> _onJoinedToChannel;
         [SerializeField] private UltEvent<IChannelTextMessage> _onMessageLogRecieved;
@@ -16,6 +16,8 @@ namespace d4160.Chat.Vivox
         [SerializeField] private UltEvent<IParticipant, bool> _onSpeechDetected; 
         [SerializeField] private UltEvent<IParticipant, double> _onAudioEnergyChanged;
 
+        public string ChannelName { get => _data?.ChannelName; set { if (_data) _data.ChannelName = value; } }
+        
         void OnEnable() {
             if (_data)
             {

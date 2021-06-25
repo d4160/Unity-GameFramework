@@ -10,7 +10,7 @@ using UltEvents;
 
 namespace d4160.Chat.Agora
 {
-    public class AgoraChannelBehaviour : MonoBehaviourData<AgoraChannelSO>
+    public class AgoraChannelBehaviour : MonoBehaviourUnityData<AgoraChannelSO>
     {
         [SerializeField] private UltEvent<string, uint, int> _onJoinChannelSuccess;
         [SerializeField] private UltEvent<string, uint, int> _onReJoinChannelSuccess;
@@ -18,6 +18,8 @@ namespace d4160.Chat.Agora
         [SerializeField] private UltEvent<CHANNEL_MEDIA_RELAY_EVENT> _onChannelMediaRelayEvent;
         [SerializeField] private UltEvent<CHANNEL_MEDIA_RELAY_STATE, CHANNEL_MEDIA_RELAY_ERROR> _onChannelMediaRelayStateChanged;
 
+        public string ChannelName { get => _data?.ChannelName; set { if (_data) _data.ChannelName = value; } }
+        
         void OnEnable () {
             if (_data)
             {

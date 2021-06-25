@@ -22,6 +22,8 @@ namespace d4160.Networking.Photon {
         [SerializeField] private UltEvent _onLeftRoomEvent;
         [SerializeField] private UltEvent<List<FriendInfo>> _onFriendListUpdateEvent;
 
+        public string CurrentRoomName => _data?.CurrentRoomName;
+
         void OnEnable () {
             if (_data) {
                 _data.RegisterEvents ();
@@ -61,19 +63,19 @@ namespace d4160.Networking.Photon {
             // Need playerTtl to work
             // First Reconnect() and them -> or use ReconnectAndRejoin()
             if (_data)
-                _data.JoinRoom ();
+                _data.RejoinRoom ();
         }
 
         [Button]
         public void LeaveRoom () {
             if (_data)
-                _data.JoinRoom ();
+                _data.LeaveRoom ();
         }
 
         [Button]
         public bool ReconnectAndRejoin () {
             if (_data)
-                return _data.JoinRoom ();
+                return _data.ReconnectAndRejoin ();
 
             return false;
         }

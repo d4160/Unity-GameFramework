@@ -91,20 +91,23 @@ namespace d4160.Networking.Photon {
         }
 
         public void OnJoinedLobby () {
+            M31Logger.LogInfo ("PHOTON: OnJoinedLobby", LogLevel);
             OnJoinedLobbyEvent?.Invoke ();
         }
 
         public void OnLeftLobby () {
+            M31Logger.LogInfo ("PHOTON: OnLeftLobby", LogLevel);
             OnLeftLobbyEvent?.Invoke ();
         }
 
         public void OnRoomListUpdate (List<RoomInfo> roomList) {
-
+            M31Logger.LogInfo ($"PHOTON: OnRoomListUpdate, RoomList count: {roomList.Count}", LogLevel);
             _roomList = roomList;
             OnRoomListUpdateEvent?.Invoke (roomList);
         }
 
         public void OnLobbyStatisticsUpdate (List<TypedLobbyInfo> lobbyStatistics) {
+            M31Logger.LogInfo ("PHOTON: OnLobbyStatisticsUpdate", LogLevel);
             _lobbyStatistics = lobbyStatistics;
             OnLobbyStatisticsUpdateEvent?.Invoke (lobbyStatistics);
         }

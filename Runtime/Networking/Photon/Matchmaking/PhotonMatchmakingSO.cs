@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using d4160.Collections;
 using d4160.Core;
 using NaughtyAttributes;
 using Photon.Pun;
@@ -37,6 +38,9 @@ namespace d4160.Networking.Photon {
         public event Action<short, string> OnJoinRandomFailedEvent;
         public event Action OnLeftRoomEvent;
         public event Action<List<FriendInfo>> OnFriendListUpdateEvent;
+
+        public string RoomName { get => _roomName; set => _roomName = value; }
+        public string CurrentRoomName => _matchService.CurrentRoomName;
 
         private void CallOnFriendListUpdateEvent (List<FriendInfo> friendList) => OnFriendListUpdateEvent?.Invoke (friendList);
         private void CallOnCreatedRoomEvent () => OnCreatedRoomEvent?.Invoke ();
@@ -100,6 +104,12 @@ namespace d4160.Networking.Photon {
 
         public bool FindFriends (string[] friendsToFind) {
             return _matchService.FindFriends (friendsToFind);
+        }
+
+        public string GetCustoRoomPropKey(int index) {
+            if (_roomOptions.customRoomProperties.IsValidIndex(index))
+                return _roomOptions.customRoomProperties[index].key;
+            return string.Empty;
         }
     }
 }

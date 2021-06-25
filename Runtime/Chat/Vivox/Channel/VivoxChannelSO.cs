@@ -42,7 +42,8 @@ namespace d4160.Chat.Vivox
         // To mute
         public IAudioDevices AudioInputDevices => _channelService.AudioInputDevices;
         public IAudioDevices AudioOutputDevices => _channelService.AudioOutputDevices;
-        public bool IsMuted { get => AudioInputDevices.Muted; set => AudioInputDevices.Muted = value; }
+        public bool Muted { get => _channelService.Muted; set => _channelService.Muted = value; }
+        public int VolumeAdjustment { get => _channelService.VolumeAdjustment; set => _channelService.VolumeAdjustment = value; }
         public IChannelSession TransmittingSession
         {
             get => _channelService.TransmittingSession;
@@ -58,6 +59,8 @@ namespace d4160.Chat.Vivox
         private void CallOnParticipantRemovedEvent(IParticipant participant) => OnParticipantRemovedEvent?.Invoke(participant);
         private void CallOnSpeechDetectedEvent(IParticipant participant, bool speechValue) => OnSpeechDetectedEvent?.Invoke(participant, speechValue); 
         private void CallOnAudioEnergyChangedEvent(IParticipant participant, double energyValue) => OnAudioEnergyChangedEvent?.Invoke(participant, energyValue);
+
+        public string ChannelName { get => _joinChannelParams.channelName; set => _joinChannelParams.channelName = value; }
 
         public void RegisterEvents() {
             VivoxChannelService.OnJoinedToChannelEvent += CallOnJoinedToChannelEvent;
