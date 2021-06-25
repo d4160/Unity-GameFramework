@@ -28,7 +28,8 @@ namespace d4160.Chat.Vivox
         // To mute
         public IAudioDevices AudioInputDevices => VivoxAuthService.Client.AudioInputDevices;
         public IAudioDevices AudioOutputDevices => VivoxAuthService.Client.AudioOutputDevices;
-        public bool IsMuted { get => AudioInputDevices.Muted; set => AudioInputDevices.Muted = value; }
+        public bool Muted { get => AudioInputDevices.Muted; set => AudioInputDevices.Muted = value; }
+        public int VolumeAdjustment { get => AudioInputDevices.VolumeAdjustment; set => AudioInputDevices.VolumeAdjustment = value; }
 
         public IChannelSession TransmittingSession
         {

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -5,9 +6,16 @@ namespace d4160.Instancers
 {
     public class ComponentFactory<T> : IObjectFactory<T> where T : Component
     {
+        public event Action<T> OnInstanced;
+        public event Action<T> OnDestroy;
+
         protected T _prefab;
 
         public T Prefab { get => _prefab; set => _prefab = value; }
+
+        public ComponentFactory()
+        {
+        }
 
         public ComponentFactory(T prefab)
         {
@@ -17,7 +25,9 @@ namespace d4160.Instancers
         public virtual T Instantiate()
         {
             if (_prefab) {
-                return GameObject.Instantiate(_prefab);
+                T instance = GameObject.Instantiate(_prefab);
+                OnInstanced?.Invoke(instance);
+                return instance;
             }
 
             return null;
@@ -28,6 +38,7 @@ namespace d4160.Instancers
             if(instance) {
                 if (Application.isPlaying)
                 {
+                    OnDestroy?.Invoke(instance);
                     GameObject.Destroy(instance.gameObject);
                 }
                 else

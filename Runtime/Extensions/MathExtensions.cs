@@ -5,7 +5,7 @@ namespace d4160.Extensions
 	/// <summary>
 	/// Float extensions. From Unity Standard Characters.
 	/// </summary>
-	public static class FloatExtensions
+	public static class MathExtensions
 	{
 		/// <summary>
 		/// Is floatA equal to zero? Takes floating point inaccuracy into account, by using Epsilon.
@@ -69,6 +69,14 @@ namespace d4160.Extensions
 		public static float GetFraction(this float number)
 		{
 			return number - Mathf.Floor(number);
+		}
+
+		public static int Map(this int value, int fromLow, int fromHigh, int toLow, int toHigh) {
+			return (value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow) + toLow;
+		}
+
+		public static float Map(this float value, float fromLow, float fromHigh, float toLow, float toHigh) {
+			return (value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow) + toLow;
 		}
 	}
 }

@@ -101,7 +101,6 @@ namespace d4160.MonoBehaviourData
 
     public abstract class MonoBehaviourData<T> : MonoBehaviour
     {
-        [Expandable]
         [SerializeField] protected T _data;
 
         public T Data
@@ -113,9 +112,7 @@ namespace d4160.MonoBehaviourData
 
     public abstract class MonoBehaviourData<T1, T2> : MonoBehaviour
     {
-        [Expandable]
         [SerializeField] protected T1 _data1;
-        [Expandable]
         [SerializeField] protected T2 _data2;
 
         public T1 Data1
@@ -133,11 +130,8 @@ namespace d4160.MonoBehaviourData
 
     public abstract class MonoBehaviourData<T1, T2, T3> : MonoBehaviour
     {
-        [Expandable]
         [SerializeField] protected T1 _data1;
-        [Expandable]
         [SerializeField] protected T2 _data2;
-        [Expandable]
         [SerializeField] protected T3 _data3;
 
         public T1 Data1
@@ -161,13 +155,9 @@ namespace d4160.MonoBehaviourData
 
     public abstract class MonoBehaviourData<T1, T2, T3, T4> : MonoBehaviour
     {
-        [Expandable]
         [SerializeField] protected T1 _data1;
-        [Expandable]
         [SerializeField] protected T2 _data2;
-        [Expandable]
         [SerializeField] protected T3 _data3;
-        [Expandable]
         [SerializeField] protected T4 _data4;
 
         public T1 Data1

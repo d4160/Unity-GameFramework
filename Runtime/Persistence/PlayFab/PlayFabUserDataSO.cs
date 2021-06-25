@@ -18,7 +18,7 @@ namespace d4160.Persistence.PlayFab
         public event Action<GetUserDataResult> OnGetUserDataEvent;
         public event Action<PlayFabError> OnPlayFabErrorEvent;
 
-        public List<string> GetUserDataKeys => _getUserDataRequest.Keys;
+        public List<string> UserDataKeys => _getUserDataRequest.Keys;
         public string GetData(string key) => _updateUserDataRequest.GetData(key);
 
         private static PlayFabUserDataService _service = PlayFabUserDataService.Instance;

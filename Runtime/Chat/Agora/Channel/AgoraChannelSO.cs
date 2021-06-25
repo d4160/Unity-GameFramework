@@ -31,6 +31,8 @@ namespace d4160.Chat.Agora
         private void CallOnChannelMediaRelayEvent(CHANNEL_MEDIA_RELAY_EVENT events) => OnChannelMediaRelayEventEvent?.Invoke(events);
         private void CallOnChannelMediaRelayStateChanged(CHANNEL_MEDIA_RELAY_STATE state, CHANNEL_MEDIA_RELAY_ERROR code) => OnChannelMediaRelayStateChangedEvent?.Invoke(state, code);
 
+        public string ChannelName { get => _joinChannelParams.channelName; set => _joinChannelParams.channelName = value; }
+
         public void RegisterEvents () {
             AgoraChannelService.OnJoinChannelSuccessEvent += CallOnJoinChannelSuccess;
             AgoraChannelService.OnReJoinChannelSuccessEvent += CallOnReJoinChannelSuccess;

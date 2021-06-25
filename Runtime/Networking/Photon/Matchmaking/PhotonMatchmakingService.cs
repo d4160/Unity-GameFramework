@@ -32,6 +32,7 @@ namespace d4160.Networking.Photon {
         public int CountOfPlayersOnMaster => PhotonNetwork.CountOfPlayersOnMaster; // Wait for room
         public int CountOfRooms => PhotonNetwork.CountOfRooms;
         public List<FriendInfo> FriendList { get; private set; }
+        public string CurrentRoomName => PhotonNetwork.CurrentRoom.Name;
 
         public static event Action<List<FriendInfo>> OnFriendListUpdateEvent;
         public static event Action OnCreatedRoomEvent;
@@ -159,12 +160,18 @@ namespace d4160.Networking.Photon {
 
     [Serializable]
     public struct RoomOptionsStruct {
+        [Tooltip("Default: true")]
         public bool isVisible; // true, if false no random only name
+        [Tooltip("Default: true")]
         public bool isOpen; // true
         [Range (0, 255)]
+        [Tooltip("0: no limit")]
         public byte maxPlayers; // 0 no limit
+        [Tooltip("TimeToLive after player exit room, in millis")]
         public int playerTtl; // time to live millis
+        [Tooltip("TimeToLive after last player exit room, in millis")]
         public int emptyRoomTtl; // millis
+        [Tooltip("Default: true, user events and properties")]
         public bool cleanupCacheOnLeave; // true default, user events & properties when leave
         public HashtableStruct[] customRoomProperties; // string key, short as possible
         public string[] customRoomPropertiesForLobby; // inside the hashtable the properties to share in lobby
@@ -173,6 +180,7 @@ namespace d4160.Networking.Photon {
         public bool suppressPlayerInfo; // events and property broadcast
         public bool publishUserId; // useful for FindFriends
         public bool deleteNullProperties;
+        [Tooltip("Default: true")]
         public bool broadcastPropsChangeToAll; //= true, avoid de-sync
 
         public ExitGames.Client.Photon.Hashtable CustomRoomProperties { get; private set; }
