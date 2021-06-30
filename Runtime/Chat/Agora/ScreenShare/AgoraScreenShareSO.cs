@@ -5,7 +5,7 @@ using NaughtyAttributes;
 
 namespace d4160.Chat.Agora
 {
-    [CreateAssetMenu(menuName = "d4160/Chat/Agora ScreenShare")]
+    [CreateAssetMenu(menuName = "d4160/Agora/ScreenShare")]
     public class AgoraScreenShareSO : ScriptableObject
     {
         [SerializeField] private ScreenCaptureParametersStruct _screenCaptureParams;
@@ -17,7 +17,7 @@ namespace d4160.Chat.Agora
         /// </summary>
         /// <value></value>
         public int DisplayID => _screenShareService.DisplayID;
-        public VideoSurface VideoSurface { get => _screenShareService.VideoSurface; set => _screenShareService.VideoSurface = value; }
+        public VideoSurface VideoSurface { get; set; }
 
         [Button]
         public void StartScreenCapture() {
@@ -26,6 +26,7 @@ namespace d4160.Chat.Agora
 
         public void StartScreenCapture(ScreenCaptureParametersStruct sparams)
         {
+            _screenShareService.VideoSurface = VideoSurface;
             _screenShareService.StartScreenCapture(sparams);
         }
 

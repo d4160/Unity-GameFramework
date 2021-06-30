@@ -16,16 +16,20 @@ namespace d4160.Chat.Agora
         public static event Action<uint, USER_OFFLINE_REASON> OnUserOfflineEvent;
 
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
+        public AgoraVideoSurfaceType AgoraVideoSurfaceType { get; set; } = AgoraVideoSurfaceType.Renderer;
+        public uint VideoFps { get; set; } = 30;
+        public bool EnableFlipHorizontal { get; set; } = true;
+        public bool EnableFlipVertical { get; set; } = false;
 
-        private readonly AgoraAuthService _authService = AgoraAuthService.Instance; 
+        private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance; 
         public static AgoraUserService Instance => _instance ?? (_instance = new AgoraUserService());
         private static AgoraUserService _instance;
 
         private Dictionary<uint, VideoSurface> _userVideoDict = new Dictionary<uint, VideoSurface>();
-        public Dictionary<uint, VideoSurface> UserVideoDict => _userVideoDict;
+        public Dictionary<uint, VideoSurface> UserVideoDictionary => _userVideoDict;
 
-        public IProvider<VideoSurface> VideoSurfaceProvider { get; set; }
-        public float OtherVideoSurfaceScaleMultiplier { get; set; }
+        public ComponentProviderSO VideoSurfaceProvider { get; set; }
+        public float OtherVideoSurfaceScaleMultiplier { get; set; } // 0.25f
 
         private void CallOnUserJoined(uint uid, int elapsed)
         {
@@ -33,19 +37,22 @@ namespace d4160.Chat.Agora
             
             if (CheckErrors()) return;
 
-            VideoSurface videoSurface = VideoSurfaceProvider.Instantiate();
+            VideoSurface videoSurface = VideoSurfaceProvider.InstantiateAs<VideoSurface>();
             if (!ReferenceEquals(videoSurface, null))
             {
                 // configure videoSurface
                 videoSurface.transform.localScale = Vector3.one * OtherVideoSurfaceScaleMultiplier;
                 videoSurface.SetForUser(uid);
                 videoSurface.SetEnable(true);
-                videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
-                videoSurface.SetGameFps(30);
-                videoSurface.EnableFilpTextureApply(enableFlipHorizontal: true, enableFlipVertical: false);
-                UserVideoDict[uid] = videoSurface;
+                videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType);
+                videoSurface.SetGameFps(VideoFps);
+                videoSurface.EnableFilpTextureApply(EnableFlipHorizontal, EnableFlipVertical);
+                UserVideoDictionary[uid] = videoSurface;
                 //Vector2 pos = AgoraUIUtils.GetRandomPosition(100);
                 //videoSurface.transform.localPosition = new Vector3(pos.x, pos.y, 0);
+            }
+            else {
+                M31Logger.LogInfo("onUserJoined: uid = " + uid + " elapsed = " + elapsed, LogLevel);
             }
 
             OnUserJoinedEvent?.Invoke(uid, elapsed);
@@ -55,11 +62,11 @@ namespace d4160.Chat.Agora
         {
             M31Logger.LogInfo("onUserOffline: uid = " + uid + " reason = " + reason, LogLevel);
             
-            if (UserVideoDict.ContainsKey(uid))
+            if (UserVideoDictionary.ContainsKey(uid))
             {
-                var surface = UserVideoDict[uid];
+                var surface = UserVideoDictionary[uid];
                 surface.SetEnable(false);
-                UserVideoDict.Remove(uid);
+                UserVideoDictionary.Remove(uid);
                 if (VideoSurfaceProvider != null)
                     VideoSurfaceProvider.Destroy(surface);
                 else
@@ -75,13 +82,13 @@ namespace d4160.Chat.Agora
         }
 
         public void RegisterEvents () {
-            _authService.RtcEngine.OnUserJoined += CallOnUserJoined;
-            _authService.RtcEngine.OnUserOffline += CallOnUserOfflineEvent;
+            _connection.RtcEngine.OnUserJoined += CallOnUserJoined;
+            _connection.RtcEngine.OnUserOffline += CallOnUserOfflineEvent;
         }
 
         public void UnregisterEvents(){
-            _authService.RtcEngine.OnUserJoined -= CallOnUserJoined;
-            _authService.RtcEngine.OnUserOffline -= CallOnUserOfflineEvent;
+            _connection.RtcEngine.OnUserJoined -= CallOnUserJoined;
+            _connection.RtcEngine.OnUserOffline -= CallOnUserOfflineEvent;
         }   
 
         private bool CheckErrors() {
@@ -91,7 +98,7 @@ namespace d4160.Chat.Agora
                 return true;
             }
 
-            if (_authService.RtcEngine == null) {
+            if (_connection.RtcEngine == null) {
                 M31Logger.LogWarning("AGORA: RtcEngine is null", LogLevel);
                 return true;
             }

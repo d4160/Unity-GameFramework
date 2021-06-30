@@ -14,6 +14,7 @@ namespace d4160.Chat.Agora
         [SerializeField] private AgoraChannelType _setupChannelType;
         [SerializeField] private bool _enableAudio;
         [SerializeField] private ChannelStruct _joinChannelParams;
+        [SerializeField] private bool _setExternalVideoSource;
 
         public event Action<string, uint, int> OnJoinChannelSuccessEvent;
         public event Action<string, uint, int> OnReJoinChannelSuccessEvent;
@@ -34,6 +35,8 @@ namespace d4160.Chat.Agora
         public string ChannelName { get => _joinChannelParams.channelName; set => _joinChannelParams.channelName = value; }
 
         public void RegisterEvents () {
+            _channelService.RegisterEvents();
+
             AgoraChannelService.OnJoinChannelSuccessEvent += CallOnJoinChannelSuccess;
             AgoraChannelService.OnReJoinChannelSuccessEvent += CallOnReJoinChannelSuccess;
             AgoraChannelService.OnLeaveChannelEvent += CallOnLeaveChannel;
@@ -42,6 +45,8 @@ namespace d4160.Chat.Agora
         }
 
         public void UnregisterEvents(){
+            _channelService.UnregisterEvents();
+
             AgoraChannelService.OnJoinChannelSuccessEvent -= CallOnJoinChannelSuccess;
             AgoraChannelService.OnReJoinChannelSuccessEvent -= CallOnReJoinChannelSuccess;
             AgoraChannelService.OnLeaveChannelEvent -= CallOnLeaveChannel;
@@ -83,6 +88,7 @@ namespace d4160.Chat.Agora
         /// <param name="channel"></param>
         public void JoinChannel(string channel, string info = null, uint uid = 0)
         {
+            _channelService.SetExternalVideoSource = _setExternalVideoSource;
             _channelService.JoinChannel(channel, info, uid);
         }
 

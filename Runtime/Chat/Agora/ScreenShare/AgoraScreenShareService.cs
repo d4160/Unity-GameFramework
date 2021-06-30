@@ -11,12 +11,9 @@ namespace d4160.Chat.Agora
 {
     public class AgoraScreenShareService
     {
-        public static event Action<int, string> OnAuthError;
-        public static event Action<int, string> OnAuthWarning;
-
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
 
-        private readonly AgoraAuthService _authService = AgoraAuthService.Instance; 
+        private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance; 
         public static AgoraScreenShareService Instance => _instance ?? (_instance = new AgoraScreenShareService());
         private static AgoraScreenShareService _instance;
 
@@ -38,12 +35,12 @@ namespace d4160.Chat.Agora
             
             VideoSurface.SetEnable(true);
 
-            _authService.RtcEngine.EnableVideo();
-            _authService.RtcEngine.EnableVideoObserver();
-            _authService.RtcEngine.StopScreenCapture();
+            _connection.RtcEngine.EnableVideo();
+            _connection.RtcEngine.EnableVideoObserver();
+            _connection.RtcEngine.StopScreenCapture();
 
     #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-            _authService.RtcEngine.StartScreenCaptureByDisplayId(getDisplayId(DisplayID), default(Rectangle), sparams.GetScreenCaptureParams());  // 
+            _connection.RtcEngine.StartScreenCaptureByDisplayId(getDisplayId(DisplayID), default(Rectangle), sparams.GetScreenCaptureParams());  // 
     #else
             StartScreenCaptureByScreenRect(DisplayID, sparams.GetScreenCaptureParams());
     #endif
@@ -56,7 +53,7 @@ namespace d4160.Chat.Agora
             Rectangle screenRect = new Rectangle() { x = 0, y = 0, width = 1920 * 2, height = 1080 };
             Rectangle regionRect = new Rectangle() { x = order * 1920, y = 0, width = 1920, height = 1080 };
 
-            int rc = _authService.RtcEngine.StartScreenCaptureByScreenRect(screenRect,
+            int rc = _connection.RtcEngine.StartScreenCaptureByScreenRect(screenRect,
                 regionRect,
                 sparams
                 );
@@ -66,9 +63,9 @@ namespace d4160.Chat.Agora
         public void StopScreenCapture(){
             if (CheckErrors()) return;
 
-            _authService.RtcEngine.DisableVideo();
-            _authService.RtcEngine.DisableVideoObserver();
-            _authService.RtcEngine.StopScreenCapture(); 
+            _connection.RtcEngine.DisableVideo();
+            _connection.RtcEngine.DisableVideoObserver();
+            _connection.RtcEngine.StopScreenCapture(); 
 
             VideoSurface.SetEnable(false);
         } 
@@ -95,7 +92,7 @@ namespace d4160.Chat.Agora
                 return true;
             }
 
-            if (_authService.RtcEngine == null) {
+            if (_connection.RtcEngine == null) {
                 M31Logger.LogWarning("AGORA: RtcEngine is null", LogLevel);
                 return true;
             }

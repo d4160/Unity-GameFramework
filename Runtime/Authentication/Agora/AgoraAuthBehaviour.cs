@@ -8,24 +8,21 @@ namespace d4160.Auth.Agora
 {
     public class AgoraAuthBehaviour : MonoBehaviourUnityData<AgoraAuthSO>
     {
-        [SerializeField] private UltEvent<int, string> _onAuthError;
-        [SerializeField] private UltEvent<int, string> _onAuthWarning;
+        [SerializeField] private UltEvent<uint, string> _onLocalUserRegistered;
 
-        public void RegisterEvents(){
+        void OnEnable(){
             if (_data)
             {
                 _data.RegisterEvents();
-                _data.OnAuthError += _onAuthError.Invoke;
-                _data.OnAuthWarning += _onAuthWarning.Invoke;
+                _data.OnLocalUserRegisteredEvent += _onLocalUserRegistered.Invoke;
             }
         }
 
-        public void UnregisterEvents(){
+        void OnDisable(){
             if (_data)
             {
                 _data.UnregisterEvents();
-                _data.OnAuthError -= _onAuthError.Invoke;
-                _data.OnAuthWarning -= _onAuthWarning.Invoke;
+                _data.OnLocalUserRegisteredEvent -= _onLocalUserRegistered.Invoke;
             }
         }
 

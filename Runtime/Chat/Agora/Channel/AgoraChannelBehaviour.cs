@@ -23,6 +23,7 @@ namespace d4160.Chat.Agora
         void OnEnable () {
             if (_data)
             {
+                _data.RegisterEvents();
                 _data.OnJoinChannelSuccessEvent += _onJoinChannelSuccess.Invoke;
                 _data.OnReJoinChannelSuccessEvent += _onReJoinChannelSuccess.Invoke;
                 _data.OnLeaveChannelEvent += _onLeaveChannel.Invoke;
@@ -31,9 +32,10 @@ namespace d4160.Chat.Agora
             }
         }
 
-        void UnregisterEvents(){
+        void OnDisable(){
             if (_data)
             {
+                _data.UnregisterEvents();
                 _data.OnJoinChannelSuccessEvent -= _onJoinChannelSuccess.Invoke;
                 _data.OnReJoinChannelSuccessEvent -= _onReJoinChannelSuccess.Invoke;
                 _data.OnLeaveChannelEvent -= _onLeaveChannel.Invoke;

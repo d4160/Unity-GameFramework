@@ -14,7 +14,7 @@ namespace d4160.Chat.Agora
 
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
 
-        private readonly AgoraAuthService _authService = AgoraAuthService.Instance; 
+        private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance; 
         public static AgoraVideoService Instance => _instance ?? (_instance = new AgoraVideoService());
         private static AgoraVideoService _instance;
 
@@ -32,11 +32,11 @@ namespace d4160.Chat.Agora
         }
 
         public void RegisterEvents () {
-            _authService.RtcEngine.OnVideoSizeChanged += CallOnVideoSizeChanged;
+            _connection.RtcEngine.OnVideoSizeChanged += CallOnVideoSizeChanged;
         }
 
         public void UnregisterEvents(){
-            _authService.RtcEngine.OnVideoSizeChanged -= CallOnVideoSizeChanged;
+            _connection.RtcEngine.OnVideoSizeChanged -= CallOnVideoSizeChanged;
         }   
 
         /// <summary>
@@ -49,11 +49,11 @@ namespace d4160.Chat.Agora
 
             if (enableVideo)
             {
-                _authService.RtcEngine.EnableVideo();
+                _connection.RtcEngine.EnableVideo();
             }
             else
             {
-                _authService.RtcEngine.DisableVideo();
+                _connection.RtcEngine.DisableVideo();
             }
         }
 
@@ -62,18 +62,18 @@ namespace d4160.Chat.Agora
 
             VideoSurface.SetEnable(true);
 
-            _authService.RtcEngine.EnableVideo();
-            _authService.RtcEngine.EnableVideoObserver();
-            _authService.RtcEngine.StartPreview();
+            _connection.RtcEngine.EnableVideo();
+            _connection.RtcEngine.EnableVideoObserver();
+            _connection.RtcEngine.StartPreview();
 
             // VideoManager only works after video enabled
             CheckDevices();
         }
 
         public void StopVideoPreview() {
-            _authService.RtcEngine.DisableVideo();
-            _authService.RtcEngine.DisableVideoObserver();
-            _authService.RtcEngine.StopPreview();
+            _connection.RtcEngine.DisableVideo();
+            _connection.RtcEngine.DisableVideoObserver();
+            _connection.RtcEngine.StopPreview();
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace d4160.Chat.Agora
         /// <param name="engine">Video Engine </param>
         void CheckDevices()
         {
-            VideoDeviceManager deviceManager = VideoDeviceManager.GetInstance(_authService.RtcEngine);
+            VideoDeviceManager deviceManager = VideoDeviceManager.GetInstance(_connection.RtcEngine);
             deviceManager.CreateAVideoDeviceManager();
 
             int cnt = deviceManager.GetVideoDeviceCount();
@@ -97,7 +97,7 @@ namespace d4160.Chat.Agora
                 return true;
             }
 
-            if (_authService.RtcEngine == null) {
+            if (_connection.RtcEngine == null) {
                 M31Logger.LogWarning("AGORA: RtcEngine is null", LogLevel);
                 return true;
             }

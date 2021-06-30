@@ -5,41 +5,43 @@ using NaughtyAttributes;
 using UltEvents;
 using UnityEngine;
 
-namespace d4160.Instancers {
-    public class GameObjectFactoryBehaviour : MonoBehaviourUnityData<GameObjectFactorySO> {
-
-        [Header ("EVENTS")]
+namespace d4160.Instancers
+{
+    public class GameObjectFactoryBehaviour : MonoBehaviourUnityData<GameObjectFactorySO>
+    {
+        [Header("EVENTS")]
         [SerializeField] private UltEvent<GameObject> _onInstanced;
         [SerializeField] private UltEvent<GameObject> _onDestroy;
 
-        void Awake () {
-            if (_data) _data.Setup ();
-        }
-
-        void OnEnable () {
+        void OnEnable() {
             if (_data) {
-                _data.RegisterEvents ();
+                _data.RegisterEvents();
                 _data.OnInstanced += _onInstanced.Invoke;
                 _data.OnDestroy += _onDestroy.Invoke;
             }
         }
 
-        void OnDisable () {
+        void OnDisable() {
             if (_data) {
-                _data.UnregisterEvents ();
+                _data.UnregisterEvents();
                 _data.OnInstanced -= _onInstanced.Invoke;
                 _data.OnDestroy -= _onDestroy.Invoke;
             }
         }
 
-        [Button]
-        public GameObject Instantiate () {
-            if (_data) return _data.Instantiate ();
-            return null;
+        void Start() {
+            if (_data) {
+                _data.Setup();
+            }
         }
 
-        public void Destroy (GameObject instance) {
-            if (_data) _data.Destroy (instance);
+        [Button]
+        public GameObject Instantiate() {
+            if (_data) return _data.Instantiate(); return null;
+        }
+
+        public void Destroy(GameObject instance) {
+            if (_data) _data.Destroy(instance);
         }
     }
 }

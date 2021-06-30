@@ -9,7 +9,7 @@ using NaughtyAttributes;
 
 namespace d4160.Chat.Agora
 {
-    [CreateAssetMenu(menuName = "d4160/Chat/Agora Video")]
+    [CreateAssetMenu(menuName = "d4160/Agora/Video")]
     public class AgoraVideoSO : ScriptableObject
     {
         [SerializeField] private bool _enableVideo;
@@ -23,10 +23,12 @@ namespace d4160.Chat.Agora
         private void CallOnVideoSizeChanged(uint uid, int width, int height, int rotation) => OnVideoSizeChangedEvent?.Invoke(uid, width, height, rotation);
 
         public void RegisterEvents () {
+            _videoService.RegisterEvents();
             AgoraVideoService.OnVideoSizeChangedEvent += CallOnVideoSizeChanged;
         }
 
         public void UnregisterEvents(){
+            _videoService.UnregisterEvents();
             AgoraVideoService.OnVideoSizeChangedEvent -= CallOnVideoSizeChanged;
         }   
 

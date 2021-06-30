@@ -6,19 +6,43 @@ using UltEvents;
 
 namespace d4160.Chat.Agora
 {
-    public class AgoraUserBehaviour : MonoBehaviourData<AgoraUserSO>
+    public class AgoraUserBehaviour : MonoBehaviourUnityData<AgoraUserSO>
     {
-        [SerializeField] private UltEvent<uint, int> OnUserJoined;
-        [SerializeField] private UltEvent<uint, USER_OFFLINE_REASON> OnUserOffline;
+        [Tooltip("Used when you want to select an instanced VideoSurface as default, to pass to the Provider. Useful for UniqueObjectProvider.")]
+        [SerializeField] private VideoSurface _videoSurfaceInstance;
+        [Tooltip("If is not null, set as parent in each instantiation.")]
+        [SerializeField] private Transform _parent;
+        [Header("EVENTS")]
+        [SerializeField] private UltEvent<uint, int> _onUserJoined;
+        [SerializeField] private UltEvent<uint, USER_OFFLINE_REASON> _onUserOffline;
 
-        public void RegisterEvents () {
-            AgoraUserService.OnUserJoinedEvent += OnUserJoined.Invoke;
-            AgoraUserService.OnUserOfflineEvent += OnUserOffline.Invoke;
+        void OnEnable () {
+            if (_data)
+            {
+                _data.RegisterEvents();
+                _data.OnUserJoinedEvent += _onUserJoined.Invoke;
+                _data.OnUserOfflineEvent += _onUserOffline.Invoke;
+            }
         }
 
-        public void UnregisterEvents(){
-            AgoraUserService.OnUserJoinedEvent -= OnUserJoined.Invoke;
-            AgoraUserService.OnUserOfflineEvent -= OnUserOffline.Invoke;
+        void Start() {
+            if (_data) {
+                if (_data.VideoSurfaceProvider)
+                {
+                    if (_videoSurfaceInstance) _data.VideoSurfaceProvider.Prefab = _videoSurfaceInstance;
+                    if (_parent) _data.VideoSurfaceProvider.Parent = _parent;
+                }
+                _data.Setup();
+            }
+        }
+
+        void OnDisable(){
+            if (_data)
+            {
+                _data.UnregisterEvents();
+                _data.OnUserJoinedEvent -= _onUserJoined.Invoke;
+                _data.OnUserOfflineEvent -= _onUserOffline.Invoke;
+            }
         }   
     }
 }

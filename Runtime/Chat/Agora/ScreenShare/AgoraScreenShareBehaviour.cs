@@ -6,18 +6,26 @@ using d4160.MonoBehaviourData;
 
 namespace d4160.Chat.Agora
 {
-    public class AgoraScreenShareBehaviour : MonoBehaviourData<AgoraScreenShareSO>
+    public class AgoraScreenShareBehaviour : MonoBehaviourUnityData<AgoraScreenShareSO>
     {
+        [SerializeField] VideoSurface _videoSurface;
+        
         [Button]
         public void StartScreenCapture() {
             if (_data)
+            {
+                _data.VideoSurface = _videoSurface;
                 _data.StartScreenCapture();
+            }
         }
 
         public void StartScreenCapture(ScreenCaptureParametersStruct sparams)
         {
             if (_data)
+            {
+                _data.VideoSurface = _videoSurface;
                 _data.StartScreenCapture(sparams);
+            }
         }
 
         [Button]
