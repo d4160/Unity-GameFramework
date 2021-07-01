@@ -17,12 +17,15 @@ namespace d4160.Networking.Photon {
         public HashtableStruct[] CustomRoomProperties { get; set; }
         public HashtableStruct[] ExpectedProperties { get; set; }
 
+        private Player[] _playerList; // when leftroom, this become null by default
+        private Player[] _playerListOthers; // when leftroom, this become null by default
+
         public bool InRoom => PhotonNetwork.InRoom;
         public Room CurrentRoom => PhotonNetwork.CurrentRoom;
         public Dictionary<int, Player> Players => CurrentRoom.Players; // id|actorNumber
         public int PlayerCount => CurrentRoom.PlayerCount;
-        public Player[] PlayerList => PhotonNetwork.PlayerList; // In room also
-        public Player[] PlayerListOthers => PhotonNetwork.PlayerListOthers;
+        public Player[] PlayerList => _playerList == null ? PhotonNetwork.PlayerList : _playerList; // In room also
+        public Player[] PlayerListOthers => _playerListOthers == null ? PhotonNetwork.PlayerListOthers : _playerListOthers;
         public byte MaxPlayers { get => CurrentRoom.MaxPlayers; set => CurrentRoom.MaxPlayers = value; }
         public int PlayerTtl { get => CurrentRoom.PlayerTtl; set => CurrentRoom.PlayerTtl = value; }
         public int EmptyRoomTtl { get => CurrentRoom.EmptyRoomTtl; set => CurrentRoom.EmptyRoomTtl = value; }
@@ -142,11 +145,15 @@ namespace d4160.Networking.Photon {
         }
 
         public void OnPlayerEnteredRoom (Player newPlayer) {
+            _playerList = PhotonNetwork.PlayerList;
+            _playerListOthers = PhotonNetwork.PlayerListOthers;
             OnPlayerEnteredRoomEvent?.Invoke (newPlayer);
             M31Logger.LogInfo ("PHOTON: OnPlayerEnteredRoom", LogLevel);
         }
 
         public void OnPlayerLeftRoom (Player otherPlayer) {
+            _playerList = PhotonNetwork.PlayerList;
+            _playerListOthers = PhotonNetwork.PlayerListOthers;
             OnPlayerLeftRoomEvent?.Invoke (otherPlayer);
             M31Logger.LogInfo ("PHOTON: OnPlayerLeftRoom", LogLevel);
         }

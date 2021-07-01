@@ -51,10 +51,18 @@ namespace d4160.Auth.Photon
         }
 
         [Button]
-        public void SetNickname(){
+        public void SetNickname(string nickname = null){
             CheckAndExecute(() => { 
-                _authService.DisplayName = _nickname;
+                _authService.DisplayName = nickname ?? _nickname;
             });
+        }
+
+        public string GetNickname() {
+            if (Application.isPlaying) {
+                return _authService.DisplayName;
+            }
+
+            return string.Empty;
         }
 
         [Button]

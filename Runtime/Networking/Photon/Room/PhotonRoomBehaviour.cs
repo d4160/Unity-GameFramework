@@ -12,7 +12,6 @@ using UnityEngine;
 using Logger = d4160.Logging.M31Logger;
 
 namespace d4160.Networking.Photon {
-    [CreateAssetMenu (menuName = "d4160/Networking/Photon Room")]
     public class PhotonRoomBehaviour : MonoBehaviourUnityData<PhotonRoomSO> {
 
         [SerializeField] private UltEvent<Player> _onPlayerEnteredRoomEvent;

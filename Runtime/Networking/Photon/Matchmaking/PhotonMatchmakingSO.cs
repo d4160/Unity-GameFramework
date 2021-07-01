@@ -77,12 +77,51 @@ namespace d4160.Networking.Photon {
             _matchService.JoinRoomOptions = _joinRoomOption;
             _matchService.RoomName = _roomName;
             _matchService.ExpectedMaxPlayers = _expectedMaxPlayers;
-            _matchService.BecomeInactiveWhenLeaveRoom = _becomeInactiveWhenLeaveRoom;
-            _matchService.RoomOptions = null;
+            _matchService.RoomOptions = _roomOptions;
             _matchService.MatchmakingMode = _matchmakingMode;
             _matchService.ExpectedUsers = _expectedUsers;
 
             return _matchService.JoinRoom ();
+        }
+
+        public bool JoinRandom(RoomOptionsStruct? roomOptions = null, byte? expectedMaxPlayers = null, MatchmakingMode? matchmakingMode = null, TypedLobby typedLobby = null, string sqlLobbyFilter = null, string[] expectedUsers = null) {
+            _matchService.JoinRoomOptions = JoinRoomOptions.JoinRandom;
+            _matchService.RoomOptions = roomOptions ?? _roomOptions;
+            _matchService.ExpectedMaxPlayers = expectedMaxPlayers ?? _expectedMaxPlayers;
+            _matchService.MatchmakingMode = matchmakingMode ?? _matchmakingMode;
+            _matchService.TypedLobby = typedLobby ?? TypedLobby.Default;
+            _matchService.SqlLobbyFilter = sqlLobbyFilter ?? _sqlLobbyFilter;
+            _matchService.ExpectedUsers = expectedUsers ?? _expectedUsers;
+
+            return _matchService.JoinRoom();
+        }
+
+        public bool CreateRoom(string roomName = null, RoomOptionsStruct? roomOptions = null, TypedLobby typedLobby = null, string[] expectedUsers = null) {
+            _matchService.JoinRoomOptions = JoinRoomOptions.Create;
+            _matchService.RoomName = roomName ?? _roomName;
+            _matchService.RoomOptions = roomOptions ?? _roomOptions;
+            _matchService.TypedLobby = typedLobby ?? TypedLobby.Default;
+            _matchService.ExpectedUsers = expectedUsers ?? _expectedUsers;
+
+            return _matchService.JoinRoom();
+        }
+
+        public bool JoinOrCreate(string roomName = null, RoomOptionsStruct? roomOptions = null, TypedLobby typedLobby = null, string[] expectedUsers = null) {
+            _matchService.JoinRoomOptions = JoinRoomOptions.JoinOrCreate;
+            _matchService.RoomName = roomName ?? _roomName;
+            _matchService.RoomOptions = roomOptions ?? _roomOptions;
+            _matchService.TypedLobby = typedLobby ?? TypedLobby.Default;
+            _matchService.ExpectedUsers = expectedUsers ?? _expectedUsers;
+
+            return _matchService.JoinRoom();
+        }
+
+        public bool JoinRoom(string roomName = null, string[] expectedUsers = null) {
+            _matchService.JoinRoomOptions = JoinRoomOptions.Join;
+            _matchService.RoomName = roomName ?? _roomName;
+            _matchService.ExpectedUsers = expectedUsers ?? _expectedUsers;
+
+            return _matchService.JoinRoom();
         }
 
         [Button]
@@ -94,6 +133,12 @@ namespace d4160.Networking.Photon {
 
         [Button]
         public void LeaveRoom () {
+            _matchService.BecomeInactiveWhenLeaveRoom = _becomeInactiveWhenLeaveRoom;
+            _matchService.LeaveRoom ();
+        }
+
+        public void LeaveRoom (bool? becomeInactiveWhenLeaveRoom) {
+            _matchService.BecomeInactiveWhenLeaveRoom = becomeInactiveWhenLeaveRoom ?? _becomeInactiveWhenLeaveRoom;
             _matchService.LeaveRoom ();
         }
 

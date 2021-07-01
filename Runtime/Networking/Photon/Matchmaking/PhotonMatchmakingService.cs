@@ -121,18 +121,18 @@ namespace d4160.Networking.Photon {
         }
 
         public void OnCreatedRoom () {
-            M31Logger.LogInfo ("PHOTON: OnCreatedRoom", LogLevel);
+            M31Logger.LogInfo ($"PHOTON: OnCreatedRoom. RoomName: {_roomName}", LogLevel);
             OnCreatedRoomEvent?.Invoke ();
         }
 
         public void OnCreateRoomFailed (short returnCode, string message) {
-            M31Logger.LogInfo ("PHOTON: OnCreateRoomFailed", LogLevel);
+            M31Logger.LogInfo ($"PHOTON: OnCreateRoomFailed. Code: {returnCode}, Message: {message}", LogLevel);
             OnCreateRoomFailedEvent?.Invoke (returnCode, message);
         }
 
         public void OnJoinedRoom () {
             OnJoinedRoomEvent?.Invoke ();
-            M31Logger.LogInfo ("PHOTON: OnJoinedRoom", LogLevel);
+            M31Logger.LogInfo ($"PHOTON: OnJoinedRoom. RoomName: {PhotonNetwork.CurrentRoom.Name}", LogLevel);
         }
 
         public void OnJoinRoomFailed (short returnCode, string message) {
@@ -201,7 +201,7 @@ namespace d4160.Networking.Photon {
                     CleanupCacheOnLeave = cleanupCacheOnLeave,
                     CustomRoomProperties = CustomRoomProperties,
                     CustomRoomPropertiesForLobby = customRoomPropertiesForLobby,
-                    Plugins = plugins,
+                    Plugins = plugins.Length == 0 ? null : plugins, // If is empty array got error
                     SuppressRoomEvents = suppressRoomEvents,
                     SuppressPlayerInfo = suppressPlayerInfo,
                     PublishUserId = publishUserId,

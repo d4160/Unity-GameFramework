@@ -12,7 +12,6 @@ using UnityEngine;
 using Logger = d4160.Logging.M31Logger;
 
 namespace d4160.Networking.Photon {
-    [CreateAssetMenu (menuName = "d4160/Networking/Photon Lobby")]
     public class PhotonLobbyBehaviour : MonoBehaviourUnityData<PhotonLobbySO> {
 
         [SerializeField] private UltEvent _onJoinedLobbyEvent;

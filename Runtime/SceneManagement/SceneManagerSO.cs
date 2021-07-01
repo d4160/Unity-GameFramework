@@ -17,11 +17,15 @@ namespace d4160.SceneManagement {
         [InspectInline (canEditRemoteTarget = true)]
         [SerializeField] private SceneCollectionSO[] _sceneCollections;
         [SerializeField] private AssetManagementType _sceneAssetType;
+        // TODO Move to another SO
+        [DropdownIndex("GetSceneCollectionNames")]
+        [SerializeField] private int _selectedSceneCollection;
 
         private int _lastLoadedIndex;
         private string _lastLoadedLabel;
 
         public AssetManagementType SceneAssetType { get => _sceneAssetType; set => _sceneAssetType = value; }
+        public int SelectedSceneCollection { get => _selectedSceneCollection; set => _selectedSceneCollection = value; }
 
         public event Action<int, string> OnCollectionLoaded;
 
@@ -99,6 +103,11 @@ namespace d4160.SceneManagement {
             }
         }
 
+        [Button]
+        public void LoadSceneCollectionAsync() {
+            LoadSceneCollectionAsync (_selectedSceneCollection, _sceneAssetType);
+        }
+        
         /* LOAD */
 
         public void LoadSceneCollectionAsync(string label) {
@@ -200,6 +209,10 @@ namespace d4160.SceneManagement {
         }
 
         /* CONTINUE */
+        [Button]
+        public void ContinueCollectionLoadAsync() {
+            ContinueCollectionLoadAsync (_selectedSceneCollection, _sceneAssetType);
+        }
 
         public void ContinueCollectionLoadAsync(string label) {
             ContinueCollectionLoadAsync (label, _sceneAssetType);
@@ -268,6 +281,10 @@ namespace d4160.SceneManagement {
         }
 
         /* UNLOAD */
+        [Button]
+        public void UnloadSceneCollectionAsync() {
+            UnloadSceneCollectionAsync (_selectedSceneCollection, _sceneAssetType);
+        }
 
         public void UnloadSceneCollectionAsync(string label) {
             UnloadSceneCollectionAsync (label, _sceneAssetType);
