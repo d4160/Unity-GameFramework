@@ -13,6 +13,10 @@ namespace d4160.Instancers
 
         public GameObject Prefab { get => _prefab; set => _prefab = value; }
 
+        public virtual void Destroy<T>(T instance) where T : Component {
+            Destroy(instance.gameObject);
+        }
+
         public virtual void Destroy(GameObject instance)
         {
             if (instance)
@@ -27,6 +31,10 @@ namespace d4160.Instancers
                     GameObject.DestroyImmediate(instance);
                 }
             }
+        }
+
+        public virtual T InstantiateAs<T>() where T : Component {
+            return Instantiate().GetComponent<T>();
         }
 
         public virtual GameObject Instantiate()

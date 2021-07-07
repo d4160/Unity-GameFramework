@@ -6,13 +6,13 @@ namespace d4160.Loops
         void OnUpdate(float deltaTime);
     }
 
-    public interface ILaterUpdateInstance
+    public interface ILateUpdateObject
     {
-        void OnUpdate(float deltaTime);
+        void OnLateUpdate(float deltaTime);
     }
 
-    public interface IFixedUpdateInstance
+    public interface IFixedUpdateObject
     {
-        void OnUpdate(float fixedDeltaTime);
+        void OnFixedUpdate(float fixedDeltaTime);
     }
 }

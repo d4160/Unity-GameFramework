@@ -6,16 +6,16 @@ namespace d4160.Loops
 {
     public sealed class FixedUpdateManager : Singleton<FixedUpdateManager>
     {
-        private static List<IFixedUpdateInstance> _updates = new List<IFixedUpdateInstance>();
+        private static List<IFixedUpdateObject> _updates = new List<IFixedUpdateObject>();
 
-        public static void AddInstance(IFixedUpdateInstance instance)
+        public static void RegisterObject(IFixedUpdateObject updateObj)
         {
-            _updates.Add(instance);
+            _updates.Add(updateObj);
         }
 
-        public static void RemoveInstance(IFixedUpdateInstance instance)
+        public static void UnregisterObject(IFixedUpdateObject updateObj)
         {
-            _updates.Remove(instance);
+            _updates.Remove(updateObj);
         }
 
         private void FixedUpdate()
@@ -23,7 +23,7 @@ namespace d4160.Loops
             float dt = Time.fixedDeltaTime;
             for (var i = 0; i < _updates.Count; i++)
             {
-                _updates[i].OnUpdate(dt);
+                _updates[i].OnFixedUpdate(dt);
             }
         }
     }

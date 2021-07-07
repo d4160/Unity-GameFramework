@@ -6,16 +6,16 @@ namespace d4160.Loops
 {
     public sealed class LateUpdateManager : Singleton<LateUpdateManager>
     {
-        private static List<ILaterUpdateInstance> _updates = new List<ILaterUpdateInstance>();
+        private static List<ILateUpdateObject> _updates = new List<ILateUpdateObject>();
 
-        public static void AddInstance(ILaterUpdateInstance instance)
+        public static void RegisterObject(ILateUpdateObject updateObj)
         {
-            _updates.Add(instance);
+            _updates.Add(updateObj);
         }
 
-        public static void RemoveInstance(ILaterUpdateInstance instance)
+        public static void UnregisterObject(ILateUpdateObject updateObj)
         {
-            _updates.Remove(instance);
+            _updates.Remove(updateObj);
         }
 
         private void LateUpdate()
@@ -23,7 +23,7 @@ namespace d4160.Loops
             float dt = Time.deltaTime;
             for (var i = 0; i < _updates.Count; i++)
             {
-                _updates[i].OnUpdate(dt);
+                _updates[i].OnLateUpdate(dt);
             }
         }
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace d4160.Instancers
 {
-    public class UniqueComponentProvider<T> : IProvider<T> where T : Component
+    public class UniqueComponentProvider<T> : IObjectFactory<T> where T : Component
     {
         protected T _uniqueInstance;
         public T Prefab

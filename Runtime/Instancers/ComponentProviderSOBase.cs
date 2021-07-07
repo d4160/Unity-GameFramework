@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace d4160.Instancers
 {
-    public abstract class ComponentProviderSO : ScriptableObject
+    public abstract class ComponentProviderSOBase : ScriptableObject
     {
         [SerializeField] protected Component _prefab;
         // [Tooltip("If is not null, set as parent in each instantiation.")]
@@ -15,7 +15,9 @@ namespace d4160.Instancers
         public event Action<Component> OnInstanced;
         public event Action<Component> OnDestroy;
 
-        public abstract IProvider<Component> Provider { get; }
+        //public abstract IProvider<Component> Provider { get; }
+        public abstract IOutProvider<Component> OutProvider { get; } 
+        public abstract IInProvider<Component> InProvider { get; } 
         public Transform Parent { get; set; }
         public Component Prefab { get => _prefab; set => _prefab = value; }
 
@@ -23,23 +25,23 @@ namespace d4160.Instancers
         protected void CallOnDestroyEvent(Component comp) => OnDestroy?.Invoke(comp);
 
         public void Setup() {
-            Provider.Prefab = _prefab;
+            InProvider.Prefab = _prefab;
         }
 
         public void RegisterEvents() {
-            Provider.OnInstanced += CallOnInstancedEvent;
-            Provider.OnDestroy += CallOnDestroyEvent;
+            OutProvider.OnInstanced += CallOnInstancedEvent;
+            OutProvider.OnDestroy += CallOnDestroyEvent;
         }
 
         public void UnregisterEvents() {
-            Provider.OnInstanced -= CallOnInstancedEvent;
-            Provider.OnDestroy -= CallOnDestroyEvent;
+            OutProvider.OnInstanced -= CallOnInstancedEvent;
+            OutProvider.OnDestroy -= CallOnDestroyEvent;
         }
 
         [Button]
         public Component Instantiate()
         {
-            Component instance = Provider.Instantiate();
+            Component instance = OutProvider.Instantiate();
             if (Parent) instance.transform.SetParent(Parent, _worldPositionStays);
             return instance;
         }
@@ -51,12 +53,12 @@ namespace d4160.Instancers
 
         public void Destroy(Component instance)
         {
-            Provider.Destroy(instance);
+            InProvider.Destroy(instance);
         }
 
         public void Destroy<T>(T instance) where T : Component
         {
-            Provider.Destroy(instance);
+            InProvider.Destroy(instance);
         }
     }
 }

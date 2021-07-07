@@ -4,15 +4,20 @@ using UnityEngine;
 
 namespace d4160.Instancers.Photon
 {
-    public class PhotonFactory : ComponentFactory<PhotonView>
+    public class PhotonFactory : GameObjectFactory
     {
         protected Vector3 _position;
         protected Quaternion _rotation;
         protected byte _group;
         protected object[] _data;
 
-        public PhotonFactory(PhotonView prefab) : base(prefab)
+        public PhotonFactory()
         {
+        }
+        
+        public PhotonFactory(PhotonView prefab)
+        {
+            _prefab = prefab.gameObject;
         }
 
         public Vector3 Position { get => _position; set => _position = value; }
@@ -20,13 +25,17 @@ namespace d4160.Instancers.Photon
         public byte Group { get => _group; set => _group = value; }
         public object[] Data { get => _data; set => _data = value; }
 
-        public override void Destroy(PhotonView instance)
+        public void Destroy(PhotonView instance) {
+            Destroy(instance);
+        }
+
+        public override void Destroy(GameObject instance)
         {
             if (instance)
             {
                 if (Application.isPlaying)
                 {
-                    PhotonNetwork.Destroy(instance);
+                    PhotonNetwork.Destroy(instance.GetComponent<PhotonView>());
                 }
                 else
                 {
@@ -35,11 +44,15 @@ namespace d4160.Instancers.Photon
             }
         }
 
-        public override PhotonView Instantiate()
+        public PhotonView InstantiateAsPhotonView(){
+            return InstantiateAs<PhotonView>();
+        }
+
+        public override GameObject Instantiate()
         {
             if (_prefab)
             {
-                return PhotonNetwork.Instantiate(_prefab.name, _position, _rotation, _group, _data).GetComponent<PhotonView>();
+                return PhotonNetwork.Instantiate(_prefab.name, _position, _rotation, _group, _data);
             }
 
             return null;
