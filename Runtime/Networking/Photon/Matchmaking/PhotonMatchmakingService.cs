@@ -252,6 +252,10 @@ namespace d4160.Networking.Photon {
             }
         }
 
+        public T GetValue<T> () {
+            return (T)GetValue();
+        }
+
         public static ExitGames.Client.Photon.Hashtable GetPhotonHashtable (HashtableStruct[] hastableArray) {
 
             if (hastableArray.Length > 0) {

@@ -41,7 +41,10 @@ namespace d4160.Networking.Photon {
         private void CallOnPlayerEnteredRoomEvent (Player player) => OnPlayerEnteredRoomEvent?.Invoke (player);
         private void CallOnPlayerLeftRoomEvent (Player player) => OnPlayerLeftRoomEvent?.Invoke (player);
         private void CallOnRoomPropertiesUpdateEvent (ExitGames.Client.Photon.Hashtable propertiesThatChanged) => OnRoomPropertiesUpdateEvent?.Invoke (propertiesThatChanged);
-        private void CallOnPlayerPropertiesUpdateEvent (Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps) => OnPlayerPropertiesUpdateEvent?.Invoke (targetPlayer, changedProps);
+        private void CallOnPlayerPropertiesUpdateEvent(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+        {
+            OnPlayerPropertiesUpdateEvent?.Invoke(targetPlayer, changedProps);
+        }
         private void CallOnMasterClientSwitchedEvent (Player player) => OnMasterClientSwitchedEvent?.Invoke (player);
 
         private readonly PhotonRoomService _roomService = PhotonRoomService.Instance;
@@ -130,6 +133,12 @@ namespace d4160.Networking.Photon {
             return string.Empty;
         }
 
+        public string GetCustomRoomPropValue(int index) {
+            if (_customRoomProperties.IsValidIndex(index))
+                return _customRoomProperties[index].value;
+            return string.Empty;
+        }
+
         public void SetCustomRoomProperty(string key, CommonType type, string value) {
             for (int i = 0; i < _customRoomProperties.Length; i++) {
                 bool found = _customRoomProperties[i].SetValue(key, type, value);
@@ -154,6 +163,19 @@ namespace d4160.Networking.Photon {
             if (_customPlayerProperties.IsValidIndex(index))
                 return _customPlayerProperties[index].key;
             return string.Empty;
+        }
+
+        public string GetCustomPlayerPropValue(int index) {
+            if (_customPlayerProperties.IsValidIndex(index))
+                return _customPlayerProperties[index].value;
+            return string.Empty;
+        }
+
+        public T GetCustomPlayerPropValue<T>(int index) {
+            if (_customPlayerProperties.IsValidIndex(index)) {
+                return _customPlayerProperties[index].GetValue<T>();
+            }
+            return default;
         }
 
         public void SetCustomPlayerProperty(string key, CommonType type, string value) {

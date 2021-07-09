@@ -8,7 +8,7 @@ namespace d4160.Instancers.Photon
 {
     public class PhotonFactoryBehaviour : MonoBehaviourUnityData<PhotonFactorySO>
     {
-        [SerializeField] private Transform _instancesParent;
+        [SerializeField] private Transform _instanceParent;
 
         [Header("EVENTS")]
         [SerializeField] private UltEvent<PhotonView> _onInstanced;
@@ -35,7 +35,7 @@ namespace d4160.Instancers.Photon
 
         void Start() {
             if (_data) {
-                _data.Parent = _instancesParent;
+                _data.Parent = _instanceParent;
                 _data.Setup();
             }
         }

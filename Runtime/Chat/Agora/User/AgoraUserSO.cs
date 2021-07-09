@@ -12,7 +12,7 @@ namespace d4160.Chat.Agora
     public class AgoraUserSO : ScriptableObject
     {
         [Expandable]
-        [SerializeField] private ComponentProviderSO _provider;
+        [SerializeField] private ComponentProviderSOBase _provider;
         [SerializeField] AgoraVideoSurfaceType _agoraVideoSurfaceType = AgoraVideoSurfaceType.Renderer;
         [SerializeField] uint _videoFps = 30;
         [SerializeField] bool _enableFlipHorizontal = true;
@@ -26,7 +26,7 @@ namespace d4160.Chat.Agora
 
         public Dictionary<uint, VideoSurface> UserVideoDict => _userService.UserVideoDictionary;
 
-        public ComponentProviderSO VideoSurfaceProvider { get => _provider; set => _provider = value; }
+        public ComponentProviderSOBase VideoSurfaceProvider { get => _provider; set => _provider = value; }
         public AgoraVideoSurfaceType AgoraVideoSurfaceType { get => _agoraVideoSurfaceType; set => _agoraVideoSurfaceType = value; }
         public uint VideoFps { get => _videoFps; set => _videoFps = value; }
         public bool EnableFlipHorizontal { get => _enableFlipHorizontal; set => _enableFlipHorizontal = value; }

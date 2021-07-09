@@ -28,7 +28,7 @@ namespace d4160.Chat.Agora
         private Dictionary<uint, VideoSurface> _userVideoDict = new Dictionary<uint, VideoSurface>();
         public Dictionary<uint, VideoSurface> UserVideoDictionary => _userVideoDict;
 
-        public ComponentProviderSO VideoSurfaceProvider { get; set; }
+        public ComponentProviderSOBase VideoSurfaceProvider { get; set; }
         public float OtherVideoSurfaceScaleMultiplier { get; set; } // 0.25f
 
         private void CallOnUserJoined(uint uid, int elapsed)

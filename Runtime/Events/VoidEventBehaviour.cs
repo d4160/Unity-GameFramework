@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using d4160.MonoBehaviourData;
 using NaughtyAttributes;
 using UltEvents;
