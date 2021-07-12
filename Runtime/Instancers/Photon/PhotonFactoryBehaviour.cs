@@ -1,3 +1,4 @@
+#if PHOTON_UNITY_NETWORKING
 using d4160.MonoBehaviourData;
 using NaughtyAttributes;
 using Photon.Pun;
@@ -8,7 +9,7 @@ namespace d4160.Instancers.Photon
 {
     public class PhotonFactoryBehaviour : MonoBehaviourUnityData<PhotonFactorySO>
     {
-        [SerializeField] private Transform _instanceParent;
+        [SerializeField] private Transform _parent;
 
         [Header("EVENTS")]
         [SerializeField] private UltEvent<PhotonView> _onInstanced;
@@ -35,28 +36,24 @@ namespace d4160.Instancers.Photon
 
         void Start() {
             if (_data) {
-                _data.Parent = _instanceParent;
+                _data.Parent = _parent;
                 _data.Setup();
             }
         }
 
         [Button]
-        public PhotonView Instantiate() {
-            if (_data) return _data.InstantiateAs<PhotonView>(); return null;
-        }
+        public PhotonView Instantiate() => _data?.InstantiateAs<PhotonView>();
+        public PhotonView Instantiate(Vector3 position, Quaternion rotation) => _data?.InstantiateAs<PhotonView>(position, rotation, _parent);
+        public PhotonView Instantiate(Vector3 position, Quaternion rotation, Transform parent) => _data?.InstantiateAs<PhotonView>(position, rotation, parent);
+        public PhotonView Instantiate(Transform parent, bool worldPositionStays = true) => _data?.InstantiateAs<PhotonView>(parent, worldPositionStays);
 
-        public T InstantiateAs<T>() where T : PhotonView
-        {
-            if (_data) return _data.Instantiate() as T; return null;
-        }
+        public T InstantiateAs<T>() where T : PhotonView => _data?.InstantiateAs<T>();
+        public T InstantiateAs<T>(Vector3 position, Quaternion rotation, Transform parent = null) where T : PhotonView => _data?.InstantiateAs<T>(position, rotation, parent);
+        public T InstantiateAs<T>(Transform parent, bool worldPositionStays = true) where T : PhotonView => _data?.InstantiateAs<T>(parent, worldPositionStays);
 
-        public void Destroy(PhotonView instance) {
-            if (_data) _data.Destroy(instance);
-        }
+        public void Destroy(PhotonView instance) => _data?.Destroy(instance);
 
-        public void Destroy<T>(T instance) where T : PhotonView
-        {
-            if (_data) _data.Destroy(instance);
-        }
+        public void Destroy<T>(T instance) where T : PhotonView => _data?.Destroy(instance);
     }
 }
+#endif

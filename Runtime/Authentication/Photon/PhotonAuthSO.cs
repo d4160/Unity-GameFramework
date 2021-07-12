@@ -4,6 +4,7 @@ using d4160.Authentication;
 using NaughtyAttributes;
 using Photon.Realtime;
 using UnityEngine;
+using CodeMonkey.Utils;
 
 namespace d4160.Auth.Photon
 {
@@ -16,6 +17,8 @@ namespace d4160.Auth.Photon
         [SerializeField] private string _customServiceId;
         [ShowIf("_authType", CustomAuthenticationType.Custom)]
         [SerializeField] private string _token;
+        [SerializeField] private bool _useRandomNickname;
+        [HideIf("_useRandomNickname")]
         [SerializeField] private string _nickname;
 
         private readonly PhotonAuthService _authService = PhotonAuthService.Instance;
@@ -53,7 +56,14 @@ namespace d4160.Auth.Photon
         [Button]
         public void SetNickname(string nickname = null){
             CheckAndExecute(() => { 
-                _authService.DisplayName = nickname ?? _nickname;
+                _authService.DisplayName = string.IsNullOrEmpty(nickname) ? (_useRandomNickname ? UtilsClass.GetRandomName(true) : _nickname) : nickname;
+            });
+        }
+
+        [Button]
+        public void SetRandomNickname(){
+            CheckAndExecute(() => { 
+                _authService.DisplayName = UtilsClass.GetRandomName(true);
             });
         }
 

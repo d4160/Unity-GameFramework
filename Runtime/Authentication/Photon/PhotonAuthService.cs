@@ -39,9 +39,9 @@ namespace d4160.Auth.Photon {
                 if (Application.isPlaying) {
                     PhotonNetwork.NickName = value;
 
-                    Debug.Log ("Nickname is set correctly");
+                    Debug.Log ($"PHOTON: Nickname is set correctly: {value}");
                 } else {
-                    Debug.LogWarning ("The nickname are saved in PlayerPrefs, but Photon cannot work in edit mode");
+                    Debug.LogWarning ("PHOTON: The nickname are saved in PlayerPrefs, but Photon cannot work in edit mode");
                 }
             }
         }

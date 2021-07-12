@@ -45,11 +45,14 @@ namespace d4160.Auth.Photon
         }
 
         [Button]
-        public void SetNickname(){
+        public void SetNickname(string nickname = null){
             if(_data) {
-                _data.SetNickname();
+                _data.SetNickname(nickname);
             }
         }
+
+        [Button]
+        public void SetRandomNickname() => _data?.SetRandomNickname();
 
         [Button]
         public void Logout(){

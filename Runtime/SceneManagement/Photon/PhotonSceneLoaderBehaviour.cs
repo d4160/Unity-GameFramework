@@ -3,6 +3,7 @@ using NaughtyAttributes;
 using Photon.Pun;
 using UnityEngine;
 using d4160.Singleton;
+using d4160.Singleton.Photon;
 
 namespace d4160.SceneManagement.Photon 
 {
@@ -10,7 +11,7 @@ namespace d4160.SceneManagement.Photon
     /// When don't want to use AutomaticallySyncScene
     /// </summary>
     [RequireComponent(typeof(PhotonView))]
-    public class PhotonSceneLoaderBehaviour : Singleton<PhotonSceneLoaderBehaviour>
+    public class PhotonSceneLoaderBehaviour : SingletonBehaviourPun<PhotonSceneLoaderBehaviour>
     {
         [Expandable]
         [SerializeField] private SceneManagerSO _sceneManagerAsset;
@@ -18,20 +19,12 @@ namespace d4160.SceneManagement.Photon
         [SerializeField] private int _sceneCollection;
 
         public int SceneCollection { get => _sceneCollection; set => _sceneCollection = value; }
-        public PhotonView PhotonView => _photonView;
 
 #if UNITY_EDITOR
         private string[] SceneCollectionsNames => _sceneManagerAsset?.GetSceneCollectionNames;
 #endif
 
-        private PhotonView _photonView;
         private bool _loadingLevelAndPausedNetwork;
-
-        protected override void Awake() 
-        {
-            base.Awake();
-            _photonView = GetComponent<PhotonView>();
-        }
 
         void OnEnable() 
         {

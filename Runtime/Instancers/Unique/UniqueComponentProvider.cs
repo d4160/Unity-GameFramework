@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace d4160.Instancers
 {
-    public class UniqueComponentProvider<T> : IObjectFactory<T> where T : Component
+    public class UniqueComponentProvider<T> : IProvider<T> where T : Component
     {
         protected T _uniqueInstance;
         public T Prefab
@@ -18,6 +18,18 @@ namespace d4160.Instancers
             }
             set => _uniqueInstance = value;
         }
+
+        protected Transform _parent;
+        protected bool _worldPositionStays;
+        protected bool _setPositionAndRotation;
+        protected Vector3 _position = Vector2.zero;
+        protected Quaternion _rotation =  Quaternion.identity;
+
+        public Transform Parent { get => _parent; set => _parent = value; }
+        public bool WorldPositionStays { get => _worldPositionStays; set => _worldPositionStays = value; }
+        public bool UsePositionAndRotation { get => _setPositionAndRotation; set => _setPositionAndRotation = value; }
+        public Vector3 Position { get => _position; set => _position = value; }
+        public Quaternion Rotation { get => _rotation; set => _rotation = value; }
 
         public event Action<T> OnInstanced;
         public event Action<T> OnDestroy;
@@ -47,10 +59,41 @@ namespace d4160.Instancers
             }
         }
 
-        public T Instantiate()
-        {
-            OnInstanced?.Invoke(Prefab);
-            return Prefab;
+        public T2 InstantiateAs<T2>() where T2 : T {
+            return Instantiate() as T2;
         }
+
+        public T2 InstantiateAs<T2>(Vector3 position, Quaternion rotation, Transform parent = null) where T2 : T {
+            return Instantiate(position, rotation, parent) as T2;
+        }
+
+        public T2 InstantiateAs<T2>(Transform parent, bool worldPositionStays = true) where T2 : T {
+            return Instantiate(parent, worldPositionStays) as T2;
+        }
+
+        public T Instantiate(Vector3 position, Quaternion rotation, Transform parent = null) {
+            return Instantiate(position, rotation, true, parent, true);
+        }
+
+        public T Instantiate(Transform parent, bool worldPositionStays = true) {
+            return Instantiate(default, default, false, parent, worldPositionStays);
+        }
+
+        protected virtual T Instantiate(Vector3 position, Quaternion rotation, bool usePositionAndRotation, Transform parent, bool worldPositionStays) {
+            if (Prefab)
+            {
+                if (_parent)
+                    Prefab.transform.SetParent(_parent, worldPositionStays);
+                if(usePositionAndRotation)
+                    Prefab.transform.SetPositionAndRotation(_position, _rotation);
+
+                OnInstanced?.Invoke(Prefab);
+                return Prefab;
+            }
+
+            return null;
+        }
+
+        public T Instantiate() => Instantiate(_position, _rotation, _parent);
     }
 }

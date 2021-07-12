@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace d4160.Loops
 {
-    public abstract class UpdateObjectBehaviourBase : MonoBehaviour, IUpdateObject
+    public abstract class UpdatableBehaviourBase : MonoBehaviour, IUpdateObject
     {
         protected virtual void OnEnable()
         {
@@ -19,7 +19,7 @@ namespace d4160.Loops
         }
     }
 
-    public abstract class FixedUpdateObjectBehaviourBase : MonoBehaviour, IFixedUpdateObject
+    public abstract class FixedUpdatableBehaviourBase : MonoBehaviour, IFixedUpdateObject
     {
         protected virtual void OnEnable()
         {
@@ -36,7 +36,7 @@ namespace d4160.Loops
         }
     }
 
-    public abstract class LateUpdateObjectBehaviourBase : MonoBehaviour, ILateUpdateObject
+    public abstract class LateUpdatableBehaviourBase : MonoBehaviour, ILateUpdateObject
     {
         protected virtual void OnEnable()
         {
@@ -53,7 +53,7 @@ namespace d4160.Loops
         }
     }
 
-    public abstract class WithFixedUpdateObjectBehaviourBase : MonoBehaviour, IUpdateObject, IFixedUpdateObject
+    public abstract class WithFixedUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, IFixedUpdateObject
     {
         protected virtual void OnEnable()
         {
@@ -76,7 +76,7 @@ namespace d4160.Loops
         }
     }
 
-    public abstract class AllUpdateObjectBehaviourBase : MonoBehaviour, IUpdateObject, IFixedUpdateObject, ILateUpdateObject
+    public abstract class AllUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, IFixedUpdateObject, ILateUpdateObject
     {
         protected virtual void OnEnable()
         {
