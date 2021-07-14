@@ -686,7 +686,7 @@ namespace d4160.Auth.PlayFab {
                 photonAuth.AuthType = CustomAuthenticationType.Custom;
                 photonAuth.SessionTicket = rc.PhotonCustomAuthenticationToken;
                 photonAuth.Id = Id;
-                photonAuth.DisplayName = DisplayName;
+                photonAuth.DisplayName = LoginResultPayload?.PlayerProfile?.DisplayName;
                 photonAuth.Login ();
 
                 PhotonCustomAuthenticationToken = rc.PhotonCustomAuthenticationToken;
