@@ -9,7 +9,8 @@ namespace d4160.Instancers
     {
         private readonly UniqueComponentProvider<Component> _provider = new UniqueComponentProvider<Component>();
 
-        public override IOutProvider<Component> OutProvider => _provider;
-        public override IInProvider<Component> InProvider => _provider;
+        public override IProvider<Component> Provider => _provider;
+
+        public override Component Prefab { get; set; }
     }
 }

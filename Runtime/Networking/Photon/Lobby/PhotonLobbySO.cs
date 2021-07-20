@@ -58,8 +58,8 @@ namespace d4160.Networking.Photon {
         }
 
         [Button]
-        public void LeaveLobby () {
-            _lobbyService.LeaveLobby ();
+        public void LeaveLobby (Action onLeftLobby = null) {
+            _lobbyService.LeaveLobby (onLeftLobby);
         }
 
         public bool GetCustomRoomList (TypedLobby lobby, string sqlFilter) {

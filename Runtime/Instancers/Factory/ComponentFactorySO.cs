@@ -9,7 +9,6 @@ namespace d4160.Instancers
     {
         private readonly ComponentFactory<Component> _factory = new ComponentFactory<Component>();
 
-        public override IOutProvider<Component> OutProvider => _factory;
-        public override IInProvider<Component> InProvider => _factory;
+        public override IProvider<Component> Provider => _factory;
     }
 }

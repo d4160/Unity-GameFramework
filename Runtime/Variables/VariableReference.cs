@@ -4,7 +4,7 @@ using UnityEngine;
 namespace d4160.Variables
 {
     [System.Serializable]
-    public class VariableReference<T, TVarSO> where TVarSO : VariableSOBase<T>
+    public class VariableReference<TVarSO, T> where TVarSO : VariableSOBase<T>
     {
         [SerializeField] public bool _useConstant = true;
         [ShowIf("_useConstant")]
@@ -24,7 +24,7 @@ namespace d4160.Variables
             _constantValue = value;
         }
 
-        public static implicit operator T(VariableReference<T, TVarSO> reference)
+        public static implicit operator T(VariableReference<TVarSO, T> reference)
         {
             return reference.Value;
         }

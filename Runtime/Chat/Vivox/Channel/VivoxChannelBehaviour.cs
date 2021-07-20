@@ -17,7 +17,8 @@ namespace d4160.Chat.Vivox
         [SerializeField] private UltEvent<IParticipant, double> _onAudioEnergyChanged;
 
         public string ChannelName { get => _data?.ChannelName; set { if (_data) _data.ChannelName = value; } }
-        
+        public bool Muted { get => _data ? _data.Muted : true; set { if (_data) _data.Muted = value; } }
+
         void OnEnable() {
             if (_data)
             {

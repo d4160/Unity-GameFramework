@@ -50,9 +50,10 @@ namespace d4160.Chat.Agora
                 UserVideoDictionary[uid] = videoSurface;
                 //Vector2 pos = AgoraUIUtils.GetRandomPosition(100);
                 //videoSurface.transform.localPosition = new Vector3(pos.x, pos.y, 0);
+                M31Logger.LogInfo("onUserJoined: uid = " + uid + " elapsed = " + elapsed, LogLevel);
             }
             else {
-                M31Logger.LogInfo("onUserJoined: uid = " + uid + " elapsed = " + elapsed, LogLevel);
+                M31Logger.LogWarning("onUserJoined missing VideoSurface: uid = " + uid + " elapsed = " + elapsed, LogLevel);
             }
 
             OnUserJoinedEvent?.Invoke(uid, elapsed);

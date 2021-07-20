@@ -34,6 +34,8 @@ namespace d4160.Networking.Photon {
         public static event Action<List<RoomInfo>> OnRoomListUpdateEvent;
         public static event Action<List<TypedLobbyInfo>> OnLobbyStatisticsUpdateEvent;
 
+        private static event Action OnLeftLobbyEventTemp;
+
         private PhotonLobbyService () {
             _instance = this;
         }
@@ -60,9 +62,16 @@ namespace d4160.Networking.Photon {
             });
         }
 
-        public void LeaveLobby () {
+        public void LeaveLobby (Action onLeftLobby = null) {
             CheckAndExecute (() => {
-                PhotonNetwork.LeaveLobby ();
+                if (onLeftLobby != null) OnLeftLobbyEventTemp += onLeftLobby.Invoke;
+                if (PhotonNetwork.InLobby)
+                {
+                    PhotonNetwork.LeaveLobby();
+                }
+                else {
+                    InvokeOnLeftLobbyEventTemp();
+                }
             });
         }
 
@@ -96,6 +105,7 @@ namespace d4160.Networking.Photon {
         }
 
         public void OnLeftLobby () {
+            InvokeOnLeftLobbyEventTemp();
             M31Logger.LogInfo ("PHOTON: OnLeftLobby", LogLevel);
             OnLeftLobbyEvent?.Invoke ();
         }
@@ -110,6 +120,11 @@ namespace d4160.Networking.Photon {
             M31Logger.LogInfo ("PHOTON: OnLobbyStatisticsUpdate", LogLevel);
             _lobbyStatistics = lobbyStatistics;
             OnLobbyStatisticsUpdateEvent?.Invoke (lobbyStatistics);
+        }
+
+        private void InvokeOnLeftLobbyEventTemp() {
+            OnLeftLobbyEventTemp?.Invoke();
+            OnLeftLobbyEventTemp = null;
         }
     }
 

@@ -74,6 +74,7 @@ namespace d4160.Networking.Photon {
 
         [Button]
         public bool JoinRoom () {
+            Debug.Log($"Joining room: {_roomName}");
             _matchService.JoinRoomOptions = _joinRoomOption;
             _matchService.RoomName = _roomName;
             _matchService.ExpectedMaxPlayers = _expectedMaxPlayers;
@@ -132,14 +133,14 @@ namespace d4160.Networking.Photon {
         }
 
         [Button]
-        public void LeaveRoom () {
+        public void LeaveRoom (Action onLeftRoom = null) {
             _matchService.BecomeInactiveWhenLeaveRoom = _becomeInactiveWhenLeaveRoom;
-            _matchService.LeaveRoom ();
+            _matchService.LeaveRoom (onLeftRoom);
         }
 
-        public void LeaveRoom (bool? becomeInactiveWhenLeaveRoom) {
+        public void LeaveRoom (bool? becomeInactiveWhenLeaveRoom, Action onLeftRoom = null) {
             _matchService.BecomeInactiveWhenLeaveRoom = becomeInactiveWhenLeaveRoom ?? _becomeInactiveWhenLeaveRoom;
-            _matchService.LeaveRoom ();
+            _matchService.LeaveRoom (onLeftRoom);
         }
 
         [Button]

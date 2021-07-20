@@ -11,7 +11,7 @@ namespace d4160.Variables
     }
 
     [System.Serializable]
-    public class GameObjectReference : VariableReference<GameObject, GameObjectVariableSO>
+    public class GameObjectReference : VariableReference<GameObjectVariableSO, GameObject>
     {
     }
 }

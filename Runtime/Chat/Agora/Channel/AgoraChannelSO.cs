@@ -96,9 +96,9 @@ namespace d4160.Chat.Agora
         /// <summary>
         ///   Leave a RTC channel
         /// </summary>
-        public void LeaveChannel()
+        public void LeaveChannel(Action<RtcStats> onLeaveChannel = null)
         {
-            _channelService.LeaveChannel();
+            _channelService.LeaveChannel(onLeaveChannel);
         }
     }
 }

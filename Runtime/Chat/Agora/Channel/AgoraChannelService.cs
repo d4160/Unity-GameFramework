@@ -22,17 +22,21 @@ namespace d4160.Chat.Agora
         public static event Action<CHANNEL_MEDIA_RELAY_EVENT> OnChannelMediaRelayEventEvent;
         public static event Action<CHANNEL_MEDIA_RELAY_STATE, CHANNEL_MEDIA_RELAY_ERROR> OnChannelMediaRelayStateChangedEvent;
 
+        private static event Action<RtcStats> OnLeaveChannelEventTemp;
+
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
 
-        private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance; 
+        private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance;
         public static AgoraChannelService Instance => _instance ?? (_instance = new AgoraChannelService());
         private static AgoraChannelService _instance;
 
         public string CurrentChannel { get; private set; }
         public bool SetExternalVideoSource { get; set; }
+        public bool InChannel { get;  private set; }
 
         private void CallOnJoinChannelSuccess(string channelName, uint uid, int elapsed)
         {
+            InChannel = true;
             M31Logger.LogInfo("AGORA: JoinChannelSuccessHandler: uid = " + uid, LogLevel);
             OnJoinChannelSuccessEvent?.Invoke(channelName, uid, elapsed);
         }
@@ -45,6 +49,9 @@ namespace d4160.Chat.Agora
 
         private void CallOnLeaveChannel(RtcStats stats)
         {
+            InChannel = false;
+            InvokeOnLeaveChannelEventTemp(stats);
+
             M31Logger.LogInfo("AGORA: LeaveChannel: stats = " + stats, LogLevel);
             OnLeaveChannelEvent?.Invoke(stats);
         }
@@ -157,22 +164,28 @@ namespace d4160.Chat.Agora
             // join channel
             _connection.RtcEngine.JoinChannel(channelName, info, uid);
 
-            M31Logger.LogInfo($"AGORA: initializeEngine done. ExternalVideo response: {externalVideo}", LogLevel);
+            M31Logger.LogInfo($"AGORA: Joining to '{channelName}' channel. ExternalVideo response: {externalVideo}", LogLevel);
         }
 
         /// <summary>
         ///   Leave a RTC channel
         /// </summary>
-        public void LeaveChannel()
+        public void LeaveChannel(Action<RtcStats> onLeaveChannel = null)
         {
             M31Logger.LogInfo("calling leave", LogLevel);
 
             if (CheckErrors()) return;
 
-            // leave channel
-            _connection.RtcEngine.LeaveChannel();
-            // deregister video frame observers in native-c code
-            _connection.RtcEngine.DisableVideoObserver();
+            if (InChannel)
+            {
+                // leave channel
+                _connection.RtcEngine.LeaveChannel();
+                // deregister video frame observers in native-c code
+                _connection.RtcEngine.DisableVideoObserver();
+            }
+            else {
+                InvokeOnLeaveChannelEventTemp(default);
+            }
         }
 
         private bool CheckErrors(){
@@ -188,6 +201,11 @@ namespace d4160.Chat.Agora
             }
 
             return false;
+        }
+
+        private void InvokeOnLeaveChannelEventTemp(RtcStats stats) {
+            OnLeaveChannelEventTemp?.Invoke(stats);
+            OnLeaveChannelEventTemp = null;
         }
     }
 

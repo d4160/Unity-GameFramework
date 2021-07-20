@@ -74,7 +74,8 @@ namespace d4160.Chat.Vivox
         {
             if (_authService.LoginState == LoginState.LoggedIn)
             {
-                ChannelId channelId = new ChannelId(_authService.AuthSettings.TokenIssuer, channelName, _authService.AuthSettings.Domain, channelType, properties);
+                string fixedChannelName = channelName.Replace(" ", "");
+                ChannelId channelId = new ChannelId(_authService.AuthSettings.TokenIssuer, fixedChannelName, _authService.AuthSettings.Domain, channelType, properties);
                 IChannelSession channelSession = _authService.LoginSession.GetChannelSession(channelId);
                 channelSession.PropertyChanged += OnChannelPropertyChanged;
                 channelSession.Participants.AfterKeyAdded += OnParticipantAdded;

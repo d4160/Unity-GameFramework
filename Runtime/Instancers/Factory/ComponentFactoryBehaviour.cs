@@ -32,6 +32,10 @@ namespace d4160.Instancers
         }
 
         void Start() {
+            Setup();
+        }
+
+        public void Setup(){
             if (_data) {
                 _data.Parent = _instancesParent;
                 _data.Setup();

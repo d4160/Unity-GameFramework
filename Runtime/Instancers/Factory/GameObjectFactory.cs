@@ -84,7 +84,7 @@ namespace d4160.Instancers
 
         public GameObject Instantiate()
         {
-            return Instantiate(_position, _rotation, _parent);
+            return Instantiate(_position, _rotation, _setPositionAndRotation, _parent, _worldPositionStays);
         }
 
         

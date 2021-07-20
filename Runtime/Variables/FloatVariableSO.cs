@@ -9,7 +9,7 @@ namespace d4160.Variables
     }
 
     [System.Serializable]
-    public class FloatReference : VariableReference<float, FloatVariableSO>
+    public class FloatReference : VariableReference<FloatVariableSO, float>
     {
     }
 }

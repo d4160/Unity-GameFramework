@@ -11,7 +11,7 @@ namespace d4160.Variables
     }
 
     [System.Serializable]
-    public class Vector2Reference : VariableReference<Vector2, Vector2VariableSO>
+    public class Vector2Reference : VariableReference<Vector2VariableSO, Vector2>
     {
     }
 }

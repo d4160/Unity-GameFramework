@@ -9,10 +9,10 @@ namespace d4160.Instancers
         [SerializeField] protected GameObject _prefab;
         // [Tooltip("If is not null, set as parent in each instantiation.")]
         // [SerializeField] protected Transform _parent;
-        [SerializeField] protected bool _setPositionAndRotation;
-        [ShowIf("_setPositionAndRotation")]
+        [SerializeField] protected bool _usePositionAndRotation;
+        [ShowIf("_usePositionAndRotation")]
         [SerializeField] protected Vector3 _position;
-        [ShowIf("_setPositionAndRotation")]
+        [ShowIf("_usePositionAndRotation")]
         [SerializeField] protected Quaternion _rotation;
 
         [Header ("PARENT OPTIONS")]
@@ -27,7 +27,7 @@ namespace d4160.Instancers
         // public abstract IInProvider<GameObject> InProvider { get; } 
         public Transform Parent { get => Provider.Parent; set => Provider.Parent = value; }
         public GameObject Prefab { get => _prefab; set => _prefab = value; }
-        public bool UsePositionAndRotation { get => _setPositionAndRotation; set => _setPositionAndRotation = value; }
+        public bool UsePositionAndRotation { get => _usePositionAndRotation; set => _usePositionAndRotation = value; }
         public Vector3 Position { get => _position; set => _position = value; }
         public Quaternion Rotation { get => _rotation; set => _rotation = value; }
         public bool WorldPositionStays { get => _worldPositionStays; set => _worldPositionStays = value; }
@@ -44,7 +44,7 @@ namespace d4160.Instancers
 
         public virtual void Setup() {
             SetPrefab(_prefab);
-            Provider.UsePositionAndRotation = _setPositionAndRotation;
+            Provider.UsePositionAndRotation = _usePositionAndRotation;
             Provider.Position = _position;
             Provider.Rotation = _rotation;
             Provider.WorldPositionStays = _worldPositionStays;

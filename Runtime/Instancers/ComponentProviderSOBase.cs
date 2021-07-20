@@ -15,33 +15,34 @@ namespace d4160.Instancers
         public event Action<Component> OnInstanced;
         public event Action<Component> OnDestroy;
 
-        //public abstract IProvider<Component> Provider { get; }
-        public abstract IOutProvider<Component> OutProvider { get; } 
-        public abstract IInProvider<Component> InProvider { get; } 
+        public abstract IProvider<Component> Provider { get; }
+        // public abstract IOutProvider<Component> OutProvider { get; } 
+        // public abstract IInProvider<Component> InProvider { get; } 
         public Transform Parent { get; set; }
-        public Component Prefab { get => _prefab; set => _prefab = value; }
+        public virtual Component Prefab { get => _prefab; set => _prefab = value; }
+        public bool HasPrefab => (Provider as IOutProvider<Component>).Prefab;
 
         protected void CallOnInstancedEvent(Component comp) => OnInstanced?.Invoke(comp);
         protected void CallOnDestroyEvent(Component comp) => OnDestroy?.Invoke(comp);
 
         public void Setup() {
-            InProvider.Prefab = _prefab;
+            (Provider as IInProvider<Component>).Prefab = Prefab;
         }
 
         public void RegisterEvents() {
-            OutProvider.OnInstanced += CallOnInstancedEvent;
-            OutProvider.OnDestroy += CallOnDestroyEvent;
+            Provider.OnInstanced += CallOnInstancedEvent;
+            Provider.OnDestroy += CallOnDestroyEvent;
         }
 
         public void UnregisterEvents() {
-            OutProvider.OnInstanced -= CallOnInstancedEvent;
-            OutProvider.OnDestroy -= CallOnDestroyEvent;
+            Provider.OnInstanced -= CallOnInstancedEvent;
+            Provider.OnDestroy -= CallOnDestroyEvent;
         }
 
         [Button]
         public Component Instantiate()
         {
-            Component instance = OutProvider.Instantiate();
+            Component instance = Provider.Instantiate();
             if (Parent) instance.transform.SetParent(Parent, _worldPositionStays);
             return instance;
         }
@@ -53,12 +54,12 @@ namespace d4160.Instancers
 
         public void Destroy(Component instance)
         {
-            InProvider.Destroy(instance);
+            Provider.Destroy(instance);
         }
 
         public void Destroy<T>(T instance) where T : Component
         {
-            InProvider.Destroy(instance);
+            Provider.Destroy(instance);
         }
     }
 }

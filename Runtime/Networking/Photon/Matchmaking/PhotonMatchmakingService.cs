@@ -42,6 +42,8 @@ namespace d4160.Networking.Photon {
         public static event Action<short, string> OnJoinRandomFailedEvent;
         public static event Action OnLeftRoomEvent;
 
+        private static event Action OnLeftRoomEventTemp;
+
         private PhotonMatchmakingService () {
             _instance = this;
         }
@@ -79,10 +81,20 @@ namespace d4160.Networking.Photon {
 
         }
 
-        public void LeaveRoom () {
+        public void LeaveRoom (Action onLeftRoom = null) {
             CheckAndExecute (() => {
+                if (onLeftRoom != null) OnLeftRoomEventTemp += onLeftRoom.Invoke;
                 // becomeInactiveWhenLeaveRoom used for possibility to Rejoin
-                PhotonNetwork.LeaveRoom (_becomeInactiveWhenLeaveRoom);
+                if (PhotonNetwork.InRoom)
+                {
+                    Debug.Log("Calling LeaveRoom and is InRoom");
+                    PhotonNetwork.LeaveRoom(_becomeInactiveWhenLeaveRoom);
+                }
+                else
+                {
+                    Debug.Log("Calling LeaveRoom and is not InRoom");
+                    InvokeOnLeftRoomEventTemp();
+                }
             });
         }
 
@@ -146,8 +158,15 @@ namespace d4160.Networking.Photon {
         }
 
         public void OnLeftRoom () {
+            InvokeOnLeftRoomEventTemp();
+
             OnLeftRoomEvent?.Invoke ();
             M31Logger.LogInfo ("PHOTON: OnLeftRoom", LogLevel);
+        }
+
+        private void InvokeOnLeftRoomEventTemp() {
+            OnLeftRoomEventTemp?.Invoke();
+            OnLeftRoomEventTemp = null;
         }
     }
 
