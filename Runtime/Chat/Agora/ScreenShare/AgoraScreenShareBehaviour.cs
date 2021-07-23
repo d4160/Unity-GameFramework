@@ -3,12 +3,35 @@ using agora_gaming_rtc;
 using UnityEngine;
 using NaughtyAttributes;
 using d4160.MonoBehaviourData;
+using UltEvents;
 
 namespace d4160.Chat.Agora
 {
     public class AgoraScreenShareBehaviour : MonoBehaviourUnityData<AgoraScreenShareSO>
     {
         [SerializeField] VideoSurface _videoSurface;
+        
+        [Header("EVENTS")]
+        [SerializeField] private UltEvent _onStartScreenCaptureEvent;
+        [SerializeField] private UltEvent _onStopScreenCaptureEvent;
+
+        void OnEnable () {
+            if (_data)
+            {
+                _data.RegisterEvents();
+                _data.OnStartScreenCaptureEvent += _onStartScreenCaptureEvent.Invoke;
+                _data.OnStopScreenCaptureEvent += _onStopScreenCaptureEvent.Invoke;
+            }
+        }
+
+        void OnDisable(){
+            if (_data)
+            {
+                _data.UnregisterEvents();
+                _data.OnStartScreenCaptureEvent -= _onStartScreenCaptureEvent.Invoke;
+                _data.OnStopScreenCaptureEvent -= _onStopScreenCaptureEvent.Invoke;
+            }
+        }   
         
         [Button]
         public void StartScreenCapture() {

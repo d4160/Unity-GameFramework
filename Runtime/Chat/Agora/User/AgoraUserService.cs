@@ -16,10 +16,12 @@ namespace d4160.Chat.Agora
         public static event Action<uint, USER_OFFLINE_REASON> OnUserOfflineEvent;
 
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
+        public bool AutoVideoSurface { get; set; } = true;
         public AgoraVideoSurfaceType AgoraVideoSurfaceType { get; set; } = AgoraVideoSurfaceType.Renderer;
         public uint VideoFps { get; set; } = 30;
         public bool EnableFlipHorizontal { get; set; } = true;
         public bool EnableFlipVertical { get; set; } = false;
+        public uint LocalUserUID { get; internal set; }
 
         private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance; 
         public static AgoraUserService Instance => _instance ?? (_instance = new AgoraUserService());
@@ -33,27 +35,34 @@ namespace d4160.Chat.Agora
 
         private void CallOnUserJoined(uint uid, int elapsed)
         {
-            M31Logger.LogInfo("onUserJoined: uid = " + uid + " elapsed = " + elapsed, LogLevel);
-            
             if (CheckErrors()) return;
 
-            VideoSurface videoSurface = VideoSurfaceProvider.InstantiateAs<VideoSurface>();
-            if (!ReferenceEquals(videoSurface, null))
+            if (!_userVideoDict.ContainsKey(uid))
+                _userVideoDict.Add(uid, null);
+
+            M31Logger.LogInfo($"onUserJoined: uid = {uid} elapsed = {elapsed}", LogLevel);
+
+            if (AutoVideoSurface)
             {
-                // configure videoSurface
-                videoSurface.transform.localScale = Vector3.one * OtherVideoSurfaceScaleMultiplier;
-                videoSurface.SetForUser(uid);
-                videoSurface.SetEnable(true);
-                videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType);
-                videoSurface.SetGameFps(VideoFps);
-                videoSurface.EnableFilpTextureApply(EnableFlipHorizontal, EnableFlipVertical);
-                UserVideoDictionary[uid] = videoSurface;
-                //Vector2 pos = AgoraUIUtils.GetRandomPosition(100);
-                //videoSurface.transform.localPosition = new Vector3(pos.x, pos.y, 0);
-                M31Logger.LogInfo("onUserJoined: uid = " + uid + " elapsed = " + elapsed, LogLevel);
-            }
-            else {
-                M31Logger.LogWarning("onUserJoined missing VideoSurface: uid = " + uid + " elapsed = " + elapsed, LogLevel);
+                VideoSurface videoSurface = VideoSurfaceProvider.InstantiateAs<VideoSurface>();
+                if (!ReferenceEquals(videoSurface, null))
+                {
+                    // configure videoSurface
+                    videoSurface.transform.localScale = Vector3.one * OtherVideoSurfaceScaleMultiplier;
+                    videoSurface.SetForUser(uid);
+                    videoSurface.SetEnable(true);
+                    videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType);
+                    videoSurface.SetGameFps(VideoFps);
+                    videoSurface.EnableFilpTextureApply(EnableFlipHorizontal, EnableFlipVertical);
+                    //Vector2 pos = AgoraUIUtils.GetRandomPosition(100);
+                    //videoSurface.transform.localPosition = new Vector3(pos.x, pos.y, 0);
+
+                    _userVideoDict[uid] = videoSurface;
+                }
+                else
+                {
+                    M31Logger.LogWarning("onUserJoined missing VideoSurface: uid = " + uid + " elapsed = " + elapsed, LogLevel);
+                }
             }
 
             OnUserJoinedEvent?.Invoke(uid, elapsed);
@@ -61,17 +70,21 @@ namespace d4160.Chat.Agora
 
         private void CallOnUserOfflineEvent(uint uid, USER_OFFLINE_REASON reason)
         {
-            M31Logger.LogInfo("onUserOffline: uid = " + uid + " reason = " + reason, LogLevel);
+            M31Logger.LogInfo($"onUserOffline: uid = {uid} reason = {reason}", LogLevel);
             
-            if (UserVideoDictionary.ContainsKey(uid))
+            if (_userVideoDict.ContainsKey(uid))
             {
-                var surface = UserVideoDictionary[uid];
-                surface.SetEnable(false);
-                UserVideoDictionary.Remove(uid);
-                if (VideoSurfaceProvider != null)
-                    VideoSurfaceProvider.Destroy(surface);
-                else
-                    GameObject.Destroy(surface.gameObject);
+                var videoSurface = _userVideoDict[uid];
+                if (videoSurface)
+                {
+                    videoSurface.SetEnable(false);
+
+                    if (VideoSurfaceProvider != null)
+                        VideoSurfaceProvider.Destroy(videoSurface);
+                    else
+                        GameObject.Destroy(videoSurface.gameObject);
+                }
+                _userVideoDict.Remove(uid);
             }
 
             OnUserOfflineEvent?.Invoke(uid, reason);

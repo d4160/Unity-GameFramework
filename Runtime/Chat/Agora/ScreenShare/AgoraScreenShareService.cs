@@ -11,6 +11,9 @@ namespace d4160.Chat.Agora
 {
     public class AgoraScreenShareService
     {
+        public static event Action OnStartScreenCaptureEvent;
+        public static event Action OnStopScreenCaptureEvent;
+
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
 
         private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance; 
@@ -32,7 +35,9 @@ namespace d4160.Chat.Agora
         public void StartScreenCapture(ScreenCaptureParametersStruct sparams)
         {
             if (CheckErrors()) return;
-            
+
+            if (!VideoSurface.gameObject.activeSelf) VideoSurface.gameObject.SetActive(true);
+            VideoSurface.SetForUser(0); // 0 means yourself
             VideoSurface.SetEnable(true);
 
             _connection.RtcEngine.EnableVideo();
@@ -45,6 +50,8 @@ namespace d4160.Chat.Agora
             StartScreenCaptureByScreenRect(DisplayID, sparams.GetScreenCaptureParams());
     #endif
             DisplayID = 1 - DisplayID; // only 0 and 1
+
+            OnStartScreenCaptureEvent?.Invoke();
         }
 
         private void StartScreenCaptureByScreenRect(int order, ScreenCaptureParameters sparams)
@@ -68,6 +75,8 @@ namespace d4160.Chat.Agora
             _connection.RtcEngine.StopScreenCapture(); 
 
             VideoSurface.SetEnable(false);
+
+            OnStopScreenCaptureEvent?.Invoke();
         } 
 
         private uint getDisplayId(int k)

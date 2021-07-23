@@ -29,6 +29,7 @@ namespace d4160.Chat.Agora
         private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance;
         public static AgoraChannelService Instance => _instance ?? (_instance = new AgoraChannelService());
         private static AgoraChannelService _instance;
+        private static AgoraUserService _userService = AgoraUserService.Instance;
 
         public string CurrentChannel { get; private set; }
         public bool SetExternalVideoSource { get; set; }
@@ -37,6 +38,9 @@ namespace d4160.Chat.Agora
         private void CallOnJoinChannelSuccess(string channelName, uint uid, int elapsed)
         {
             InChannel = true;
+            CurrentChannel = channelName;
+            _userService.LocalUserUID = uid;
+            
             M31Logger.LogInfo("AGORA: JoinChannelSuccessHandler: uid = " + uid, LogLevel);
             OnJoinChannelSuccessEvent?.Invoke(channelName, uid, elapsed);
         }

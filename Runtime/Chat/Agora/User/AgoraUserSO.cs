@@ -11,6 +11,7 @@ namespace d4160.Chat.Agora
     [CreateAssetMenu(menuName = "d4160/Chat/Agora User")]
     public class AgoraUserSO : ScriptableObject
     {
+        [SerializeField] private bool _autoVideoSurface = true;
         [Expandable]
         [SerializeField] private ComponentProviderSOBase _provider;
         [SerializeField] AgoraVideoSurfaceType _agoraVideoSurfaceType = AgoraVideoSurfaceType.Renderer;
@@ -54,6 +55,7 @@ namespace d4160.Chat.Agora
         public void Setup() {
             if (_provider) _provider.Setup();
 
+            _userService.AutoVideoSurface = _autoVideoSurface;
             _userService.VideoSurfaceProvider = _provider;
             _userService.AgoraVideoSurfaceType = _agoraVideoSurfaceType;
             _userService.VideoFps = _videoFps;
