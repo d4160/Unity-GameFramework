@@ -12,7 +12,17 @@ namespace d4160.Chat.Agora
     [CreateAssetMenu(menuName = "d4160/Agora/Video")]
     public class AgoraVideoSO : ScriptableObject
     {
-        [SerializeField] private bool _enableVideo;
+        [Tooltip("Enable o disable video module, this is required to join the call as video mode")]
+        [SerializeField] private bool _enableVideoModule;
+
+        [Tooltip("To get raw video data (can be modified pre and post), and to send the video pictures directly to the app instead of to the traditional view renderer")]
+        [SerializeField] private bool _enableVideoObserver;
+
+        [Tooltip("Whether to enable the camera to create the local video stream. This is faster than EnableVideo().")]
+        [SerializeField] private bool _enableLocalVideo = true;
+
+        [Tooltip("Whether to publish the local video stream. This is faster than EnableLocalVideo().")]
+        [SerializeField] private bool _muteLocalVideoStream = false;
 
         public event Action<uint, int, int, int> OnVideoSizeChangedEvent;
 
@@ -34,16 +44,44 @@ namespace d4160.Chat.Agora
 
         [Button]
         public void SetEnableVideo() {
-            SetEnableVideo(_enableVideo);
+            SetEnableVideo(_enableVideoModule, _enableLocalVideo, _enableLocalVideo, _muteLocalVideoStream);
+        }
+
+        [Button]
+        public void EnableLocalVideo() {
+            EnableLocalVideo(_enableLocalVideo);
+        }
+
+        [Button]
+        public void MuteLocalVideoStream() {
+            MuteLocalVideoStream(_muteLocalVideoStream);
         }
 
         /// <summary>
-        ///   Enable/Disable video
+        ///   Enable/Disable video module
         /// </summary>
         /// <param name="pauseVideo"></param>
-        public void SetEnableVideo(bool enableVideo)
+        public void SetEnableVideo(bool enableVideo, bool enableVideoObserver, bool enableLocalVideo = true, bool muteLocalVideoStream = false)
         {
-            _videoService.SetEnableVideo(enableVideo);
+            _videoService.SetEnableVideo(enableVideo, enableVideoObserver, enableLocalVideo, muteLocalVideoStream);
+        }
+
+        public void EnableLocalVideo(bool enableLocalVideo)
+        {
+            _videoService.EnableLocalVideo(enableLocalVideo);
+        }
+
+        public void MuteLocalVideoStream(bool muteLocalVideoStream)
+        {
+            _videoService.MuteLocalVideoStream(muteLocalVideoStream);
+        }
+
+        public void MuteRemoteVideoStream(uint uid, bool mute) {
+            _videoService.MuteRemoteVideoStream(uid, mute);
+        }
+
+        public void MuteAllRemoteVideoStreams(bool mute) {
+            _videoService.MuteAllRemoteVideoStreams(mute);
         }
         
         [Button]

@@ -35,6 +35,8 @@ namespace d4160.Chat.Agora
         public bool SetExternalVideoSource { get; set; }
         public bool InChannel { get;  private set; }
 
+        // TODO ChannelProfile
+
         private void CallOnJoinChannelSuccess(string channelName, uint uid, int elapsed)
         {
             InChannel = true;

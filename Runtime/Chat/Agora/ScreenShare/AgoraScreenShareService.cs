@@ -32,6 +32,10 @@ namespace d4160.Chat.Agora
             _instance = this;
         }
 
+        /// <summary>
+        /// Share your screen accordding to the platform you are current in... need to EnableLocalVideo first
+        /// </summary>
+        /// <param name="sparams"></param>
         public void StartScreenCapture(ScreenCaptureParametersStruct sparams)
         {
             if (CheckErrors()) return;
@@ -40,8 +44,8 @@ namespace d4160.Chat.Agora
             VideoSurface.SetForUser(0); // 0 means yourself
             VideoSurface.SetEnable(true);
 
-            _connection.RtcEngine.EnableVideo();
-            _connection.RtcEngine.EnableVideoObserver();
+            // _connection.RtcEngine.EnableVideo();
+            // _connection.RtcEngine.EnableVideoObserver();
             _connection.RtcEngine.StopScreenCapture();
 
     #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
@@ -70,14 +74,14 @@ namespace d4160.Chat.Agora
         public void StopScreenCapture(){
             if (CheckErrors()) return;
 
-            _connection.RtcEngine.DisableVideo();
-            _connection.RtcEngine.DisableVideoObserver();
+            // _connection.RtcEngine.DisableVideo();
+            // _connection.RtcEngine.DisableVideoObserver();
             _connection.RtcEngine.StopScreenCapture(); 
 
             VideoSurface.SetEnable(false);
 
             OnStopScreenCaptureEvent?.Invoke();
-        } 
+        }
 
         private uint getDisplayId(int k)
         {

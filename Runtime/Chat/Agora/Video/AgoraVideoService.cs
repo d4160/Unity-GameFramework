@@ -20,9 +20,9 @@ namespace d4160.Chat.Agora
 
         public VideoSurface VideoSurface { get; set; }
 
-        private void CallOnVideoSizeChanged(uint uid, int width, int height, int rotation)
+        private void RaiseOnVideoSizeChanged(uint uid, int width, int height, int rotation)
         {
-            M31Logger.LogInfo("CallOnVideoSizeChanged: uid = " + uid, LogLevel);
+            M31Logger.LogInfo("OnVideoSizeChanged: uid = " + uid, LogLevel);
             OnVideoSizeChangedEvent?.Invoke(uid, width, height, rotation);
         }
 
@@ -32,38 +32,69 @@ namespace d4160.Chat.Agora
         }
 
         public void RegisterEvents () {
-            _connection.RtcEngine.OnVideoSizeChanged += CallOnVideoSizeChanged;
+            _connection.RtcEngine.OnVideoSizeChanged += RaiseOnVideoSizeChanged;
         }
 
         public void UnregisterEvents(){
-            _connection.RtcEngine.OnVideoSizeChanged -= CallOnVideoSizeChanged;
+            _connection.RtcEngine.OnVideoSizeChanged -= RaiseOnVideoSizeChanged;
         }   
 
         /// <summary>
-        ///   Enable/Disable video
+        ///   Enable/Disable video module
         /// </summary>
         /// <param name="pauseVideo"></param>
-        public void SetEnableVideo(bool enableVideo)
+        public void SetEnableVideo(bool enableVideo, bool enableVideoObserver, bool enableLocalVideo = true, bool muteLocalVideoStream = false)
         {
             if (CheckErrors()) return;
 
             if (enableVideo)
             {
                 _connection.RtcEngine.EnableVideo();
+                if (enableVideoObserver) _connection.RtcEngine.EnableVideoObserver();
+
+                if (!enableLocalVideo) EnableLocalVideo(false);
+                else { if(muteLocalVideoStream) MuteLocalVideoStream(true); }
             }
             else
             {
                 _connection.RtcEngine.DisableVideo();
+                if (!enableVideoObserver) _connection.RtcEngine.DisableVideoObserver();
             }
         }
 
+        public void EnableLocalVideo(bool enabled) {
+            if (CheckErrors()) return;
+
+            _connection.RtcEngine.EnableLocalVideo(enabled);
+        }
+
+        public void MuteLocalVideoStream(bool mute) {
+            if (CheckErrors()) return;
+
+            _connection.RtcEngine.MuteLocalVideoStream(mute);
+        }
+
+        public void MuteRemoteVideoStream(uint uid, bool mute) {
+            if (CheckErrors()) return;
+
+            _connection.RtcEngine.MuteRemoteVideoStream(uid, mute);
+        }
+
+        public void MuteAllRemoteVideoStreams(bool mute) {
+            if (CheckErrors()) return;
+
+            _connection.RtcEngine.MuteAllRemoteVideoStreams(mute);
+        }
+        
+        /// <summary>
+        /// Start the video preview locally without a channel, need to call EnableVideo() before
+        /// </summary>
         public void StartVideoPreview() {
             if (CheckErrors()) return;
 
+            // video surface with 0 uid is local by default
             VideoSurface.SetEnable(true);
 
-            _connection.RtcEngine.EnableVideo();
-            _connection.RtcEngine.EnableVideoObserver();
             _connection.RtcEngine.StartPreview();
 
             // VideoManager only works after video enabled
@@ -71,8 +102,6 @@ namespace d4160.Chat.Agora
         }
 
         public void StopVideoPreview() {
-            _connection.RtcEngine.DisableVideo();
-            _connection.RtcEngine.DisableVideoObserver();
             _connection.RtcEngine.StopPreview();
         }
 
