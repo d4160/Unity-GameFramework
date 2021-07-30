@@ -1,4 +1,5 @@
 using System;
+using d4160.Collections;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -6,7 +7,9 @@ namespace d4160.Instancers
 {
     public abstract class ObjectProviderSOBase<T> : ScriptableObject where T : class
     {
-        [SerializeField] protected T _prefab;
+        [SerializeField] protected bool _useLibrary;
+        [SerializeField, ShowIf("_useLibrary"), Expandable] protected LibrarySOBase<T> _library;
+        [SerializeField, HideIf("_useLibrary")] protected T _prefab;
         // [Tooltip("If is not null, set as parent in each instantiation.")]
         // [SerializeField] protected Transform _parent;
         [SerializeField] protected bool _usePositionAndRotation;
@@ -42,11 +45,13 @@ namespace d4160.Instancers
         public void SetWorldPositionStays(bool value) => Provider.WorldPositionStays = value;
 
         public virtual void Setup() {
-            SetPrefab(_prefab);
+            SetPrefab();
             Provider.UsePositionAndRotation = _usePositionAndRotation;
             Provider.Position = _position;
             Provider.Rotation = _rotation;
             Provider.WorldPositionStays = _worldPositionStays;
+            Provider.useLibrary = _useLibrary;
+            Provider.Library = _library;
         }
 
         public virtual void RegisterEvents() {

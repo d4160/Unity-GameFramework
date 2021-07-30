@@ -20,15 +20,15 @@ namespace d4160.Editor.NodeGraphProcessor
             IStyle mainStyle = mainContainer.style;
             mainStyle.width = 315;
 
-            var spawnsNumberField = UIElementsUtility.MinMaxIntField("Spawns Number", ref node.spawnsNumber, -1, 50,
+            var spawnsNumberField = UIElementsUtility.MinMaxIntField("Spawns Number", ref node.spawnsNumber, node.spawnsNumber.x, node.spawnsNumber.y, 0, 50,
                 (v) => node.spawnsNumber = v, (v) => node.spawnsNumber.x = v,
                 (v) => node.spawnsNumber.y = v);
 
-            var timeBetweenSpawnsField = UIElementsUtility.MinMaxFloatField("Time Between", ref node.timeBetweenSpawns, 1f, 10f,
+            var timeBetweenSpawnsField = UIElementsUtility.MinMaxFloatField("Time Between", ref node.timeBetweenSpawns, node.timeBetweenSpawns.x, node.timeBetweenSpawns.y, 0f, 10f,
                 (v) => node.timeBetweenSpawns = v, (v) => node.timeBetweenSpawns.x = v,
                 (v) => node.timeBetweenSpawns.y = v);
 
-            var instancesInEachSpawnField = UIElementsUtility.MinMaxIntField("Instances Number", ref node.instancesInEachSpawn, -1, 10,
+            var instancesInEachSpawnField = UIElementsUtility.MinMaxIntField("Instances Number", ref node.instancesInEachSpawn, node.instancesInEachSpawn.x, node.instancesInEachSpawn.y, 0, 20,
                 (v) => node.instancesInEachSpawn = v, (v) => node.instancesInEachSpawn.x = v,
                 (v) => node.instancesInEachSpawn.y = v);
 

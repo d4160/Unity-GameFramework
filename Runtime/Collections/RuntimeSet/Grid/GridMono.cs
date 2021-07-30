@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using d4160.Coroutines;
+using d4160.Instancers;
 using UnityEngine;
 
 namespace d4160.Grid
 {
     public class GridMono<T> : Grid<T> where T: MonoBehaviour
     {
+        protected IProvider<T> _provider;
+        
         private Transform _parent;
         private GridMonoProcessValueType _processValueType = GridMonoProcessValueType.None;
         private float _movementSpeedOrDuration;
@@ -18,6 +21,7 @@ namespace d4160.Grid
         /// </summary>
         /// <value></value>
         public float MovementSpeedOrDuration { get => _movementSpeedOrDuration; set => _movementSpeedOrDuration = value; }
+        public IProvider<T> Provider { get => _provider; set => _provider = value; }
 
         public GridMono(int width, int height, Vector2 cellSize, Vector3 originPosition = default, bool drawDebugText = true, Color? textColor = null, int textFontSize = 5, Transform textParent = null) : base(width, height, cellSize, originPosition, drawDebugText, textColor, textFontSize, textParent)
         {
@@ -126,6 +130,49 @@ namespace d4160.Grid
                         }
                     }
                 }
+            }
+        }
+
+        public override void FillAll(bool forceReplace = false) {
+            _iterator = 0;
+            if (_provider != null) {
+                for (var x = 0; x < _gridArray.GetLength (0); x++) {
+                    for (var y = 0; y < _gridArray.GetLength (1); y++) {
+                        T current = GetGridObject(x, y);
+                        if (current == null || forceReplace)
+                        {
+                            if(current != null)
+                                _provider.Destroy(current);
+
+                            T instance = _provider.Instantiate();
+                            SetGridObject(x, y, instance);
+                        }
+
+                        _iterator++;
+                    }
+                }
+            }
+            else {
+                Debug.LogWarning("Please, reinstantiate the Provider first.");
+            }
+        }
+
+        public override void DestroyAll() {
+            if (_provider != null) {
+                for (var x = 0; x < _gridArray.GetLength (0); x++) {
+                    for (var y = 0; y < _gridArray.GetLength (1); y++) {
+
+                        T current = GetGridObject(x, y);
+                        if (current != null)
+                        {
+                            _provider.Destroy(GetGridObject(x, y));
+                            SetGridObject(x, y, default);
+                        }
+                    }
+                }
+            }
+            else {
+                Debug.LogWarning("Please, reinstantiate the Provider first.");
             }
         }
 

@@ -1,4 +1,5 @@
 using System;
+using d4160.Collections;
 using UnityEngine;
 
 
@@ -15,6 +16,8 @@ namespace d4160.Instancers
         protected bool _setPositionAndRotation;
         protected Vector3 _position = Vector2.zero;
         protected Quaternion _rotation =  Quaternion.identity;
+        protected bool _useLibrary;
+        protected LibrarySOBase<T> _library;
 
         public T Prefab { get => _prefab; set => _prefab = value; }
         public Transform Parent { get => _parent; set => _parent = value; }
@@ -22,6 +25,8 @@ namespace d4160.Instancers
         public bool UsePositionAndRotation { get => _setPositionAndRotation; set => _setPositionAndRotation = value; }
         public Vector3 Position { get => _position; set => _position = value; }
         public Quaternion Rotation { get => _rotation; set => _rotation = value; }
+        public bool useLibrary { get => _useLibrary; set => _useLibrary = value; }
+        public LibrarySOBase<T> Library { get => _library; set => _library = value; }
 
         public ComponentFactory()
         {
@@ -72,16 +77,18 @@ namespace d4160.Instancers
         }
 
         protected virtual T Instantiate(Vector3 position, Quaternion rotation, bool setPositionAndRotation, Transform parent, bool worldPositionStays) {
-            if (_prefab)
+            T prefab = _useLibrary ? _library.Random : _prefab;
+
+            if (prefab)
             {
                 T instance = null;
 
                 if (parent)
                 {
-                    instance = setPositionAndRotation ? GameObject.Instantiate(_prefab, position, rotation, parent) : GameObject.Instantiate(_prefab, parent, worldPositionStays);
+                    instance = setPositionAndRotation ? GameObject.Instantiate(prefab, position, rotation, parent) : GameObject.Instantiate(prefab, parent, worldPositionStays);
                 }
                 else {
-                    instance = setPositionAndRotation ? GameObject.Instantiate(_prefab, position, rotation) : GameObject.Instantiate(_prefab);
+                    instance = setPositionAndRotation ? GameObject.Instantiate(prefab, position, rotation) : GameObject.Instantiate(prefab);
                 }
                 OnInstanced?.Invoke(instance);
                 return instance;
@@ -96,11 +103,11 @@ namespace d4160.Instancers
         }
 
         
-        protected void InvokeOnInstancedEvent(T newGo) {
+        protected void RaiseOnInstancedEvent(T newGo) {
             OnInstanced?.Invoke(newGo);
         }
 
-        protected void InvokeOnDestroyEvent(T go) {
+        protected void RaiseOnDestroyEvent(T go) {
             OnDestroy?.Invoke(go);
         }
     }

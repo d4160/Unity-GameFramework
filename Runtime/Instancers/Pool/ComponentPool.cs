@@ -62,14 +62,14 @@ namespace d4160.Instancers
             if(_parent) comp.transform.SetParent(parent, worldPositionStays);
             if (setPositionAndRotation) comp.transform.SetPositionAndRotation(position, rotation);
             comp.gameObject.SetActive(true);
-            InvokeOnInstancedEvent(comp);
+            RaiseOnInstancedEvent(comp);
             return comp;
         }
 
         public override void Destroy(T comp)
         {
             if(!_pool.Contains(comp)) {
-                InvokeOnDestroyEvent(comp);
+                RaiseOnDestroyEvent(comp);
                 comp.gameObject.SetActive(false);
                 if(_poolParent) comp.transform.SetParent(_poolParent, _worldPositionStays);
                 _pool.Enqueue(comp);

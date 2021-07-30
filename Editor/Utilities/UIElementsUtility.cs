@@ -65,12 +65,12 @@ namespace d4160.Core.Editors.Utilities
             return field;
         }
 
-        public static VisualElement MinMaxIntField(string labelText, ref Vector2Int currentValue, int min, int max, Action<Vector2Int> onSliderChanged, Action<int> onMinValueChanged, Action<int> onMaxValueChanged, int maxLength = 3, float sliderWidth = 136f, float textWidth = 30f)
+        public static VisualElement MinMaxIntField(string labelText, ref Vector2Int currentValue, int minValue, int maxValue, int minLimit, int maxLimit, Action<Vector2Int> onSliderChanged, Action<int> onMinValueChanged, Action<int> onMaxValueChanged, int maxLength = 3, float sliderWidth = 136f, float textWidth = 30f)
         {
-            currentValue.x = Mathf.Clamp(currentValue.x, min, max);
-            currentValue.y = Mathf.Clamp(currentValue.y, min, max);
+            currentValue.x = Mathf.Clamp(currentValue.x, minLimit, maxLimit);
+            currentValue.y = Mathf.Clamp(currentValue.y, minLimit, maxLimit);
 
-            var minMaxSlider = new MinMaxSlider("", min, max, min, max)
+            var minMaxSlider = new MinMaxSlider("", currentValue.x, currentValue.y, minLimit, maxLimit)
             {
                 value = currentValue
             };
@@ -97,8 +97,8 @@ namespace d4160.Core.Editors.Utilities
 
             t1.RegisterValueChangedCallback((ev) =>
             {
-                if (ev.newValue < min)
-                    t1.SetValueWithoutNotify(min);
+                if (ev.newValue < minLimit)
+                    t1.SetValueWithoutNotify(minLimit);
                 if (ev.newValue > t2.value)
                     t1.SetValueWithoutNotify(t2.value);
 
@@ -110,8 +110,8 @@ namespace d4160.Core.Editors.Utilities
             {
                 if (ev.newValue < t1.value)
                     t2.SetValueWithoutNotify(t1.value);
-                if (ev.newValue > max)
-                    t2.SetValueWithoutNotify(max);
+                if (ev.newValue > maxLimit)
+                    t2.SetValueWithoutNotify(maxLimit);
 
                 onMaxValueChanged?.Invoke(t2.value);
                 minMaxSlider.SetValueWithoutNotify(new Vector2(minMaxSlider.value.x, t2.value));
@@ -125,12 +125,12 @@ namespace d4160.Core.Editors.Utilities
             return ve;
         }
 
-        public static VisualElement MinMaxFloatField(string labelText, ref Vector2 currentValue, float min, float max, Action<Vector2> onSliderChanged, Action<float> onMinValueChanged, Action<float> onMaxValueChanged, int maxLength = 3, float sliderWidth = 136f, float textWidth = 30f)
+        public static VisualElement MinMaxFloatField(string labelText, ref Vector2 currentValue, float minValue, float maxValue, float minLimit, float maxLimit, Action<Vector2> onSliderChanged, Action<float> onMinValueChanged, Action<float> onMaxValueChanged, int maxLength = 3, float sliderWidth = 136f, float textWidth = 30f)
         {
-            currentValue.x = Mathf.Clamp(currentValue.x, min, max);
-            currentValue.y = Mathf.Clamp(currentValue.y, min, max);
+            currentValue.x = Mathf.Clamp(currentValue.x, minValue, maxValue);
+            currentValue.y = Mathf.Clamp(currentValue.y, minValue, maxValue);
 
-            var minMaxSlider = new MinMaxSlider("", min, max, min, max)
+            var minMaxSlider = new MinMaxSlider("", minValue, maxValue, minLimit, maxLimit)
             {
                 value = currentValue
             };
@@ -156,8 +156,8 @@ namespace d4160.Core.Editors.Utilities
 
             t1.RegisterValueChangedCallback((ev) =>
             {
-                if (ev.newValue < min)
-                    t1.SetValueWithoutNotify(min);
+                if (ev.newValue < minLimit)
+                    t1.SetValueWithoutNotify(minLimit);
                 if (ev.newValue > t2.value)
                     t1.SetValueWithoutNotify(t2.value);
 
@@ -169,8 +169,8 @@ namespace d4160.Core.Editors.Utilities
             {
                 if (ev.newValue < t1.value)
                     t2.SetValueWithoutNotify(t1.value);
-                if (ev.newValue > max)
-                    t2.SetValueWithoutNotify(max);
+                if (ev.newValue > maxLimit)
+                    t2.SetValueWithoutNotify(maxLimit);
 
                 onMaxValueChanged?.Invoke(t2.value);
                 minMaxSlider.SetValueWithoutNotify(new Vector2(minMaxSlider.value.x, t2.value));

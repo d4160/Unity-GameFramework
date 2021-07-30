@@ -6,7 +6,8 @@ using TMPro;
 using UnityEngine;
 
 namespace d4160.Grid {
-    public class Grid<T>{
+    public class Grid<T>
+    {
         public event EventHandler<OnGridValueChangedEventArgs> OnGridValueChanged;
         public class OnGridValueChangedEventArgs : EventArgs
         {
@@ -20,7 +21,6 @@ namespace d4160.Grid {
         protected Vector3 _originPosition;
         protected T[,] _gridArray;
         protected TextMeshPro[,] _debugTextArray = null;
-        protected IProvider<T> _provider;
         protected int _iterator;
 
         public int Width { get => _width; set => _width = value; }
@@ -32,7 +32,6 @@ namespace d4160.Grid {
         public Vector2 CellSize { get => _cellSize; set => _cellSize = value; }
         public Vector3 OriginPosition { get => _originPosition; set => _originPosition = value; }
         public T[,] GridArray { get => _gridArray; set => _gridArray = value; }
-        public IProvider<T> Provider { get => _provider; set => _provider = value; }
         public int Iterator { get => _iterator; }
 
         public Grid (int width, int height, Vector2 cellSize, Vector3 originPosition = default, bool drawDebugText = true, Color? textColor = null, int textFontSize = 5, Transform textParent = null) {
@@ -146,47 +145,10 @@ namespace d4160.Grid {
             SetGridObject(toX, toY, from);
         }
 
-        public void FillAll(bool forceReplace = false) {
-            _iterator = 0;
-            if (_provider != null) {
-                for (var x = 0; x < _gridArray.GetLength (0); x++) {
-                    for (var y = 0; y < _gridArray.GetLength (1); y++) {
-                        T current = GetGridObject(x, y);
-                        if (current == null || forceReplace)
-                        {
-                            if(current != null)
-                                _provider.Destroy(current);
-
-                            T instance = _provider.Instantiate();
-                            SetGridObject(x, y, instance);
-                        }
-
-                        _iterator++;
-                    }
-                }
-            }
-            else {
-                Debug.LogWarning("Please, reinstantiate the Provider first.");
-            }
+        public virtual void FillAll(bool forceReplace = false) {
         }
 
-        public void DestroyAll() {
-            if (_provider != null) {
-                for (var x = 0; x < _gridArray.GetLength (0); x++) {
-                    for (var y = 0; y < _gridArray.GetLength (1); y++) {
-
-                        T current = GetGridObject(x, y);
-                        if (current != null)
-                        {
-                            _provider.Destroy(GetGridObject(x, y));
-                            SetGridObject(x, y, default);
-                        }
-                    }
-                }
-            }
-            else {
-                Debug.LogWarning("Please, reinstantiate the Provider first.");
-            }
+        public virtual void DestroyAll() {
         }
 
         public void DrawGizmos (Color color, float duration = 0) {

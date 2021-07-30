@@ -8,11 +8,11 @@ namespace d4160.NodeGraphProcessor
     public class WaveNode : StepNodeBase
     {
         [ShowInInspector(true)]
-        public Vector2Int spawnsNumber;
+        public Vector2Int spawnsNumber = new Vector2Int(5, 5);
         [ShowInInspector(true)]
-        public Vector2 timeBetweenSpawns;
+        public Vector2 timeBetweenSpawns = new Vector2(5f, 5f);
         [ShowInInspector(true)]
-        public Vector2Int instancesInEachSpawn;
+        public Vector2Int instancesInEachSpawn = new Vector2Int(5, 5);
         //[ShowInInspector(true)]
         //public GameObjectLibrary spawnLibrary;
         //public WeightedRandomizer<GameObject> libraryChances = new WeightedRandomizer<GameObject>();
