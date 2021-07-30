@@ -1,4 +1,5 @@
 using System;
+using d4160.Collections;
 using UnityEngine;
 
 
@@ -15,6 +16,8 @@ namespace d4160.Instancers
         protected bool _setPositionAndRotation;
         protected Vector3 _position = Vector2.zero;
         protected Quaternion _rotation =  Quaternion.identity;
+        protected bool _useLibrary;
+        protected LibrarySOBase<GameObject> _library;
 
         public GameObject Prefab { get => _prefab; set => _prefab = value; }
         public Transform Parent { get => _parent; set => _parent = value; }
@@ -22,6 +25,8 @@ namespace d4160.Instancers
         public bool UsePositionAndRotation { get => _setPositionAndRotation; set => _setPositionAndRotation = value; }
         public Vector3 Position { get => _position; set => _position = value; }
         public Quaternion Rotation { get => _rotation; set => _rotation = value; }
+        public bool useLibrary { get => _useLibrary; set => _useLibrary = value; }
+        public LibrarySOBase<GameObject> Library { get => _library; set => _library = value; }
 
         public virtual void Destroy<T>(T instance) where T : Component {
             Destroy(instance.gameObject);
@@ -64,15 +69,17 @@ namespace d4160.Instancers
         }
 
         protected virtual GameObject Instantiate(Vector3 position, Quaternion rotation, bool setPositionAndRotation, Transform parent, bool worldPositionStays) {
-            if (_prefab)
+            GameObject prefab = _useLibrary ? _library.Random : _prefab;
+
+            if (prefab)
             {
                 GameObject newGo = null;
                 if (parent)
                 {
-                    newGo = setPositionAndRotation ? GameObject.Instantiate(_prefab, position, rotation, parent) : GameObject.Instantiate(_prefab, parent, worldPositionStays);
+                    newGo = setPositionAndRotation ? GameObject.Instantiate(prefab, position, rotation, parent) : GameObject.Instantiate(prefab, parent, worldPositionStays);
                 }
                 else {
-                    newGo = setPositionAndRotation ? GameObject.Instantiate(_prefab, position, rotation) : GameObject.Instantiate(_prefab);
+                    newGo = setPositionAndRotation ? GameObject.Instantiate(prefab, position, rotation) : GameObject.Instantiate(prefab);
                 }
                 OnInstanced?.Invoke(newGo);
                 return newGo;

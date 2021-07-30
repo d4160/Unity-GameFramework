@@ -1,4 +1,5 @@
 using System;
+using d4160.Collections;
 using UnityEngine;
 
 namespace d4160.Instancers
@@ -24,12 +25,17 @@ namespace d4160.Instancers
         protected bool _usePositionAndRotation;
         protected Vector3 _position = Vector2.zero;
         protected Quaternion _rotation =  Quaternion.identity;
+        protected bool _useLibrary;
+        protected LibrarySOBase<T> _library;
 
         public Transform Parent { get => _parent; set => _parent = value; }
         public bool WorldPositionStays { get => _worldPositionStays; set => _worldPositionStays = value; }
         public bool UsePositionAndRotation { get => _usePositionAndRotation; set => _usePositionAndRotation = value; }
         public Vector3 Position { get => _position; set => _position = value; }
         public Quaternion Rotation { get => _rotation; set => _rotation = value; }
+        public bool useLibrary { get => _useLibrary; set => _useLibrary = value; }
+        public LibrarySOBase<T> Library { get => _library; set => _library = value; }
+        
 
         public event Action<T> OnInstanced;
         public event Action<T> OnDestroy;

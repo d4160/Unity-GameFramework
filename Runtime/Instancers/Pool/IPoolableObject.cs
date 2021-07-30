@@ -1,7 +1,7 @@
 
 namespace d4160.Instancers
 {
-    public interface IPoolableObject<T>
+    public interface IPoolableObject<T> where T : class
     {
         IObjectPool<T> Pool { get; set; }
 
