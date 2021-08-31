@@ -75,8 +75,10 @@ namespace d4160.SceneManagement
 
             // if loaded level is not the one defined by master in props, load that level
             object sceneId = PhotonNetwork.CurrentRoom.CustomProperties[CurrentSceneProperty];
+            //Debug.Log($"level to load: {sceneId}, saved: {_lastLoadedIndex}");
             if (sceneId is int)
             {
+                //Debug.Log($"level to load int: {(int)sceneId}");
                 if (_lastLoadedIndex != (int)sceneId)
                 {
                     LoadSceneCollectionAsync((int)sceneId);
@@ -84,6 +86,7 @@ namespace d4160.SceneManagement
             }
             else if (sceneId is string)
             {
+                //Debug.Log($"level to load string: {(string)sceneId}");
                 if (_lastLoadedLabel != (string)sceneId)
                 {
                     LoadSceneCollectionAsync((string)sceneId);
@@ -150,6 +153,7 @@ namespace d4160.SceneManagement
             else Debug.LogError("Parameter levelId must be int or string!");
 
             PhotonNetwork.CurrentRoom.SetCustomProperties(setScene);
+            // Debug.Log($"Set level to properties: {levelId}");
             PhotonNetwork.SendAllOutgoingCommands(); // send immediately! because: in most cases the client will begin to load and pause sending anything for a while
         }
 
@@ -164,6 +168,7 @@ namespace d4160.SceneManagement
 
         public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
+            Debug.Log("Try to load scene");
             LoadLevelIfSynced();
         }
 

@@ -1,0 +1,20 @@
+{
+    "name": "d4160.Instantiation.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:dbd4d4126d4e9934fa43e561769dba56",
+        "GUID:2d7a10d06dce88647a4b8031a61ff6db",
+        "GUID:4d5acd2690a2d334ab2d44fd1c1bbd30",
+        "GUID:a432eb0a70c5c4a37ab50d59671586f8",
+        "GUID:ca937d03ee5dd4d699091438dc0f3ae6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

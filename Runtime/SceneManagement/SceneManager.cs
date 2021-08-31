@@ -1,4 +1,3 @@
-using System;
 using d4160.Core;
 using d4160.Singleton;
 using NaughtyAttributes;

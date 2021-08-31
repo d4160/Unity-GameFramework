@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using d4160.Collections;
 using d4160.Core;
 using InspectInLine;
@@ -145,27 +143,46 @@ namespace d4160.SceneManagement {
         }
 
         public void LoadSceneCollectionAsyncDefault(string label) {
-            LoadSceneCollectionAsyncDefault(GetSceneCollection(label, out int index));
-            _lastLoadedIndex = index;
-            _lastLoadedLabel = label;
+            SceneCollectionSO scnCollecSO = GetSceneCollection(label, out int index);
+
+            if (index == -1) {
+                Debug.LogWarning($"Cannot load the level with index: {index}.");
+                return;
+            }
+            else
+            {
+                _lastLoadedIndex = index;
+                _lastLoadedLabel = label;
+            }
+            LoadSceneCollectionAsyncDefault(scnCollecSO);
         }
 
         public void LoadSceneCollectionsAsyncAddressables(string label) {
-            LoadSceneCollectionAsyncAddressables(GetSceneCollection(label, out int index));
-            _lastLoadedIndex = index;
-            _lastLoadedLabel = label;
+            SceneCollectionSO scnCollecSO = GetSceneCollection(label, out int index);
+            
+            if (index == -1) {
+                Debug.LogWarning($"Cannot load the level with index: {index}.");
+                return;
+            }
+            else {
+                _lastLoadedIndex = index;
+                _lastLoadedLabel = label;
+            }
+            LoadSceneCollectionAsyncAddressables(scnCollecSO);
         }
 
         public void LoadSceneCollectionAsyncDefault(int index) {
+            SceneCollectionSO scnCollecSO = GetSceneCollectionAt(index, out string label);
             _lastLoadedIndex = index;
-            LoadSceneCollectionAsyncDefault(GetSceneCollectionAt(index, out string label));
             _lastLoadedLabel = label;
+            LoadSceneCollectionAsyncDefault(scnCollecSO);
         }
 
         public void LoadSceneCollectionAsyncAddressables(int index) {
+            SceneCollectionSO scnCollecSO = GetSceneCollectionAt(index, out string label);
             _lastLoadedIndex = index;
-            LoadSceneCollectionAsyncAddressables(GetSceneCollectionAt(index, out string label));
             _lastLoadedLabel = label;
+            LoadSceneCollectionAsyncAddressables(scnCollecSO);
         }
 
         public void LoadSceneCollectionAsyncAddressables(SceneCollectionSO sceneCollection) {
@@ -194,7 +211,7 @@ namespace d4160.SceneManagement {
                 return;
             }
 
-            if (PhotonNetwork.AutomaticallySyncScene)
+            if (AutomaticallySyncScene)
             {
                 SetLevelInPropsIfSynced(_lastLoadedIndex);
             }
