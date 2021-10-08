@@ -4,7 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using d4160.Core;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Pun;
 using Photon.Realtime;
 using UltEvents;
@@ -39,14 +41,18 @@ namespace d4160.Networking.Photon {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void JoinLobby () {
             if (_data) {
                 _data.JoinLobby ();
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LeaveLobby () {
             if (_data) {
                 _data.LeaveLobby ();

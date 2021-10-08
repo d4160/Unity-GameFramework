@@ -1,6 +1,8 @@
 #if PLAYFAB
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using PlayFab;
 using PlayFab.ClientModels;
 using UltEvents;
@@ -40,7 +42,9 @@ namespace d4160.Profile.PlayFab {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UpdateDisplayName () {
             if (_data)
             {
@@ -48,7 +52,9 @@ namespace d4160.Profile.PlayFab {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void GetPlayerProfile () {
             if (_data)
             {
@@ -56,7 +62,9 @@ namespace d4160.Profile.PlayFab {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UpdateAvatarUrl() {
             if (_data)
             {
@@ -64,7 +72,9 @@ namespace d4160.Profile.PlayFab {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void AddOrUpdateContactEmail() {
             if (_data)
             {
@@ -72,7 +82,9 @@ namespace d4160.Profile.PlayFab {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void RemoveContactEmail () {
             if (_data)
             {

@@ -1,5 +1,7 @@
 using d4160.Instancers;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.Grid
@@ -19,7 +21,9 @@ namespace d4160.Grid
             _grid = new GridMono<T>(_width, _height, _cellSize, transform.position, drawText, textColor, textFontSize, textParent);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void FillFromParent() {
 
             FillFromParent(true, false);
@@ -52,13 +56,17 @@ namespace d4160.Grid
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void FillAll()
         {
             FillAll(false);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void FillAllForceReplace()
         {
             FillAll(true);
@@ -74,7 +82,9 @@ namespace d4160.Grid
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void DestroyAll()
         {
             if(_grid != null) {

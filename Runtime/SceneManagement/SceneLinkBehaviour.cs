@@ -1,6 +1,8 @@
 using d4160.Core;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.SceneManagement {
@@ -25,7 +27,9 @@ namespace d4160.SceneManagement {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void ContinueLoadAsync () {
             _data.ContinueLoadAsync();
         }

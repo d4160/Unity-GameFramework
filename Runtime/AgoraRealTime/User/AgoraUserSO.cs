@@ -4,7 +4,9 @@ using agora_gaming_rtc;
 using UnityEngine;
 using System.Collections.Generic;
 using d4160.Instancers;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 
 namespace d4160.Chat.Agora
 {
@@ -12,7 +14,9 @@ namespace d4160.Chat.Agora
     public class AgoraUserSO : ScriptableObject
     {
         [SerializeField] private bool _autoVideoSurface = true;
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Expandable]
+#endif
         [SerializeField] private ComponentProviderSOBase _provider;
         [SerializeField] AgoraVideoSurfaceType _agoraVideoSurfaceType = AgoraVideoSurfaceType.Renderer;
         [SerializeField] uint _videoFps = 30;
@@ -51,7 +55,9 @@ namespace d4160.Chat.Agora
             AgoraUserService.OnUserOfflineEvent -= CallOnUserOfflineEvent;
         }   
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Setup() {
             if (_provider) _provider.Setup();
 

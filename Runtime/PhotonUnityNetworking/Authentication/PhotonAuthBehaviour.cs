@@ -1,7 +1,9 @@
 #if PHOTON_UNITY_NETWORKING
 using System;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UltEvents;
 using UnityEngine;
 
@@ -37,24 +39,32 @@ namespace d4160.Auth.Photon
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Login(){
             if(_data) {
                 _data.Login();
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SetNickname(string nickname = null){
             if(_data) {
                 _data.SetNickname(nickname);
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SetRandomNickname() => _data?.SetRandomNickname();
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Logout(){
             if(_data) {
                 _data.Logout();

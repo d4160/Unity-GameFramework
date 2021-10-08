@@ -4,7 +4,9 @@ using d4160.Core;
 using agora_gaming_rtc;
 using d4160.Auth.Agora;
 using UnityEngine;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using d4160.MonoBehaviourData;
 using UltEvents;
 
@@ -44,7 +46,9 @@ namespace d4160.Chat.Agora
             }
         }   
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Setup() {
             if(_data)
                 _data.Setup();
@@ -55,7 +59,9 @@ namespace d4160.Chat.Agora
                 _data.Setup(channelType);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SetEnableAudio() {
             if(_data)
                 _data.SetEnableAudio();
@@ -71,7 +77,9 @@ namespace d4160.Chat.Agora
                 _data.SetEnableAudio(enableAudio);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void JoinChannel() {
             if(_data)
                 _data.JoinChannel();
@@ -87,7 +95,9 @@ namespace d4160.Chat.Agora
                 _data.JoinChannel(channel, info, uid);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         /// <summary>
         ///   Leave a RTC channel
         /// </summary>

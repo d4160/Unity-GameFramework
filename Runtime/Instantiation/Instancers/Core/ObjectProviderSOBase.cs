@@ -1,6 +1,8 @@
 using System;
 using d4160.Collections;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.Instancers
@@ -8,14 +10,26 @@ namespace d4160.Instancers
     public abstract class ObjectProviderSOBase<T> : ScriptableObject
     {
         [SerializeField] protected bool _useLibrary;
-        [SerializeField, ShowIf("_useLibrary"), Expandable] protected LibrarySOBase<T> _library;
-        [SerializeField, HideIf("_useLibrary")] protected T _prefab;
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [ShowIf("_useLibrary"), Expandable]
+#endif
+        [SerializeField] protected LibrarySOBase<T> _library;
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [HideIf("_useLibrary")]
+#endif
+        [SerializeField] protected T _prefab;
         // [Tooltip("If is not null, set as parent in each instantiation.")]
         // [SerializeField] protected Transform _parent;
         [SerializeField] protected bool _usePositionAndRotation;
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [ShowIf("_usePositionAndRotation")]
+#endif
         [SerializeField] protected Vector3 _position;
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [ShowIf("_usePositionAndRotation")]
+#endif
         [SerializeField] protected Quaternion _rotation;
 
         [Header ("PARENT OPTIONS")]
@@ -64,7 +78,9 @@ namespace d4160.Instancers
             Provider.OnDestroy -= RaiseOnDestroyEvent;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public T Instantiate() => Provider.Instantiate();
         public T Instantiate(Transform parent, bool worldPositionStays = true) => Provider.Instantiate(parent, worldPositionStays);
         public T Instantiate(Vector3 position, Quaternion rotation, Transform parent = null) => Provider.Instantiate(position, rotation, parent);

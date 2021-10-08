@@ -4,7 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using d4160.Core;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Pun;
 using Photon.Realtime;
 using UltEvents;
@@ -50,7 +52,9 @@ namespace d4160.Networking.Photon {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public bool JoinRoom () {
             if (_data)
                 return _data.JoinRoom ();
@@ -58,7 +62,9 @@ namespace d4160.Networking.Photon {
             return false;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void RejoinRoom () {
             // Need playerTtl to work
             // First Reconnect() and them -> or use ReconnectAndRejoin()
@@ -66,13 +72,17 @@ namespace d4160.Networking.Photon {
                 _data.RejoinRoom ();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LeaveRoom () {
             if (_data)
                 _data.LeaveRoom ();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public bool ReconnectAndRejoin () {
             if (_data)
                 return _data.ReconnectAndRejoin ();

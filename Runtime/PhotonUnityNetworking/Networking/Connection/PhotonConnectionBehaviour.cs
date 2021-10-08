@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using d4160.Core;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Realtime;
 using UltEvents;
 using UnityEngine;
@@ -60,14 +62,18 @@ namespace d4160.Networking.Photon
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void ConnectUsingSettings()
         {
             if (_data)
                 _data.ConnectUsingSettings();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void ConnectToRegion()
         {
             if (_data)
@@ -80,7 +86,9 @@ namespace d4160.Networking.Photon
                 _data.ConnectToRegion(region);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Reconnect()
         {
             if (_data)
@@ -93,7 +101,9 @@ namespace d4160.Networking.Photon
                 _data.CloseConnection(kickPlayer);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Disconnect()
         {
             if (_data)

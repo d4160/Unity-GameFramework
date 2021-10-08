@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UltEvents;
 using UnityEngine;
 
@@ -35,7 +35,9 @@ namespace d4160.Events {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Invoke (TObj1 obj1, TObj2 obj2) {
             if (_data) {
                 _data.Invoke (obj1, obj2);
@@ -59,7 +61,9 @@ namespace d4160.Events {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Invoke (TObj1 obj1, TObj2 obj2, TObj3 obj3) {
             if (_data) {
                 _data.Invoke (obj1, obj2, obj3);
@@ -83,7 +87,9 @@ namespace d4160.Events {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Invoke (TObj1 obj1, TObj2 obj2, TObj3 obj3, TObj4 obj4) {
             if (_data) {
                 _data.Invoke (obj1, obj2, obj3, obj4);

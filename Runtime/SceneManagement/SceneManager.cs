@@ -1,16 +1,22 @@
 using d4160.Core;
 using d4160.Singleton;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UltEvents;
 using UnityEngine;
 
 namespace d4160.SceneManagement {
     public class SceneManager : Singleton<SceneManager> {
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Expandable]
+#endif
         [SerializeField] protected SceneManagerSO _sceneManagerAsset;
         [SerializeField] protected UnityLifetimeMethodType _loadSceneAt;
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [DropdownIndex("SceneCollectionsNames")]
+#endif
         [SerializeField] protected int _sceneCollection;
 
 #if UNITY_EDITOR
@@ -112,17 +118,23 @@ namespace d4160.SceneManagement {
             _onCollectionLoaded?.Invoke(index, label);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LoadSceneCollectionAsync () {
             LoadSceneCollectionAsync(_sceneCollection);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void ContinueCollectionLoadAsync () {
             ContinueCollectionLoadAsync(_sceneCollection);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UnloadSceneCollectionAsync () {
             UnloadSceneCollectionAsync(_sceneCollection);
         }

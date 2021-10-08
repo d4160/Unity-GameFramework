@@ -1,7 +1,9 @@
 #if PLAYFAB
 using System;
 using System.Collections.Generic;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
@@ -44,7 +46,9 @@ namespace d4160.Persistence.PlayFab
             PlayFabUserDataService.OnPlayFabErrorEvent -= CallOnPlayFabErrorEvent;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UpdateUserData()
         {
             UpdateUserData(_updateUserDataRequest);
@@ -54,7 +58,9 @@ namespace d4160.Persistence.PlayFab
             _service.UpdateUserData(updateUserDataRequest);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void GetUserData()
         {
             GetUserData(_getUserDataRequest);

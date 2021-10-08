@@ -5,7 +5,9 @@ using agora_gaming_rtc;
 using d4160.Auth.Agora;
 using UnityEngine;
 using Logger = d4160.Logging.M31Logger;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 
 namespace d4160.Chat.Agora
 {
@@ -42,17 +44,23 @@ namespace d4160.Chat.Agora
             AgoraVideoService.OnVideoSizeChangedEvent -= CallOnVideoSizeChanged;
         }   
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SetEnableVideo() {
             SetEnableVideo(_enableVideoModule, _enableLocalVideo, _enableLocalVideo, _muteLocalVideoStream);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void EnableLocalVideo() {
             EnableLocalVideo(_enableLocalVideo);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void MuteLocalVideoStream() {
             MuteLocalVideoStream(_muteLocalVideoStream);
         }
@@ -84,12 +92,16 @@ namespace d4160.Chat.Agora
             _videoService.MuteAllRemoteVideoStreams(mute);
         }
         
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void StartVideoPreview() {
             _videoService.StartVideoPreview();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void StopVideoPreview() {
             _videoService.StopVideoPreview();
         }

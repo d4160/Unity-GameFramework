@@ -1,6 +1,8 @@
 #if PLAYFAB
 using System;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
@@ -47,12 +49,16 @@ namespace d4160.Profile.PlayFab {
             PlayFabProfileService.OnPlayFabError -= CallOnPlayFabError;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UpdateDisplayName () {
             _profileService.UpdateDisplayName (_playerProfile.DisplayName);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void GetPlayerProfile () {
             _profileService.ProfileConstraints = _profileConstraints;
             _profileService.GetPlayerProfile ((result) => {
@@ -60,20 +66,26 @@ namespace d4160.Profile.PlayFab {
             });
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UpdateAvatarUrl () {
 
             _profileService.UpdateAvatarUrl (_playerProfile.AvatarUrl);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void AddOrUpdateContactEmail () {
 
             _profileService.Email = _email;
             _profileService.AddOrUpdateContactEmail ();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void RemoveContactEmail () {
 
             _profileService.RemoveContactEmail ();

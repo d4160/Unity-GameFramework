@@ -1,7 +1,9 @@
 #if PHOTON_UNITY_NETWORKING
 using System;
 using d4160.Authentication;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Realtime;
 using UnityEngine;
 using CodeMonkey.Utils;
@@ -42,7 +44,9 @@ namespace d4160.Auth.Photon
             PhotonAuthService.OnAuthError -= OnAuthError.Invoke;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Login(){
             _authService.Id = _customServiceId;
             _authService.SessionTicket = _token;
@@ -53,14 +57,18 @@ namespace d4160.Auth.Photon
             });
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SetNickname(string nickname = null){
             CheckAndExecute(() => { 
                 _authService.DisplayName = string.IsNullOrEmpty(nickname) ? (_useRandomNickname ? UtilsClass.GetRandomName(true) : _nickname) : nickname;
             });
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SetRandomNickname(){
             CheckAndExecute(() => { 
                 _authService.DisplayName = UtilsClass.GetRandomName(true);
@@ -75,7 +83,9 @@ namespace d4160.Auth.Photon
             return string.Empty;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Logout(){
             CheckAndExecute(() => { 
                 AuthManager.Logout();

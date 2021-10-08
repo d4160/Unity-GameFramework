@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace d4160.Events
 {
@@ -59,7 +60,9 @@ namespace d4160.Events
     {
         public event Action<T1, T2> OnEvent;
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Invoke (T1 obj1, T2 obj2) {
             OnEvent?.Invoke (obj1, obj2);
         }
@@ -69,7 +72,9 @@ namespace d4160.Events
     {
         public event Action<T1, T2, T3> OnEvent;
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Invoke (T1 obj1, T2 obj2, T3 obj3) {
             OnEvent?.Invoke (obj1, obj2, obj3);
         }
@@ -79,7 +84,9 @@ namespace d4160.Events
     {
         public event Action<T1, T2, T3, T4> OnEvent;
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Invoke (T1 obj1, T2 obj2, T3 obj3, T4 obj4) {
             OnEvent?.Invoke (obj1, obj2, obj3, obj4);
         }

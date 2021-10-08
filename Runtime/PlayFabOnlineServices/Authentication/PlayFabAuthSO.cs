@@ -3,7 +3,9 @@ using System;
 using System.Diagnostics;
 using d4160.Authentication;
 using d4160.Core;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.SharedModels;
@@ -134,7 +136,9 @@ namespace d4160.Auth.PlayFab {
 #endif
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Login () {
                 _authService.LoginType = _loginType;
                 _authService.email = _email;
@@ -156,7 +160,9 @@ namespace d4160.Auth.PlayFab {
                 AuthManager.OnLoggedIn -= OnLoggedIn;
         }
 
-                [Button]
+        #if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
                 public void Register () {
                         _authService.RegisterType = _registerType;
                         _authService.email = _email;
@@ -171,12 +177,16 @@ namespace d4160.Auth.PlayFab {
                         AuthManager.Register (_authService);
                 }
 
-                [Button]
+        #if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
                 public void Logout () {
                         AuthManager.Logout ();
                 }
 
-                [Button]
+        #if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
                 public void SetLogLevel () {
                         AuthManager.LogLevel = _logLevel;
                 }

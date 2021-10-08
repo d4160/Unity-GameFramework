@@ -1,7 +1,9 @@
 #if AGORA
 using System;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UltEvents;
 using UnityEngine;
 
@@ -39,12 +41,16 @@ namespace d4160.Auth.Agora
             UnloadEngine();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LoadEngine(){
             if (_data) _data.LoadEngine();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UnloadEngine(){
             if (_data) _data.UnloadEngine();
         }

@@ -1,4 +1,6 @@
-﻿using NaughtyAttributes;
+﻿#if ENABLE_NAUGHTY_ATTRIBUTES
+using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.UnityUtils
@@ -13,7 +15,9 @@ namespace d4160.UnityUtils
             SetDontDestroyOnLoad();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public virtual void SetDontDestroyOnLoad()
         {
             if(!Application.isPlaying)

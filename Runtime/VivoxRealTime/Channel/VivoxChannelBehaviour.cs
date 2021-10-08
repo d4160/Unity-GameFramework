@@ -1,7 +1,9 @@
 #if VIVOX
 using UnityEngine;
 using VivoxUnity;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using d4160.MonoBehaviourData;
 using UltEvents;
 
@@ -43,7 +45,9 @@ namespace d4160.Chat.Vivox
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void JoinChannel(){
             if (_data)
                 _data.JoinChannel();
@@ -56,7 +60,9 @@ namespace d4160.Chat.Vivox
                 _data.JoinChannel(channelName, channelType, chatCapability, switchTransmission, properties);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SendTextMessage(){
             if (_data)
                 _data.SendTextMessage();
@@ -68,7 +74,9 @@ namespace d4160.Chat.Vivox
                 _data.SendTextMessage(messageToSend, channel, applicationStanzaNamespace, applicationStanzaBody);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void DisconnectAllChannels()
         {
             if (_data)

@@ -1,7 +1,9 @@
 using System;
 using CodeMonkey.Utils;
 using d4160.Grid;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.Grid
@@ -33,20 +35,26 @@ namespace d4160.Grid
 
         [Space]
         [SerializeField] protected bool _toggleShowGizmosSettings;
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [ShowIf("_toggleShowGizmosSettings")]
+#endif
         [SerializeField] protected GridGizmosSettings _gizmosSettings;
 
         protected abstract void InstantiateGrid(bool drawText = false, Color textColor = default, int textFontSize = 5, Transform textParent = null);
 
         protected virtual void InstantiateProvider(){}
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         protected void ReinstantiateGrid()
         {
             InstantiateGrid();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         protected void ReinstantiateProvider()
         {
             InstantiateProvider();

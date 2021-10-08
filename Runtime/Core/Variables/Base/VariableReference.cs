@@ -1,4 +1,6 @@
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.Variables
@@ -7,9 +9,13 @@ namespace d4160.Variables
     public class VariableReference<TVarSO, T> where TVarSO : VariableSOBase<T>
     {
         [SerializeField] public bool _useConstant = true;
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [ShowIf("_useConstant")]
+#endif
         [SerializeField] public T _constantValue;
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [HideIf("_useConstant")]
+#endif
         [SerializeField] protected TVarSO _variable;
 
         public T Value => _useConstant ? _constantValue : _variable.Value;

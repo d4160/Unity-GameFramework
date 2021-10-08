@@ -1,22 +1,30 @@
 using System;
 using d4160.Collections;
 using d4160.Core;
-using InspectInLine;
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+using InspectInLine;
+#endif
+
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 #endif
+
 using UnityEngine;
 
 namespace d4160.SceneManagement {
     [CreateAssetMenu (menuName = "d4160/SceneManagement/Scene Manager")]
     public partial class SceneManagerSO : ScriptableObject {
-
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [InspectInline (canEditRemoteTarget = true)]
+#endif
         [SerializeField] private SceneCollectionSO[] _sceneCollections;
         [SerializeField] private AssetManagementType _sceneAssetType;
         // TODO Move to another SO
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [DropdownIndex("GetSceneCollectionNames")]
+#endif
         [SerializeField] private int _selectedSceneCollection;
 
         private int _lastLoadedIndex;
@@ -101,7 +109,9 @@ namespace d4160.SceneManagement {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LoadSceneCollectionAsync() {
             LoadSceneCollectionAsync (_selectedSceneCollection, _sceneAssetType);
         }
@@ -226,7 +236,9 @@ namespace d4160.SceneManagement {
         }
 
         /* CONTINUE */
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void ContinueCollectionLoadAsync() {
             ContinueCollectionLoadAsync (_selectedSceneCollection, _sceneAssetType);
         }
@@ -298,7 +310,9 @@ namespace d4160.SceneManagement {
         }
 
         /* UNLOAD */
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UnloadSceneCollectionAsync() {
             UnloadSceneCollectionAsync (_selectedSceneCollection, _sceneAssetType);
         }

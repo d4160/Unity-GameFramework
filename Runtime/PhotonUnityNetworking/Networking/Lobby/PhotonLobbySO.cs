@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using d4160.Core;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -50,14 +52,18 @@ namespace d4160.Networking.Photon {
             PhotonLobbyService.OnLobbyStatisticsUpdateEvent -= CallOnLobbyStatisticsUpdateEvent;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void JoinLobby () {
             _lobbyService.JoinLobbyType = _joinLobbytype;
             _lobbyService.LobbyName = _lobbyName;
             _lobbyService.JoinLobby();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LeaveLobby (Action onLeftLobby = null) {
             _lobbyService.LeaveLobby (onLeftLobby);
         }

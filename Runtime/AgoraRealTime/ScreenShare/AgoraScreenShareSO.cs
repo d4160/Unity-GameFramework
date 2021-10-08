@@ -1,7 +1,9 @@
 #if AGORA
 using agora_gaming_rtc;
 using UnityEngine;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using System;
 
 namespace d4160.Chat.Agora
@@ -33,7 +35,9 @@ namespace d4160.Chat.Agora
             AgoraScreenShareService.OnStopScreenCaptureEvent -= OnStopScreenCaptureEvent;
         }   
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void StartScreenCapture() {
             StartScreenCapture(_screenCaptureParams);
         }
@@ -44,7 +48,9 @@ namespace d4160.Chat.Agora
             _screenShareService.StartScreenCapture(sparams);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void StopScreenCapture(){
             _screenShareService.StopScreenCapture();
         } 

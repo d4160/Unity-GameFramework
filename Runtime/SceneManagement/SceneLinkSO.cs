@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using d4160.Core;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,7 +26,9 @@ namespace d4160.SceneManagement {
             _priority = priority;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void ContinueLoadAsync () {
             ContinueLoadAsync(_sceneAssetType);
         }

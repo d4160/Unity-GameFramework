@@ -8,7 +8,9 @@ using d4160.Auth.Vivox;
 using M31Logger = d4160.Logging.M31Logger;
 using System.Linq;
 using System.Collections.Generic;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using d4160.Collections;
 
 namespace d4160.Chat.Vivox

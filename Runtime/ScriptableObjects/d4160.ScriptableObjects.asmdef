@@ -1,0 +1,19 @@
+{
+    "name": "d4160.ScriptableObjects",
+    "rootNamespace": "",
+    "references": [
+        "GUID:de09ca8eb17538944abe4e3221ffdca4",
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
+        "GUID:ed053b1c1336e5a40a2196e16eb58cd7",
+        "GUID:2d7a10d06dce88647a4b8031a61ff6db"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

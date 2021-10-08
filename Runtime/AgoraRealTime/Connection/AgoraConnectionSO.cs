@@ -1,6 +1,8 @@
 #if AGORA
 using System;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.Auth.Agora
@@ -30,12 +32,16 @@ namespace d4160.Auth.Agora
             AgoraConnectionService.OnEngineError -= CallOnEngineErrorEvent;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LoadEngine(){
             _authService.LoadEngine(_agoraSettings);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UnloadEngine(){
             _authService.UnloadEngine();
         }

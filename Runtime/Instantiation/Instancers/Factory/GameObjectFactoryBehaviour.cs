@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UltEvents;
 using UnityEngine;
 
@@ -35,7 +37,9 @@ namespace d4160.Instancers
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public GameObject Instantiate() {
             if (_data) return _data.Instantiate(); return null;
         }

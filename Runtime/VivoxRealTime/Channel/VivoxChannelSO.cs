@@ -8,7 +8,9 @@ using d4160.Auth.Vivox;
 using Logger = d4160.Logging.M31Logger;
 using System.Linq;
 using System.Collections.Generic;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 
 namespace d4160.Chat.Vivox
 {
@@ -80,7 +82,9 @@ namespace d4160.Chat.Vivox
             VivoxChannelService.OnAudioEnergyChangedEvent -= CallOnAudioEnergyChangedEvent;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void JoinChannel(){
             JoinChannel(_joinChannelParams.channelName, _joinChannelParams.channelType, _joinChannelParams.chatCapability, _joinChannelParams.switchTransmission, _joinChannelParams.GetChannel3DProperties());
         }
@@ -91,7 +95,9 @@ namespace d4160.Chat.Vivox
             _channelService.JoinChannel(channelName, channelType, chatCapability, switchTransmission, properties);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SendTextMessage(){
             SendTextMessage(_sendTextParams.messageToSend, _channelService.GetChannelId(_sendTextParams.channel), _sendTextParams.applicationStanzaNamespace, _sendTextParams.applicationStanzaBody);
         }
@@ -101,7 +107,9 @@ namespace d4160.Chat.Vivox
             _channelService.SendTextMessage(messageToSend, channel, applicationStanzaNamespace, applicationStanzaBody);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void DisconnectAllChannels()
         {
             _channelService.DisconnectAllChannels();

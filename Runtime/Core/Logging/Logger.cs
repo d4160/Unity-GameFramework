@@ -104,6 +104,7 @@ namespace d4160.Logging
                 switch(logLevel) {
                     case LogLevelType.None:
                         break;
+                    case LogLevelType.Critical:
                     case LogLevelType.Error:
                         if (context) Debug.LogError(message, context); else Debug.LogError(message);
                         break;

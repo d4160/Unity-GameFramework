@@ -1,0 +1,20 @@
+{
+    "name": "d4160.ScriptableObjects.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8b571e468fde3ee48a3de876bef70516",
+        "GUID:de09ca8eb17538944abe4e3221ffdca4",
+        "GUID:2d7a10d06dce88647a4b8031a61ff6db"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

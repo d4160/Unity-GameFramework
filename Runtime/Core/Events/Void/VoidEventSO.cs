@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.Events 
@@ -27,7 +29,9 @@ namespace d4160.Events
             _listeners.Clear();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Invoke() 
         {
             for (var i = 0; i < _listeners.Count; i++)

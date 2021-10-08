@@ -2,7 +2,9 @@
 using System;
 using System.ComponentModel;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UltEvents;
 using UnityEngine;
 
@@ -42,21 +44,27 @@ namespace d4160.Auth.Vivox
             CleanUp();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Login(){
             if(_data) {
                 _data.Login();
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Logout(){
             if(_data) {
                 _data.Logout();
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void CleanUp(){
             if(_data) {
                 _data.CleanUp();

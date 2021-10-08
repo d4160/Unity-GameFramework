@@ -1,7 +1,9 @@
 #if AGORA
 using agora_gaming_rtc;
 using UnityEngine;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using d4160.MonoBehaviourData;
 using UltEvents;
 
@@ -33,7 +35,9 @@ namespace d4160.Chat.Agora
             }
         }   
         
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void StartScreenCapture() {
             if (_data)
             {
@@ -51,7 +55,9 @@ namespace d4160.Chat.Agora
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void StopScreenCapture(){
             if (_data)
                 _data.StopScreenCapture();

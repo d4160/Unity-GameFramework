@@ -4,7 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using d4160.Collections;
 using d4160.Core;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -72,7 +74,9 @@ namespace d4160.Networking.Photon {
             PhotonMatchmakingService.OnFriendListUpdateEvent -= CallOnFriendListUpdateEvent;
         }   
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public bool JoinRoom () {
             Debug.Log($"Joining room: {_roomName}");
             _matchService.JoinRoomOptions = _joinRoomOption;
@@ -125,14 +129,18 @@ namespace d4160.Networking.Photon {
             return _matchService.JoinRoom();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void RejoinRoom () {
             // Need playerTtl to work
             // First Reconnect() and them -> or use ReconnectAndRejoin()
             _matchService.RejoinRoom ();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LeaveRoom (Action onLeftRoom = null) {
             _matchService.BecomeInactiveWhenLeaveRoom = _becomeInactiveWhenLeaveRoom;
             _matchService.LeaveRoom (onLeftRoom);
@@ -143,7 +151,9 @@ namespace d4160.Networking.Photon {
             _matchService.LeaveRoom (onLeftRoom);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public bool ReconnectAndRejoin () {
             return _matchService.ReconnectAndRejoin ();
         }

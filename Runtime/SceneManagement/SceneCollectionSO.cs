@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using d4160.Coroutines;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+using InspectInLine;
+#endif
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
 #endif
-using InspectInLine;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
@@ -27,10 +29,14 @@ namespace d4160.SceneManagement {
         [Space][ContextMenuItem ("Open Pack Scenes Single", "OpenPackScenesSingle")]
         [ContextMenuItem ("Open Pack Scenes Additive", "OpenPackScenesAdditive")]
         [SerializeField] private SceneReference[] _sceneCollection;
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [DropdownIndex ("SceneNames")]
+#endif
         [SerializeField] private int _activableScene;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 
         [InspectInline (canEditRemoteTarget = true)]
+#endif
         [SerializeField] [Space] private ScriptableObject _additionalData;
 
         public event Action<int, string> OnCollectionLoaded;
@@ -54,7 +60,9 @@ namespace d4160.SceneManagement {
 #if UNITY_EDITOR
         private string[] SceneNames => _sceneCollection?.Select (x => x.SceneAsset != null ? x.SceneAsset.name : "- NULL -").ToArray ();
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         private void OpenPackScenesSingle () {
             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo ()) {
                 for (int i = 0; i < _sceneCollection.Length; i++) {
@@ -66,7 +74,9 @@ namespace d4160.SceneManagement {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         private void OpenPackScenesAdditive () {
             for (int i = 0; i < _sceneCollection.Length; i++) {
                 EditorSceneManager.OpenScene (_sceneCollection[i].scenePath, OpenSceneMode.Additive);
@@ -77,7 +87,9 @@ namespace d4160.SceneManagement {
 #endif
 #endregion
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void LoadScenesAsync () {
             switch (_sceneAssetType) {
                 case AssetManagementType.Default:
@@ -91,7 +103,9 @@ namespace d4160.SceneManagement {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void ContinueLoadAsync () {
             switch (_sceneAssetType) {
                 case AssetManagementType.Default:
@@ -105,7 +119,9 @@ namespace d4160.SceneManagement {
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UnloadScenesAsync () {
             switch (_sceneAssetType) {
                 case AssetManagementType.Default:

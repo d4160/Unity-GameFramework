@@ -1,6 +1,8 @@
 #if AGORA
 using System;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.Auth.Agora
@@ -27,19 +29,25 @@ namespace d4160.Auth.Agora
             AgoraAuthService.OnLocalUserRegistered -= CallOnLocalUserRegisteredEvent;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Login(){
             _authService.Login(default);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Register(){
             _authService.UserAccount = _userAccount;
 
             _authService.Register(default);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Logout(){
             _authService.Logout(default);
         }

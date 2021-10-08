@@ -4,7 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using d4160.Collections;
 using d4160.Core;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -92,7 +94,9 @@ namespace d4160.Networking.Photon {
             return _roomService.AddPlayer(player);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public bool ClearExpectedUsers () {
             return _roomService.ClearExpectedUsers();
         }
@@ -105,7 +109,9 @@ namespace d4160.Networking.Photon {
             _roomService.AllocateRoomViewID(view);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public bool SetPlayerCustomProperties () {
             return SetPlayerCustomProperties(HashtableStruct.GetPhotonHashtable(_customPlayerProperties));
         }
@@ -122,7 +128,9 @@ namespace d4160.Networking.Photon {
             _roomService.DestroyPlayerObjects(targetPlayer);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void DestroyAll () {
             _roomService.DestroyAll();
         }

@@ -1,5 +1,7 @@
 #if PHOTON_UNITY_NETWORKING
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Pun;
 using UnityEngine;
 using d4160.Singleton;
@@ -13,7 +15,9 @@ namespace d4160.SceneManagement.Photon
     [RequireComponent(typeof(PhotonView))]
     public class PhotonSceneLoaderBehaviour : SingletonBehaviourPun<PhotonSceneLoaderBehaviour>
     {
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Expandable]
+#endif
         [SerializeField] private SceneManagerSO _sceneManagerAsset;
         [DropdownIndex("SceneCollectionsNames")]
         [SerializeField] private int _sceneCollection;
@@ -52,7 +56,9 @@ namespace d4160.SceneManagement.Photon
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         [PunRPC]
         public void LoadSceneCollectionAsync ()
         {

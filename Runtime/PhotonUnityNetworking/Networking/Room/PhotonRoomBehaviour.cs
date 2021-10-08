@@ -1,6 +1,8 @@
 #if PHOTON_UNITY_NETWORKING
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Pun;
 using Photon.Realtime;
 using UltEvents;

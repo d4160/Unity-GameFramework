@@ -1,8 +1,9 @@
 {
-    "name": "d4160.GameFramework.Editor",
+    "name": "d4160.PropertyDrawers.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:abd02ea2a3d741f48b1c16eb7025fec5"
+        "GUID:de09ca8eb17538944abe4e3221ffdca4",
+        "GUID:2d7a10d06dce88647a4b8031a61ff6db"
     ],
     "includePlatforms": [
         "Editor"

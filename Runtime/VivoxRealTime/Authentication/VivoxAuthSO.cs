@@ -2,7 +2,9 @@
 using System;
 using System.ComponentModel;
 using d4160.Authentication;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UnityEngine;
 
 namespace d4160.Auth.Vivox
@@ -50,7 +52,9 @@ namespace d4160.Auth.Vivox
             DisplayName = displayName;
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Login(){
             
             _authService.AuthSettings = _vivoxSettings;
@@ -60,12 +64,16 @@ namespace d4160.Auth.Vivox
             _authService.Login(default);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void Logout(){
             _authService.Logout(default);
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void CleanUp(){
             _authService.CleanUp();
         }

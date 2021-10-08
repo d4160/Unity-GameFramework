@@ -1,6 +1,8 @@
 #if PHOTON_UNITY_NETWORKING
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using Photon.Pun;
 using UltEvents;
 using UnityEngine;
@@ -41,7 +43,9 @@ namespace d4160.Instancers.Photon
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public PhotonView Instantiate() => _data?.InstantiateAs<PhotonView>();
         public PhotonView Instantiate(Vector3 position, Quaternion rotation) => _data?.InstantiateAs<PhotonView>(position, rotation, _parent);
         public PhotonView Instantiate(Vector3 position, Quaternion rotation, Transform parent) => _data?.InstantiateAs<PhotonView>(position, rotation, parent);

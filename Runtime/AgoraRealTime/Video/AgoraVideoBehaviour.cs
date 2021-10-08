@@ -1,6 +1,8 @@
 #if AGORA
 using UnityEngine;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using UltEvents;
 using d4160.MonoBehaviourData;
 
@@ -27,13 +29,19 @@ namespace d4160.Chat.Agora
             }
         }   
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void SetEnableVideo() => _data?.SetEnableVideo();
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void EnableLocalVideo() => _data?.EnableLocalVideo();
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void MuteLocalVideoStream() => _data?.MuteLocalVideoStream();
 
         /// <summary>
@@ -50,10 +58,14 @@ namespace d4160.Chat.Agora
 
         public void MuteAllRemoteVideoStreams(bool mute) => _data?.MuteAllRemoteVideoStreams(mute);
         
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void StartVideoPreview() => _data?.StartVideoPreview();
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void StopVideoPreview() => _data?.StopVideoPreview();
     }
 }

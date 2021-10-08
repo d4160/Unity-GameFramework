@@ -1,7 +1,9 @@
 #if PLAYFAB
 using System;
 using d4160.MonoBehaviourData;
+#if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
+#endif
 using PlayFab;
 using PlayFab.ClientModels;
 using UltEvents;
@@ -36,14 +38,18 @@ namespace d4160.Persistence.PlayFab
             }
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void UpdateUserData()
         {
             if(_data) 
                 _data.UpdateUserData();
         }
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
+#endif
         public void GetUserData()
         {
             if(_data) 
