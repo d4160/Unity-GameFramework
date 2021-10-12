@@ -61,6 +61,20 @@ namespace d4160.ScriptableObjects
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button, ShowIf("_showOptions")]
 #endif
+        public virtual void DuplicateSelectedIndex()
+        {
+            if (_array.IsValidIndex(_selectedIndex) && _array[_selectedIndex])
+            {
+                T copy = this.CreateCopy(_array[_selectedIndex]);
+                copy.name = $"{_selectedIndex} (copy)";
+                this.AddSubasset(copy);
+                _array.Insert(_selectedIndex + 1, copy);
+            }
+        }
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button, ShowIf("_showOptions")]
+#endif
         public virtual void DestroySelectedIndex()
         {
             if (_array.IsValidIndex(_selectedIndex) && _array[_selectedIndex])
