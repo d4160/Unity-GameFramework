@@ -32,11 +32,11 @@ namespace d4160.Persistence.PlayFab
             }, (result) => {
                 OnUpdateUserDataEvent?.Invoke(result);
                 onResult?.Invoke(result);
-                M31Logger.LogInfo(result.ToJson(), LogLevel);
+                LoggerM31.LogInfo(result.ToJson(), LogLevel);
             }, (error) => {
                 OnPlayFabErrorEvent?.Invoke (error);
                 onError?.Invoke(error);
-                M31Logger.LogError(error.GenerateErrorReport(), LogLevel);
+                LoggerM31.LogError(error.GenerateErrorReport(), LogLevel);
             });
         }
 
@@ -52,11 +52,11 @@ namespace d4160.Persistence.PlayFab
             }, (result) => {
                 OnGetUserDataEvent?.Invoke(result);
                 onResult?.Invoke(result);
-                M31Logger.LogInfo(result.ToJson(), LogLevel);
+                LoggerM31.LogInfo(result.ToJson(), LogLevel);
             }, (error) => {
                 OnPlayFabErrorEvent?.Invoke (error);
                 onError?.Invoke(error);
-                M31Logger.LogError(error.GenerateErrorReport(), LogLevel);
+                LoggerM31.LogError(error.GenerateErrorReport(), LogLevel);
             });
         }
     }

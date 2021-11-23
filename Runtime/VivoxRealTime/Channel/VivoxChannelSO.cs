@@ -5,7 +5,7 @@ using d4160.Core;
 using UnityEngine;
 using VivoxUnity;
 using d4160.Auth.Vivox;
-using Logger = d4160.Logging.M31Logger;
+using Logger = d4160.Logging.LoggerM31;
 using System.Linq;
 using System.Collections.Generic;
 #if ENABLE_NAUGHTY_ATTRIBUTES

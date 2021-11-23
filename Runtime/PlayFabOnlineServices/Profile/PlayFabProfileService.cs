@@ -3,7 +3,7 @@ using System;
 using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine.Promise;
-using M31Logger = d4160.Logging.M31Logger;
+using M31Logger = d4160.Logging.LoggerM31;
 using d4160.Auth.PlayFab;
 using d4160.Core;
 using UnityEngine;

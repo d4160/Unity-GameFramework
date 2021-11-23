@@ -1,6 +1,7 @@
 #if PHOTON_UNITY_NETWORKING
 using UnityEngine;
 using Photon.Pun;
+using d4160.Loops;
 
 namespace d4160.Loops.Photon
 {
