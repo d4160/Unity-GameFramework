@@ -13,7 +13,8 @@ using InspectInLine;
 
 namespace d4160.ScriptableObjects
 {
-    public abstract class SubAssetCollectionSO<T> : ScriptableObject, IScriptableCopy<T>
+    public abstract class SubAssetCollectionSO<T> : ScriptableObject
+        , IScriptableCopy<T>
 #if ENABLE_NAUGHTY_ATTRIBUTES
     , IReorderableObjectOnRemoved
 #endif
@@ -42,12 +43,15 @@ namespace d4160.ScriptableObjects
 #endif
         [SerializeField, InspectInline(canEditRemoteTarget = true)] protected SubAssetsExportArraySO _exportArraySO;
 
+        public int Count => _array.Count;
+
         #region EDITOR
 #if UNITY_EDITOR
 
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button, ShowIf("_showOptions")]
 #endif
+
         public virtual void Add()
         {
             var subasset = CreateInstance<T>();
@@ -261,6 +265,14 @@ namespace d4160.ScriptableObjects
             UnityEditor.AssetDatabase.SaveAssets();
             UnityEditor.AssetDatabase.ImportAsset(path);
         }
+#endif
+        #endregion
+
+        public T this[int index]
+        {
+            get => _array[index];
+            set => _array[index] = value;
+        }
 
         protected abstract string GetName(int i);
         public abstract void Copy(T copyFrom, T refCopyTo);
@@ -274,9 +286,6 @@ namespace d4160.ScriptableObjects
             //}
         }
 #endif
-
-#endif
-        #endregion
 
         [System.Serializable]
         public class SubAssetArray
