@@ -6,7 +6,7 @@ using d4160.Core;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using M31Logger = d4160.Logging.M31Logger;
+using M31Logger = d4160.Logging.LoggerM31;
 
 namespace d4160.Networking.Photon {
     public class PhotonRoomService : IInRoomCallbacks {

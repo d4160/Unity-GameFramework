@@ -4,7 +4,7 @@ using d4160.Core;
 using agora_gaming_rtc;
 using d4160.Auth.Agora;
 using UnityEngine;
-using Logger = d4160.Logging.M31Logger;
+using Logger = d4160.Logging.LoggerM31;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif

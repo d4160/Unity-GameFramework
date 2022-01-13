@@ -9,7 +9,7 @@ using NaughtyAttributes;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using Logger = d4160.Logging.M31Logger;
+using Logger = d4160.Logging.LoggerM31;
 
 namespace d4160.Networking.Photon {
     [CreateAssetMenu (menuName = "d4160/Networking/Photon Lobby")]

@@ -3,7 +3,7 @@ using System;
 using d4160.Core;
 using agora_gaming_rtc;
 using UnityEngine;
-using M31Logger = d4160.Logging.M31Logger;
+using M31Logger = d4160.Logging.LoggerM31;
 
 namespace d4160.Auth.Agora
 {
