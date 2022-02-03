@@ -76,6 +76,7 @@ namespace d4160.Chat.Vivox
         {
             if (_authService.LoginState == LoginState.LoggedIn)
             {
+                Debug.Log("JOINING...");
                 string fixedChannelName = channelName.Replace(" ", "");
                 ChannelId channelId = new ChannelId(_authService.AuthSettings.TokenIssuer, fixedChannelName, _authService.AuthSettings.Domain, channelType, properties);
                 IChannelSession channelSession = _authService.LoginSession.GetChannelSession(channelId);
@@ -278,7 +279,7 @@ namespace d4160.Chat.Vivox
 
         private void VivoxLogError(string msg)
         {
-            M31Logger.LogInfo("<color=green>VivoxVoice: </color>: " + msg, LogLevel);
+            M31Logger.LogError("<color=green>VivoxVoice: </color>: " + msg, LogLevel);
         }
     }
 

@@ -109,11 +109,11 @@ namespace d4160.Logging
                         if (context) Debug.LogError(message, context); else Debug.LogError(message);
                         break;
                     case LogLevelType.Warning:
-                        if (context) Debug.LogWarning(message, context); else Debug.LogError(message);
+                        if (context) Debug.LogWarning(message, context); else Debug.LogWarning(message);
                         break;
                     case LogLevelType.Info:
                     case LogLevelType.Debug:
-                        if (context) Debug.Log(message, context); else Debug.LogError(message);
+                        if (context) Debug.Log(message, context); else Debug.Log(message);
                         break;
                 }
             }
