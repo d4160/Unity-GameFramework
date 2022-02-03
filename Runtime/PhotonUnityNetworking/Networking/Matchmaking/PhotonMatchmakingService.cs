@@ -32,7 +32,7 @@ namespace d4160.Networking.Photon {
         public int CountOfPlayersOnMaster => PhotonNetwork.CountOfPlayersOnMaster; // Wait for room
         public int CountOfRooms => PhotonNetwork.CountOfRooms;
         public List<FriendInfo> FriendList { get; private set; }
-        public string CurrentRoomName => PhotonNetwork.CurrentRoom.Name;
+        public string CurrentRoomName => PhotonNetwork.CurrentRoom?.Name;
 
         public static event Action<List<FriendInfo>> OnFriendListUpdateEvent;
         public static event Action OnCreatedRoomEvent;
