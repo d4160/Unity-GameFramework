@@ -68,6 +68,22 @@ namespace d4160.Chat.Agora
             _connection.RtcEngine.EnableLocalVideo(enabled);
         }
 
+        public void EnableVideo(bool enabled)
+        {
+            if (CheckErrors()) return;
+
+            if (enabled) _connection.RtcEngine.EnableVideo();
+            else _connection.RtcEngine.DisableVideo();
+        }
+
+        public void EnableVideoObserver(bool enabled)
+        {
+            if (CheckErrors()) return;
+
+            if (enabled) _connection.RtcEngine.EnableVideoObserver();
+            else _connection.RtcEngine.DisableVideoObserver();
+        }
+
         public void MuteLocalVideoStream(bool mute) {
             if (CheckErrors()) return;
 

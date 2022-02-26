@@ -5,11 +5,13 @@ using NaughtyAttributes;
 #endif
 using UltEvents;
 using d4160.MonoBehaviourData;
+using agora_gaming_rtc;
 
 namespace d4160.Chat.Agora
 {
     public class AgoraVideoBehaviour : MonoBehaviourUnityData<AgoraVideoSO>
     {
+        [SerializeField] private VideoSurface _defaultVideoSurf;
         [Header("EVENTS")]
         [SerializeField] private UltEvent<uint, int, int, int> _onVideoSizeChanged;
 
@@ -27,7 +29,12 @@ namespace d4160.Chat.Agora
                 _data.UnregisterEvents();
                 _data.OnVideoSizeChangedEvent -= _onVideoSizeChanged.Invoke;
             }
-        }   
+        }
+
+        void Start() 
+        {
+            _data.VideoSurface = _defaultVideoSurf;
+        }
 
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]

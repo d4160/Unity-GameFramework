@@ -169,6 +169,7 @@ namespace d4160.SceneManagement
         public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
             Debug.Log("Try to load scene");
+            
             LoadLevelIfSynced();
         }
 

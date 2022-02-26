@@ -64,7 +64,12 @@ namespace d4160.Networking.Photon {
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public void LeaveLobby (Action onLeftLobby = null) {
+        public void LeaveLobby()
+        {
+            _lobbyService.LeaveLobby();
+        }
+
+        public void LeaveLobby (Action onLeftLobby) {
             _lobbyService.LeaveLobby (onLeftLobby);
         }
 

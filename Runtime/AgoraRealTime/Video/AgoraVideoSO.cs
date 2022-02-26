@@ -48,7 +48,7 @@ namespace d4160.Chat.Agora
         [Button]
 #endif
         public void SetEnableVideo() {
-            SetEnableVideo(_enableVideoModule, _enableLocalVideo, _enableLocalVideo, _muteLocalVideoStream);
+            SetEnableVideo(_enableVideoModule, _enableVideoObserver, _enableLocalVideo, _muteLocalVideoStream);
         }
 
 #if ENABLE_NAUGHTY_ATTRIBUTES
@@ -77,6 +77,16 @@ namespace d4160.Chat.Agora
         public void EnableLocalVideo(bool enableLocalVideo)
         {
             _videoService.EnableLocalVideo(enableLocalVideo);
+        }
+
+        public void EnableVideo(bool enableVideo)
+        {
+            _videoService.EnableVideo(enableVideo);
+        }
+
+        public void EnableVideoObserver(bool enableVideoObserver)
+        {
+            _videoService.EnableVideoObserver(enableVideoObserver);
         }
 
         public void MuteLocalVideoStream(bool muteLocalVideoStream)
