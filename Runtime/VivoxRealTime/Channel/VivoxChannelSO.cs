@@ -110,6 +110,14 @@ namespace d4160.Chat.Vivox
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
+        public void DisconnectChannel()
+        {
+            _channelService.DisconnectChannel(_joinChannelParams.channelName);
+        }
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
         public void DisconnectAllChannels()
         {
             _channelService.DisconnectAllChannels();

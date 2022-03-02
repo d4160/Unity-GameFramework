@@ -45,10 +45,10 @@ namespace d4160.Networking.Photon {
             return null;
         }
 
-        [Button("SetRoomCustomProperties")]
-        public bool SetCustomProperties () {
+        [Button("SetCurrentRoomCustomProperties")]
+        public bool SetCurrentRoomCustomProperties () {
             if(_data)
-                return _data.SetCustomProperties();
+                return _data.SetCurrentRoomCustomProperties();
             return false;
         }
 

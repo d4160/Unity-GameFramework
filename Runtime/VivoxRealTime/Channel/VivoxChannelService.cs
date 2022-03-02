@@ -134,6 +134,22 @@ namespace d4160.Chat.Vivox
             });
         }
 
+        public void DisconnectChannel(string channelName)
+        {
+            if (ActiveChannels?.Count > 0)
+            {
+                foreach (var channelSession in ActiveChannels)
+                {
+                    // Debug.Log($"{channelSession?.Channel.Name} - {channelName}");
+                    if (channelSession?.Channel.Name == channelName)
+                    {
+                        channelSession?.Disconnect();
+                        break;
+                    }
+                }
+            }
+        }
+
         public void DisconnectAllChannels()
         {
             if (ActiveChannels?.Count > 0)
@@ -210,15 +226,15 @@ namespace d4160.Chat.Vivox
         {
             ValidateArgs(new object[] { sender, valueEventArg });
 
-            string username = valueEventArg.Value.Account.Name;
-            ChannelId channel = valueEventArg.Value.ParentChannelSession.Key;
+            //string username = valueEventArg.Value.Account.DisplayName;
+            //ChannelId channel = valueEventArg.Value.ParentChannelSession.Key;
             string property = valueEventArg.PropertyName;
 
             switch (property)
             {
                 case "SpeechDetected":
                     {
-                        //VivoxLog($"OnSpeechDetectedEvent: {username} in {channel}.");
+                        // VivoxLog($"OnSpeechDetectedEvent: {username} in {channel.Name}.");
                         OnSpeechDetectedEvent?.Invoke(valueEventArg.Value, valueEventArg.Value.SpeechDetected);
                         break;
                     }

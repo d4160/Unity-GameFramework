@@ -71,11 +71,11 @@ namespace d4160.Networking.Photon {
             return _roomService.InstantiateRoomObject(prefabName, position, rotation, group, data);
         }
 
-        [Button("SetRoomCustomProperties")]
-        public bool SetCustomProperties () {
+        [Button("SetCurrentRoomCustomProperties")]
+        public bool SetCurrentRoomCustomProperties () {
             _roomService.CustomRoomProperties = _customRoomProperties;
             _roomService.ExpectedProperties = _expectedRoomProperties;
-            return _roomService.SetCustomProperties();
+            return _roomService.SetCurrentRoomCustomProperties();
         }
 
         public bool SetMasterClient (Player masterClientPlayer) {
@@ -135,21 +135,30 @@ namespace d4160.Networking.Photon {
             _roomService.DestroyAll();
         }
 
-        public string GetCustomRoomPropKey(int index) {
+        public string GetRoomCustomPropKey(int index) {
             if (_customRoomProperties.IsValidIndex(index))
                 return _customRoomProperties[index].key;
             return string.Empty;
         }
 
-        public string GetCustomRoomPropValue(int index) {
+        public string GetRoomCustomPropValue(int index) {
             if (_customRoomProperties.IsValidIndex(index))
                 return _customRoomProperties[index].value;
             return string.Empty;
         }
 
-        public void SetCustomRoomProperty(string key, CommonType type, string value) {
+        public void SetRoomCustomProperty(string key, CommonType type, string value) {
             for (int i = 0; i < _customRoomProperties.Length; i++) {
                 bool found = _customRoomProperties[i].SetValue(key, type, value);
+                if (found) break;
+            }
+        }
+
+        public void SetRoomCustomProperty(string key, string value)
+        {
+            for (int i = 0; i < _customRoomProperties.Length; i++)
+            {
+                bool found = _customRoomProperties[i].SetValue(key, value);
                 if (found) break;
             }
         }
@@ -167,26 +176,26 @@ namespace d4160.Networking.Photon {
             }
         }
 
-        public string GetCustomPlayerPropKey(int index) {
+        public string GetPlayerCustomPropKey(int index) {
             if (_customPlayerProperties.IsValidIndex(index))
                 return _customPlayerProperties[index].key;
             return string.Empty;
         }
 
-        public string GetCustomPlayerPropValue(int index) {
+        public string GetPlayerCustomPropValue(int index) {
             if (_customPlayerProperties.IsValidIndex(index))
                 return _customPlayerProperties[index].value;
             return string.Empty;
         }
 
-        public T GetCustomPlayerPropValue<T>(int index) {
+        public T GetPlayerCustomPropValue<T>(int index) {
             if (_customPlayerProperties.IsValidIndex(index)) {
                 return _customPlayerProperties[index].GetValue<T>();
             }
             return default;
         }
 
-        public void SetCustomPlayerProperty(string key, CommonType type, string value) {
+        public void SetPlayerCustomProperty(string key, CommonType type, string value) {
             for (int i = 0; i < _customPlayerProperties.Length; i++) {
                 bool found = _customPlayerProperties[i].SetValue(key, type, value);
                 if (found) break;

@@ -54,7 +54,7 @@ namespace d4160.Networking.Photon {
             });
         }
 
-        public bool SetCustomProperties () {
+        public bool SetCurrentRoomCustomProperties () {
             return CheckAndExecute (() => {
                 // Expected for example is expected to have winner=0, so winner now is 3 player
                 return CurrentRoom.SetCustomProperties (HashtableStruct.GetPhotonHashtable (CustomRoomProperties), HashtableStruct.GetPhotonHashtable (ExpectedProperties));

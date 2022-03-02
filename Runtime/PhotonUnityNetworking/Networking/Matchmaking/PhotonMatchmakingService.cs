@@ -255,6 +255,18 @@ namespace d4160.Networking.Photon {
             return false;
         }
 
+        public bool SetValue(string key, string value)
+        {
+            if (this.key == key)
+            {
+                this.value = value;
+
+                return true;
+            }
+
+            return false;
+        }
+
         public object GetValue () {
             switch (valueType) {
                 case CommonType.Boolean:
