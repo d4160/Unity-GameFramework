@@ -208,7 +208,7 @@ namespace d4160.Auth.PlayFab {
         }
 
         public void SetDisplayName (string displayName) {
-            DisplayName = displayName;
+            DisplayName = displayName.Substring(0, displayName.Length > 25 ? 25 : displayName.Length);
         }
 
         /// <summary>

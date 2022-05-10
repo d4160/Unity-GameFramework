@@ -61,6 +61,14 @@ namespace d4160.Networking.Photon {
             });
         }
 
+        public bool SetCurrentRoomCustomProperties(ExitGames.Client.Photon.Hashtable customRoomProperties)
+        {
+            return CheckAndExecute(() => {
+                // Expected for example is expected to have winner=0, so winner now is 3 player
+                return CurrentRoom.SetCustomProperties(customRoomProperties, HashtableStruct.GetPhotonHashtable(ExpectedProperties));
+            });
+        }
+
         public bool SetMasterClient (Player masterClientPlayer) {
             return CheckAndExecute (() => {
                 return CurrentRoom.SetMasterClient (masterClientPlayer);

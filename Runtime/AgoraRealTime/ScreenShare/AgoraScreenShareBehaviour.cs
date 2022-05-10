@@ -17,6 +17,8 @@ namespace d4160.Chat.Agora
         [SerializeField] private UltEvent _onStartScreenCaptureEvent;
         [SerializeField] private UltEvent _onStopScreenCaptureEvent;
 
+        public VideoSurface VideoSurface { get => _videoSurface; set => _videoSurface = value; }
+
         void OnEnable () {
             if (_data)
             {

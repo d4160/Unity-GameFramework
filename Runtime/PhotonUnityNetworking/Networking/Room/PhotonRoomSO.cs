@@ -78,6 +78,19 @@ namespace d4160.Networking.Photon {
             return _roomService.SetCurrentRoomCustomProperties();
         }
 
+        public bool SetCurrentRoomCustomProperties(HashtableStruct[] customRoomProperties)
+        {
+            _roomService.CustomRoomProperties = customRoomProperties;
+            _roomService.ExpectedProperties = _expectedRoomProperties;
+            return _roomService.SetCurrentRoomCustomProperties();
+        }
+
+        public bool SetCurrentRoomCustomProperties(ExitGames.Client.Photon.Hashtable customRoomProperties)
+        {
+            _roomService.ExpectedProperties = _expectedRoomProperties;
+            return _roomService.SetCurrentRoomCustomProperties(customRoomProperties);
+        }
+
         public bool SetMasterClient (Player masterClientPlayer) {
             return _roomService.SetMasterClient(masterClientPlayer);
         }
