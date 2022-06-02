@@ -1,10 +1,8 @@
 #if AGORA
 using System;
-using d4160.Core;
 using agora_gaming_rtc;
-using d4160.Auth.Agora;
 using UnityEngine;
-using Logger = d4160.Logging.LoggerM31;
+using System.Collections.Generic;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
@@ -15,10 +13,10 @@ namespace d4160.Chat.Agora
     public class AgoraVideoSO : ScriptableObject
     {
         [Tooltip("Enable o disable video module, this is required to join the call as video mode")]
-        [SerializeField] private bool _enableVideoModule;
+        [SerializeField] private bool _enableVideoModule = true;
 
         [Tooltip("To get raw video data (can be modified pre and post), and to send the video pictures directly to the app instead of to the traditional view renderer")]
-        [SerializeField] private bool _enableVideoObserver;
+        [SerializeField] private bool _enableVideoObserver = true;
 
         [Tooltip("Whether to enable the camera to create the local video stream. This is faster than EnableVideo().")]
         [SerializeField] private bool _enableLocalVideo = true;
@@ -26,11 +24,16 @@ namespace d4160.Chat.Agora
         [Tooltip("Whether to publish the local video stream. This is faster than EnableLocalVideo().")]
         [SerializeField] private bool _muteLocalVideoStream = false;
 
+        [Tooltip("")]
+        [SerializeField] private string _videoDeviceId = string.Empty;
+
         public event Action<uint, int, int, int> OnVideoSizeChangedEvent;
 
         private readonly AgoraVideoService _videoService = AgoraVideoService.Instance; 
 
         public VideoSurface VideoSurface { get => _videoService.VideoSurface; set => _videoService.VideoSurface = value; }
+
+        public Dictionary<string, string> VideoDevices { get; private set; }
 
         private void CallOnVideoSizeChanged(uint uid, int width, int height, int rotation) => OnVideoSizeChangedEvent?.Invoke(uid, width, height, rotation);
 
@@ -54,6 +57,14 @@ namespace d4160.Chat.Agora
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
+        public void EnableVideo()
+        {
+            EnableVideo(_enableVideoModule);
+        }
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
         public void EnableLocalVideo() {
             EnableLocalVideo(_enableLocalVideo);
         }
@@ -63,6 +74,22 @@ namespace d4160.Chat.Agora
 #endif
         public void MuteLocalVideoStream() {
             MuteLocalVideoStream(_muteLocalVideoStream);
+        }
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
+        public void GetVideoDevices()
+        {
+            VideoDevices = _videoService.GetVideoDevices();
+        }
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
+        public void SetVideoDevice()
+        {
+            SetVideoDevice(_videoDeviceId);
         }
 
         /// <summary>
@@ -101,7 +128,18 @@ namespace d4160.Chat.Agora
         public void MuteAllRemoteVideoStreams(bool mute) {
             _videoService.MuteAllRemoteVideoStreams(mute);
         }
-        
+
+        public void GetVideoDevices(out Dictionary<string,string> videoDevices)
+        {
+            VideoDevices = _videoService.GetVideoDevices();
+            videoDevices = VideoDevices;
+        }
+
+        public void SetVideoDevice(string deviceId)
+        {
+            _videoService.SetVideoDevice(deviceId);
+        }
+
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif

@@ -12,10 +12,7 @@ namespace d4160.Auth.Agora
         public static event Action<int, string> OnEngineError;
         public static event Action<int, string> OnEngineWarning;
 
-        private IRtcEngine _RtcEngine;
-
-        public IRtcEngine RtcEngine => _RtcEngine;
-
+        public IRtcEngine RtcEngine { get; private set; }
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
         public AgoraAuthSettingsSO AgoraSettings { get; private set; }
 
@@ -29,7 +26,7 @@ namespace d4160.Auth.Agora
 
         private bool CheckErrors(AgoraAuthSettingsSO settings){
             
-            if(_RtcEngine != null) {
+            if(RtcEngine != null) {
                 M31Logger.LogWarning("AGORA: RtcEngine is already loaded.", LogLevel);
                 return true;
             }
@@ -52,38 +49,38 @@ namespace d4160.Auth.Agora
             return false;
         }
 
-        public void LoadEngine(AgoraAuthSettingsSO settings){
-
+        public void LoadEngine(AgoraAuthSettingsSO settings)
+        {
             if (CheckErrors(settings)) {
                 return;
             }
 
             AgoraSettings = settings;
 
-            _RtcEngine = IRtcEngine.GetEngine(settings.AppID);
+            RtcEngine = IRtcEngine.GetEngine(settings.AppID);
 
-            _RtcEngine.OnError = (code, msg) =>
+            RtcEngine.OnError = (code, msg) =>
             {
                 OnEngineError?.Invoke(code, msg);
                 M31Logger.LogError($"AGORA: RTC Error:{code}, msg:{IRtcEngine.GetErrorDescription(code)}", LogLevel);
             };
 
-            _RtcEngine.OnWarning = (code, msg) =>
+            RtcEngine.OnWarning = (code, msg) =>
             {
                 OnEngineWarning?.Invoke(code, msg);
                 M31Logger.LogWarning($"AGORA: RTC Warning:{code}, msg:{IRtcEngine.GetErrorDescription(code)}", LogLevel);
             };
 
-            _RtcEngine.SetLogFilter(GetAgoraLogLevel(LogLevel));
+            RtcEngine.SetLogFilter(GetAgoraLogLevel(LogLevel));
 
             M31Logger.LogInfo("AGORA: Successfully RTCEngine loaded", LogLevel);
         }
 
         public void UnloadEngine() {
-            if (_RtcEngine != null)
+            if (RtcEngine != null)
             {
                 IRtcEngine.Destroy();  // Place this call in ApplicationQuit
-                _RtcEngine = null;
+                RtcEngine = null;
             }
         }
 

@@ -51,6 +51,24 @@ namespace d4160.Chat.Agora
 #endif
         public void MuteLocalVideoStream() => _data?.MuteLocalVideoStream();
 
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
+        public void GetVideoDevices()
+        {
+            _data?.GetVideoDevices();
+
+            foreach (var device in _data.VideoDevices)
+            {
+                Debug.Log($"Device: {device.Key} - {device.Value}");
+            }
+        }
+
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Button]
+#endif
+        public void SetVideoDevice() => _data?.SetVideoDevice();
+
         /// <summary>
         ///   Enable/Disable video
         /// </summary>

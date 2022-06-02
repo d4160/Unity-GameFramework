@@ -5,6 +5,7 @@ using agora_gaming_rtc;
 using d4160.Auth.Agora;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
+using System.Collections.Generic;
 
 namespace d4160.Chat.Agora
 {
@@ -17,6 +18,20 @@ namespace d4160.Chat.Agora
         private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance; 
         public static AgoraVideoService Instance => _instance ?? (_instance = new AgoraVideoService());
         private static AgoraVideoService _instance;
+
+        private VideoDeviceManager _deviceManager;
+        public VideoDeviceManager DeviceManager
+        {
+            get
+            {
+                if (_connection.RtcEngine != null && _deviceManager == null)
+                {
+                    _deviceManager = VideoDeviceManager.GetInstance(_connection.RtcEngine);
+                }
+
+                return _deviceManager;
+            }
+        }
 
         public VideoSurface VideoSurface { get; set; }
 
@@ -109,30 +124,47 @@ namespace d4160.Chat.Agora
             if (CheckErrors()) return;
 
             // video surface with 0 uid is local by default
+            VideoSurface.SetForUser(0);
             VideoSurface.SetEnable(true);
 
             _connection.RtcEngine.StartPreview();
+        }
 
-            // VideoManager only works after video enabled
-            CheckDevices();
+        /// <summary>
+        /// It should only be used
+        //  after EnableVideo() call.
+        /// </summary>
+        /// <param name="engine">Video Engine </param>
+        public Dictionary<string,string> GetVideoDevices()
+        {
+            DeviceManager.CreateAVideoDeviceManager();
+
+            int count = DeviceManager.GetVideoDeviceCount();
+
+            if (count > 0)
+            {
+                Dictionary<string, string> devices = new Dictionary<string, string>();
+                for (int i = 0; i < count; i++)
+                {
+                    string deviceName = null, deviceId = null;
+                    DeviceManager.GetVideoDevice(i, ref deviceName, ref deviceId);
+                    devices.Add(deviceId, deviceName);
+                }
+                
+                return devices;
+            }
+
+            return null;
+            // M31Logger.LogInfo("AGORA: Device count =============== " + cnt, LogLevel);
+        }
+
+        public void SetVideoDevice(string deviceId)
+        {
+            DeviceManager.SetVideoDevice(deviceId);
         }
 
         public void StopVideoPreview() {
             _connection.RtcEngine.StopPreview();
-        }
-
-        /// <summary>
-        ///   This method shows the CheckVideoDeviceCount API call.  It should only be used
-        //  after EnableVideo() call.
-        /// </summary>
-        /// <param name="engine">Video Engine </param>
-        void CheckDevices()
-        {
-            VideoDeviceManager deviceManager = VideoDeviceManager.GetInstance(_connection.RtcEngine);
-            deviceManager.CreateAVideoDeviceManager();
-
-            int cnt = deviceManager.GetVideoDeviceCount();
-            M31Logger.LogInfo("AGORA: Device count =============== " + cnt, LogLevel);
         }
 
         private bool CheckErrors() {
