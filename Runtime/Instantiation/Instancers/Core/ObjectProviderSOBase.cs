@@ -81,7 +81,12 @@ namespace d4160.Instancers
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public T Instantiate() => Provider.Instantiate();
+        public T Instantiate()
+        {
+            if (!HasPrefab) Setup();
+
+            return Provider.Instantiate();
+        }
         public T Instantiate(Transform parent, bool worldPositionStays = true) => Provider.Instantiate(parent, worldPositionStays);
         public T Instantiate(Vector3 position, Quaternion rotation, Transform parent = null) => Provider.Instantiate(position, rotation, parent);
 

@@ -31,12 +31,6 @@ namespace d4160.Instancers
             }
         }
 
-        void Start() {
-            if (_data) {
-                _data.Setup();
-            }
-        }
-
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif

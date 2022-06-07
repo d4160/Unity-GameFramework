@@ -6,6 +6,7 @@ using NaughtyAttributes;
 using UltEvents;
 using d4160.MonoBehaviourData;
 using agora_gaming_rtc;
+using System.Collections.Generic;
 
 namespace d4160.Chat.Agora
 {
@@ -62,6 +63,12 @@ namespace d4160.Chat.Agora
             {
                 Debug.Log($"Device: {device.Key} - {device.Value}");
             }
+        }
+
+        public void GetVideoDevices(out Dictionary<string, string> videoDevices)
+        {
+            videoDevices = null;
+            _data?.GetVideoDevices(out videoDevices);
         }
 
 #if ENABLE_NAUGHTY_ATTRIBUTES
