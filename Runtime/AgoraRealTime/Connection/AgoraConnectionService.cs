@@ -5,7 +5,7 @@ using agora_gaming_rtc;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
 
-namespace d4160.Auth.Agora
+namespace d4160.Agora
 {
     public class AgoraConnectionService
     {

@@ -7,7 +7,7 @@ using NaughtyAttributes;
 using d4160.MonoBehaviourData;
 using UltEvents;
 
-namespace d4160.Chat.Agora
+namespace d4160.Agora
 {
     public class AgoraScreenShareBehaviour : MonoBehaviourUnityData<AgoraScreenShareSO>
     {

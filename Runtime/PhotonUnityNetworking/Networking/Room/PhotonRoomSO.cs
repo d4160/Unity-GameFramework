@@ -80,9 +80,8 @@ namespace d4160.Networking.Photon {
 
         public bool SetCurrentRoomCustomProperties(HashtableStruct[] customRoomProperties)
         {
-            _roomService.CustomRoomProperties = customRoomProperties;
             _roomService.ExpectedProperties = _expectedRoomProperties;
-            return _roomService.SetCurrentRoomCustomProperties();
+            return _roomService.SetCurrentRoomCustomProperties(HashtableStruct.GetPhotonHashtable(customRoomProperties));
         }
 
         public bool SetCurrentRoomCustomProperties(ExitGames.Client.Photon.Hashtable customRoomProperties)

@@ -6,7 +6,7 @@ using NaughtyAttributes;
 using UltEvents;
 using UnityEngine;
 
-namespace d4160.Auth.Agora
+namespace d4160.Agora
 {
     public class AgoraAuthBehaviour : MonoBehaviourUnityData<AgoraAuthSO>
     {

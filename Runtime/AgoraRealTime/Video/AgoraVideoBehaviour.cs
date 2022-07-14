@@ -8,7 +8,7 @@ using d4160.MonoBehaviourData;
 using agora_gaming_rtc;
 using System.Collections.Generic;
 
-namespace d4160.Chat.Agora
+namespace d4160.Agora
 {
     public class AgoraVideoBehaviour : MonoBehaviourUnityData<AgoraVideoSO>
     {

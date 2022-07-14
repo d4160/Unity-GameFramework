@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 #endif
 
-namespace d4160.Chat.Agora
+namespace d4160.Agora
 {
     [CreateAssetMenu(menuName = "d4160/Agora/Video")]
     public class AgoraVideoSO : ScriptableObject

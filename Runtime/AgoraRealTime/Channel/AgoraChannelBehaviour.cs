@@ -2,7 +2,6 @@
 using System;
 using d4160.Core;
 using agora_gaming_rtc;
-using d4160.Auth.Agora;
 using UnityEngine;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
@@ -10,7 +9,7 @@ using NaughtyAttributes;
 using d4160.MonoBehaviourData;
 using UltEvents;
 
-namespace d4160.Chat.Agora
+namespace d4160.Agora
 {
     public class AgoraChannelBehaviour : MonoBehaviourUnityData<AgoraChannelSO>
     {

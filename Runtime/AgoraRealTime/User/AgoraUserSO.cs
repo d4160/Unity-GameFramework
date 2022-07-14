@@ -8,7 +8,7 @@ using d4160.Instancers;
 using NaughtyAttributes;
 #endif
 
-namespace d4160.Chat.Agora
+namespace d4160.Agora
 {
     [CreateAssetMenu(menuName = "d4160/Chat/Agora User")]
     public class AgoraUserSO : ScriptableObject

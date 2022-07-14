@@ -8,7 +8,7 @@ using UnityEngine;
 namespace d4160.Events {
     public abstract class EventBehaviourBase<TSo, TObj> : MonoBehaviourData<TSo>, IEventListener<TObj> where TSo : EventSOBase<TObj> 
     {
-        [SerializeField] private UltEvent<TObj> _onEvent;
+        [SerializeField] protected UltEvent<TObj> _onEvent;
 
         void OnEnable() => _data?.AddListener(this);
 
@@ -19,9 +19,22 @@ namespace d4160.Events {
         void IEventListener<TObj>.OnInvoked(TObj param) => _onEvent?.Invoke(param);
     }
 
+    public abstract class EmptyEventBehaviourBase<TSo, TObj> : MonoBehaviourData<TSo>, IEventListener<TObj> where TSo : EventSOBase<TObj>
+    {
+        void OnEnable() => _data?.AddListener(this);
+
+        void OnDisable() => _data?.RemoveListener(this);
+
+        public void Invoke(TObj obj) => _data?.Invoke(obj);
+
+        void IEventListener<TObj>.OnInvoked(TObj param) => OnInvokedInternal(param);
+
+        protected abstract void OnInvokedInternal(TObj param);
+    }
+
     public abstract class EventBehaviourBase<TSo, TObj1, TObj2> : MonoBehaviourData<TSo> where TSo : EventSOBase<TObj1, TObj2> 
     {
-        [SerializeField] private UltEvent<TObj1, TObj2> _onEvent;
+        [SerializeField] protected UltEvent<TObj1, TObj2> _onEvent;
 
         void OnEnable () {
             if (_data) {
@@ -47,7 +60,7 @@ namespace d4160.Events {
 
     public abstract class EventBehaviourBase<TSo, TObj1, TObj2, TObj3> : MonoBehaviourData<TSo> where TSo : EventSOBase<TObj1, TObj2, TObj3> 
     {
-        [SerializeField] private UltEvent<TObj1, TObj2, TObj3> _onEvent;
+        [SerializeField] protected UltEvent<TObj1, TObj2, TObj3> _onEvent;
 
         void OnEnable () {
             if (_data) {
@@ -73,7 +86,7 @@ namespace d4160.Events {
 
     public abstract class EventBehaviourBase<TSo, TObj1, TObj2, TObj3, TObj4> : MonoBehaviourData<TSo> where TSo : EventSOBase<TObj1, TObj2, TObj3, TObj4> 
     {
-        [SerializeField] private UltEvent<TObj1, TObj2, TObj3, TObj4> _onEvent;
+        [SerializeField] protected UltEvent<TObj1, TObj2, TObj3, TObj4> _onEvent;
 
         void OnEnable () {
             if (_data) {

@@ -2,12 +2,11 @@
 using System;
 using d4160.Core;
 using agora_gaming_rtc;
-using d4160.Auth.Agora;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
 using System.Collections.Generic;
 
-namespace d4160.Chat.Agora
+namespace d4160.Agora
 {
     public class AgoraScreenShareService
     {

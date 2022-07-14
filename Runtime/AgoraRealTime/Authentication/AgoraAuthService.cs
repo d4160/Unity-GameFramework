@@ -6,7 +6,7 @@ using d4160.Authentication;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
 
-namespace d4160.Auth.Agora
+namespace d4160.Agora
 {
     public class AgoraAuthService : BaseAuthService
     {

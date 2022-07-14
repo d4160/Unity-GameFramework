@@ -5,7 +5,7 @@ using NaughtyAttributes;
 #endif
 using UnityEngine;
 
-namespace d4160.Auth.Agora
+namespace d4160.Agora
 {
 
     [CreateAssetMenu(menuName = "d4160/Agora/Connection")]

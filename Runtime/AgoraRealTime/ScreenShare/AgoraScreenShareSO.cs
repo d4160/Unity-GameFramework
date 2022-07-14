@@ -6,7 +6,7 @@ using NaughtyAttributes;
 #endif
 using System;
 
-namespace d4160.Chat.Agora
+namespace d4160.Agora
 {
     [CreateAssetMenu(menuName = "d4160/Agora/ScreenShare")]
     public class AgoraScreenShareSO : ScriptableObject

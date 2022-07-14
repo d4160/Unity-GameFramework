@@ -2,13 +2,12 @@
 using System;
 using d4160.Core;
 using agora_gaming_rtc;
-using d4160.Auth.Agora;
 using UnityEngine;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
 
-namespace d4160.Chat.Agora
+namespace d4160.Agora
 {
     [CreateAssetMenu(menuName = "d4160/Chat/Agora Channel")]
     public class AgoraChannelSO : ScriptableObject
