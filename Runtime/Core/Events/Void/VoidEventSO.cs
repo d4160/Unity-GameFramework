@@ -60,9 +60,6 @@ namespace d4160.Events
                 _storedRoutine = CoroutineStarter.Instance.StartCoroutine(DelayedInvoke());
         }
 
-#if ENABLE_NAUGHTY_ATTRIBUTES
-        [Button]
-#endif
         public void Invoke(float delay)
         {
             var old = _delay;

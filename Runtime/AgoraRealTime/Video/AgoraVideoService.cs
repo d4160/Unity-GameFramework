@@ -45,12 +45,20 @@ namespace d4160.Agora
             _instance = this;
         }
 
-        public void RegisterEvents () {
-            _connection.RtcEngine.OnVideoSizeChanged += RaiseOnVideoSizeChanged;
+        public void RegisterEvents () 
+        {
+            if (_connection.RtcEngine != null)
+            {
+                _connection.RtcEngine.OnVideoSizeChanged += RaiseOnVideoSizeChanged;
+            }
         }
 
-        public void UnregisterEvents(){
-            _connection.RtcEngine.OnVideoSizeChanged -= RaiseOnVideoSizeChanged;
+        public void UnregisterEvents()
+        {
+            if (_connection.RtcEngine != null)
+            {
+                _connection.RtcEngine.OnVideoSizeChanged -= RaiseOnVideoSizeChanged;
+            }
         }   
 
         /// <summary>

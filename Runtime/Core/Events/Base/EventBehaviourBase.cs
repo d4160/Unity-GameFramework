@@ -1,11 +1,13 @@
 using d4160.MonoBehaviourData;
+using d4160.Variables;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
 using UltEvents;
 using UnityEngine;
 
-namespace d4160.Events {
+namespace d4160.Events 
+{
     public abstract class EventBehaviourBase<TSo, TObj> : MonoBehaviourData<TSo>, IEventListener<TObj> where TSo : EventSOBase<TObj> 
     {
         [SerializeField] protected UltEvent<TObj> _onEvent;
@@ -30,6 +32,11 @@ namespace d4160.Events {
         void IEventListener<TObj>.OnInvoked(TObj param) => OnInvokedInternal(param);
 
         protected abstract void OnInvokedInternal(TObj param);
+    }
+
+    public abstract class EmptyVarCheckEventBehaviourBase<TSo, TObj> : MonoBehaviourData<TSo> where TSo : VariableSOBase<TObj>
+    {
+        public abstract void Invoke();
     }
 
     public abstract class EventBehaviourBase<TSo, TObj1, TObj2> : MonoBehaviourData<TSo> where TSo : EventSOBase<TObj1, TObj2> 

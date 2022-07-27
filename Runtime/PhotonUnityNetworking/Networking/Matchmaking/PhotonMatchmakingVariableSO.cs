@@ -7,5 +7,7 @@ namespace d4160.Networking.Photon
     public class PhotonMatchmakingVariableSO : VariableSOBase<PhotonMatchmakingSO>
     {
         public string CurrentRoomName => _value?.CurrentRoomName;
+
+        public void JoinRoom() => _value?.JoinRoom();
     }
 }

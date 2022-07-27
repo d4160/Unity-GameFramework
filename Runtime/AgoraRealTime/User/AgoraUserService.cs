@@ -94,14 +94,22 @@ namespace d4160.Agora
             _instance = this;
         }
 
-        public void RegisterEvents () {
-            _connection.RtcEngine.OnUserJoined += CallOnUserJoined;
-            _connection.RtcEngine.OnUserOffline += CallOnUserOfflineEvent;
+        public void RegisterEvents () 
+        {
+            if (_connection.RtcEngine != null)
+            {
+                _connection.RtcEngine.OnUserJoined += CallOnUserJoined;
+                _connection.RtcEngine.OnUserOffline += CallOnUserOfflineEvent;
+            }
         }
 
-        public void UnregisterEvents(){
-            _connection.RtcEngine.OnUserJoined -= CallOnUserJoined;
-            _connection.RtcEngine.OnUserOffline -= CallOnUserOfflineEvent;
+        public void UnregisterEvents()
+        {
+            if (_connection.RtcEngine != null)
+            {
+                _connection.RtcEngine.OnUserJoined -= CallOnUserJoined;
+                _connection.RtcEngine.OnUserOffline -= CallOnUserOfflineEvent;
+            }
         }   
 
         private bool CheckErrors() {

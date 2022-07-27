@@ -81,14 +81,12 @@ namespace d4160.Instancers
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public T Instantiate()
-        {
-            if (!HasPrefab) Setup();
-
-            return Provider.Instantiate();
-        }
-        public T Instantiate(Transform parent, bool worldPositionStays = true) => Provider.Instantiate(parent, worldPositionStays);
-        public T Instantiate(Vector3 position, Quaternion rotation, Transform parent = null) => Provider.Instantiate(position, rotation, parent);
+        public T Instantiate() { if (!HasPrefab) Setup(); return Provider.Instantiate(); }
+        public T Instantiate(Transform parent, bool worldPositionStays = true) { if (!HasPrefab) Setup(); return Provider.Instantiate(parent, worldPositionStays); }
+        public T Instantiate(Vector3 position, Quaternion rotation, Transform parent = null) { if (!HasPrefab) Setup(); return Provider.Instantiate(position, rotation, parent); }
+        public T Instantiate(Vector3 position, Transform parent = null) { if (!HasPrefab) Setup(); return Provider.Instantiate(position, Quaternion.identity, parent); }
+        public T InstantiateTo(Transform posRot, Transform parent) { if (!HasPrefab) Setup(); return Provider.Instantiate(posRot.position, posRot.rotation, parent); }
+        public T InstantiateTo(Transform posRot) { if (!HasPrefab) Setup(); return Provider.Instantiate(posRot.position, posRot.rotation, null); }
 
         public virtual T2 InstantiateAs<T2>() where T2 : class => Instantiate() as T2;
         public virtual T2 InstantiateAs<T2>(Vector3 position, Quaternion rotation, Transform parent = null) where T2 : class => Instantiate(position, rotation, parent) as T2;

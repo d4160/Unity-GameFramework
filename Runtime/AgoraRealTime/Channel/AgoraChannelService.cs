@@ -106,9 +106,9 @@ namespace d4160.Agora
                 rtcEngine.OnChannelMediaRelayEvent -= CallOnChannelMediaRelayEvent;
                 rtcEngine.OnChannelMediaRelayStateChanged -= CallOnChannelMediaRelayStateChanged;
             }
-            else {
-                M31Logger.LogError("AGORA: UnregisterEvents failed. Initialize the RtcEngine first.You can do this calling 'LoadEngine' of AgoraConnectionService or using AgoraConnectionBehaviour or AgoraConnectionSO.", LogLevel);
-            }
+            //else {
+            //    M31Logger.LogError("AGORA: UnregisterEvents failed. Initialize the RtcEngine first.You can do this calling 'LoadEngine' of AgoraConnectionService or using AgoraConnectionBehaviour or AgoraConnectionSO.", LogLevel);
+            //}
         }   
 
         public void Setup(AgoraChannelType channelType = AgoraChannelType.Video | AgoraChannelType.Audio){

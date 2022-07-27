@@ -1,6 +1,4 @@
 using d4160.Events;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace d4160.Variables
@@ -11,12 +9,20 @@ namespace d4160.Variables
         [SerializeField] protected T _value;
         [SerializeField] protected EventSOBase<T> _onChange;
 
-        public T Value { get => _value; set => _value = value; }
+        public T Value 
+        { 
+            get => _value;
+            set
+            {
+                _value = value;
+                _onChange?.Invoke(_value);
+            }
+        }
 
         public void SetValue(VariableSOBase<T> variable) {
             _value = variable.Value;
 
-            _onChange.Invoke(_value);
+            _onChange?.Invoke(_value);
         }
 
         public static implicit operator T(VariableSOBase<T> variable)
