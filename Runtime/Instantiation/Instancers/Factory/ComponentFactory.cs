@@ -99,7 +99,10 @@ namespace d4160.Instancers
 
         public T Instantiate()
         {
-            return Instantiate(_position, _rotation, _parent);
+            if (UsePositionAndRotation)
+                return Instantiate(_position, _rotation, _parent);
+            else
+                return Instantiate(_parent, _worldPositionStays);
         }
 
         
