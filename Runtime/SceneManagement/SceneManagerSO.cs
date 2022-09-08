@@ -131,9 +131,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     LoadSceneCollectionAsyncDefault (label);
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     LoadSceneCollectionsAsyncAddressables (label);
                     break;
+#endif
                 default:
                     break;
             }
@@ -144,9 +146,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     LoadSceneCollectionAsyncDefault (index);
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     LoadSceneCollectionAsyncAddressables (index);
                     break;
+#endif
                 default:
                     break;
             }
@@ -167,6 +171,7 @@ namespace d4160.SceneManagement {
             LoadSceneCollectionAsyncDefault(scnCollecSO);
         }
 
+#if ADDRESSABLES
         public void LoadSceneCollectionsAsyncAddressables(string label) {
             SceneCollectionSO scnCollecSO = GetSceneCollection(label, out int index);
             
@@ -180,6 +185,7 @@ namespace d4160.SceneManagement {
             }
             LoadSceneCollectionAsyncAddressables(scnCollecSO);
         }
+#endif
 
         public void LoadSceneCollectionAsyncDefault(int index) {
             SceneCollectionSO scnCollecSO = GetSceneCollectionAt(index, out string label);
@@ -188,6 +194,7 @@ namespace d4160.SceneManagement {
             LoadSceneCollectionAsyncDefault(scnCollecSO);
         }
 
+#if ADDRESSABLES
         public void LoadSceneCollectionAsyncAddressables(int index) {
             SceneCollectionSO scnCollecSO = GetSceneCollectionAt(index, out string label);
             _lastLoadedIndex = index;
@@ -203,6 +210,7 @@ namespace d4160.SceneManagement {
 
             sceneCollection?.LoadScenesAsyncAddressables();
         }
+#endif
 
         public void LoadSceneCollectionAsyncDefault(SceneCollectionSO sceneCollection) {
             sceneCollection.SceneManager = this;
@@ -256,9 +264,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     ContinueCollectionLoadAsyncDefault (label);
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     ContinueCollectionLoadAsyncAddressables (label);
                     break;
+#endif
                 default:
                     break;
             }
@@ -269,9 +279,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     ContinueCollectionLoadAsyncDefault (index);
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     ContinueCollectionLoadAsyncAddressables (index);
                     break;
+#endif
                 default:
                     break;
             }
@@ -281,9 +293,11 @@ namespace d4160.SceneManagement {
             sceneCollection?.ContinueLoadAsyncDefault();
         }
 
+#if ADDRESSABLES
         public void ContinueCollectionLoadAsyncAddressables(SceneCollectionSO sceneCollection) {
             sceneCollection?.ContinueLoadAsyncAddressables();
         }
+#endif
 
         public void ContinueCollectionLoadAsyncDefault(int index) {
             ContinueCollectionLoadAsyncDefault(GetSceneCollectionAt(index, out string label));
@@ -297,6 +311,7 @@ namespace d4160.SceneManagement {
             _lastLoadedIndex = index;
         }
 
+#if ADDRESSABLES
         public void ContinueCollectionLoadAsyncAddressables(string label) {
             ContinueCollectionLoadAsyncAddressables(GetSceneCollection(label, out int index));
             _lastLoadedLabel = label;
@@ -308,6 +323,7 @@ namespace d4160.SceneManagement {
             _lastLoadedLabel = label;
             _lastLoadedIndex = index;
         }
+#endif
 
         /* UNLOAD */
 #if ENABLE_NAUGHTY_ATTRIBUTES
@@ -330,9 +346,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     UnloadSceneCollectionAsyncDefault (index);
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     UnloadSceneCollectionAsyncAddressables (index);
                     break;
+#endif
                 default:
                     break;
             }
@@ -343,9 +361,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     UnloadSceneCollectionAsyncDefault (label);
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     UnloadSceneCollectionAsyncAddressables (label);
                     break;
+#endif
                 default:
                     break;
             }
@@ -355,9 +375,11 @@ namespace d4160.SceneManagement {
             sceneCollection?.UnloadScenesAsyncDefault();
         }
 
+#if ADDRESSABLES
         public void UnloadSceneCollectionAsyncAddressables(SceneCollectionSO sceneCollection) {
             sceneCollection?.UnloadScenesAsyncAddressables();
         }
+#endif
 
         public void UnloadSceneCollectionAsyncDefault(int index) {
             UnloadSceneCollectionAsyncDefault(GetSceneCollectionAt(index, out string label));
@@ -367,6 +389,7 @@ namespace d4160.SceneManagement {
             UnloadSceneCollectionAsyncDefault(GetSceneCollection(label, out int index));
         }
 
+#if ADDRESSABLES
         public void UnloadSceneCollectionAsyncAddressables(string label) {
             UnloadSceneCollectionAsyncAddressables(GetSceneCollection(label, out int index));
         }
@@ -374,5 +397,6 @@ namespace d4160.SceneManagement {
         public void UnloadSceneCollectionAsyncAddressables(int index) {
             UnloadSceneCollectionAsyncAddressables(GetSceneCollectionAt(index, out string label));
         }
+#endif
     }
 }

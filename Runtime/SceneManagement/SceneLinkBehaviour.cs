@@ -42,8 +42,10 @@ namespace d4160.SceneManagement {
             _data.ContinueLoadAsyncDefault ();
         }
 
+#if ADDRESSABLES
         public void ContinueLoadAsyncAddressables () {
             _data.ContinueLoadAsyncAddressables ();
         }
+#endif
     }
 }

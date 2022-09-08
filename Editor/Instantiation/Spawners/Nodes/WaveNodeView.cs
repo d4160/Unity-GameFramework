@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if NODE_GRAPH_PROCESSOR
+using System.Collections.Generic;
 using d4160.Core.Editors.Utilities;
 using UnityEngine.UIElements;
 using GraphProcessor;
@@ -94,3 +95,4 @@ namespace d4160.Editor.Spawners
         }
     }
 }
+#endif

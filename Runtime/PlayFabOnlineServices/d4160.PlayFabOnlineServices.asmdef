@@ -19,7 +19,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "PLAYFAB"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

@@ -1,3 +1,4 @@
+#if NODE_GRAPH_PROCESSOR
 using System.Collections;
 using UnityEngine;
 using d4160.Instancers;
@@ -118,3 +119,4 @@ namespace d4160.Spawners
 
     }
 }
+#endif

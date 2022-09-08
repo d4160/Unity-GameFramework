@@ -36,7 +36,9 @@
     {
         Default,
         AssetBundles,
+#if ADDRESSABLES
         Addressables
+#endif
     }
 
     public enum LogLevelType : byte

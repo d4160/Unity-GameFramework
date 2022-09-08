@@ -38,9 +38,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     ContinueLoadAsyncDefault ();
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     ContinueLoadAsyncAddressables ();
                     break;
+#endif
                 default:
                     break;
             }
@@ -52,10 +54,12 @@ namespace d4160.SceneManagement {
             }
         }
 
+#if ADDRESSABLES
         public void ContinueLoadAsyncAddressables () {
             if (SceneCollection) {
                 SceneCollection.ContinueLoadAsyncAddressables (_loadSceneMode, _activateOnLoad, _priority);
             }
         }
+#endif
     }
 }

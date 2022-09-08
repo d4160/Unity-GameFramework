@@ -10,7 +10,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "NODE_GRAPH_PROCESSOR"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

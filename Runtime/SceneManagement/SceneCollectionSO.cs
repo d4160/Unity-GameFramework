@@ -10,8 +10,10 @@ using InspectInLine;
 using UnityEditor.SceneManagement;
 #endif
 using UnityEngine;
+#if ADDRESSABLES
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
+#endif
 using UnityEngine.SceneManagement;
 using d4160.Core;
 using System;
@@ -51,10 +53,13 @@ namespace d4160.SceneManagement {
         public int ManagerIndex { get => _managerIndex; set => _managerIndex = value; }
 
         private readonly List<AsyncOperation> _sceneOperations = new List<AsyncOperation> ();
+#if ADDRESSABLES
         private readonly List<AsyncOperationHandle<SceneInstance>> _addressablesOperation = new List<AsyncOperationHandle<SceneInstance>> ();
-
+#endif
         public List<AsyncOperation> SceneOperationHandles => _sceneOperations;
+#if ADDRESSABLES
         public List<AsyncOperationHandle<SceneInstance>> AddressablesOperationHandles => _addressablesOperation;
+#endif
 
 #region UNITY_EDITOR
 #if UNITY_EDITOR
@@ -95,9 +100,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     LoadScenesAsyncDefault ();
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     LoadScenesAsyncAddressables ();
                     break;
+#endif
                 default:
                     break;
             }
@@ -111,9 +118,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     ContinueLoadAsyncDefault ();
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     ContinueLoadAsyncAddressables ();
                     break;
+#endif
                 default:
                     break;
             }
@@ -127,9 +136,11 @@ namespace d4160.SceneManagement {
                 case AssetManagementType.Default:
                     UnloadScenesAsyncDefault ();
                     break;
+#if ADDRESSABLES
                 case AssetManagementType.Addressables:
                     UnloadScenesAsyncAddressables ();
                     break;
+#endif
                 default:
                     break;
             }
@@ -211,6 +222,7 @@ namespace d4160.SceneManagement {
             }
         }
 
+#if ADDRESSABLES
         private void LoadScenesAsyncAddressables () {
             LoadScenesAsyncAddressables (LoadSceneMode.Single);
         }
@@ -276,5 +288,6 @@ namespace d4160.SceneManagement {
                 _sceneCollection[i].UnloadSceneAsyncAddressables ();
             }
         }
+#endif
     }
 }

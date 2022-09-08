@@ -1,4 +1,5 @@
-﻿using d4160.NodeGraphProcessor;
+﻿#if NODE_GRAPH_PROCESSOR
+using d4160.NodeGraphProcessor;
 using GraphProcessor;
 using UnityEngine;
 //using WeightedRandomization;
@@ -25,3 +26,4 @@ namespace d4160.Spawners
         }
     }
 }
+#endif

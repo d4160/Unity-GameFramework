@@ -1,13 +1,15 @@
 using UnityEngine;
+#if ADDRESSABLES
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
+#endif
 using UnityEngine.SceneManagement;
 
 namespace d4160.SceneManagement {
     [System.Serializable]
     public struct SceneReference : ISerializationCallbackReceiver {
-#if UNITY_EDITOR 
+#if UNITY_EDITOR
         [SerializeField] private UnityEditor.SceneAsset _sceneAsset;
         [SerializeField] private UnityEditor.SceneAsset _prevSceneAsset;
 
@@ -46,6 +48,7 @@ namespace d4160.SceneManagement {
             _sceneOperation = null;
         }
 
+#if ADDRESSABLES
         private AsyncOperationHandle<SceneInstance> _addressablesOperation;
         /// <summary>
         /// The AsyncOperationHandle currently being used by the AssetReference.
@@ -86,6 +89,7 @@ namespace d4160.SceneManagement {
         public AsyncOperationHandle<SceneInstance> UnloadSceneAsyncAddressables () {
             return Addressables.UnloadSceneAsync (_addressablesOperation);
         }
+#endif
 
         public void OnBeforeSerialize () {
 #if UNITY_EDITOR
