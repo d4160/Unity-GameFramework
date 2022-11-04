@@ -1,18 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class FloatEventSO : MonoBehaviour
+namespace d4160.Events
 {
-    // Start is called before the first frame update
-    void Start()
+    [CreateAssetMenu(menuName = "d4160/Events/Float")]
+    public class FloatEventSO : EventSOBase<float>
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

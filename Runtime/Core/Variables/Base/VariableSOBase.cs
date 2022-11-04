@@ -3,14 +3,16 @@ using UnityEngine;
 
 namespace d4160.Variables
 {
-    public abstract class VariableSOBase<T> : ScriptableObject
+    public abstract class VariableSOBase<T> : VariableSOBase
     {
         [SerializeField, Multiline] protected string _editorDescription;
         [SerializeField] protected T _value;
         [SerializeField] protected EventSOBase<T> _onChange;
 
-        public T Value 
-        { 
+        public override object RawValue { get => _value; set => Value = (T)value; }
+
+        public T Value
+        {
             get => _value;
             set
             {
@@ -19,9 +21,15 @@ namespace d4160.Variables
             }
         }
 
-        public void SetValue(VariableSOBase<T> variable) {
-            _value = variable.Value;
+        public void SetValue(T value)
+        {
+            _value = value;
+            _onChange?.Invoke(_value);
+        }
 
+        public void SetValue(VariableSOBase<T> variable)
+        {
+            _value = variable.Value;
             _onChange?.Invoke(_value);
         }
 
@@ -29,5 +37,10 @@ namespace d4160.Variables
         {
             return variable.Value;
         }
+    }
+
+    public abstract class VariableSOBase : ScriptableObject
+    {
+        public abstract object RawValue { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace d4160.Variables
 #endif
         [SerializeField] protected TVarSO _variable;
 
+        public TVarSO Variable => _variable;
         public T Value => _useConstant ? _constantValue : _variable.Value;
 
         public VariableReference()

@@ -292,10 +292,25 @@ namespace d4160.ScriptableObjects
 #if ENABLE_NAUGHTY_ATTRIBUTES
             : ReorderableArrayForUnityObject<T>
 #else
-            : List<T>
+            //: List<T>
 #endif
         {
+#if !ENABLE_NAUGHTY_ATTRIBUTES
+            [SerializeField] private List<T> _items = new List<T>();
 
+            public int Count => _items.Count;
+            public T this[int index] { 
+                get => _items[index];
+                set => _items[index] = value;
+            }
+
+            public bool IsValidIndex(int index) => _items.IsValidIndex(index);
+            public void Add(T item) => _items.Add(item);
+            public bool Contains(T item) => _items.Contains(item);
+            public void Clear() => _items.Clear();
+            public void RemoveAt(int index) => _items.RemoveAt(index);
+            public void Insert(int index, T item) => _items.Insert(index, item);
+#endif
         }
     }
 }
