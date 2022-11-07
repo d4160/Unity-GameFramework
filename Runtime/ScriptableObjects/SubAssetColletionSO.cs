@@ -10,6 +10,7 @@ using d4160.ScriptableObjects.Editors.Utilities;
 using d4160.Collections;
 using Malee;
 using InspectInLine;
+using System.Linq;
 
 namespace d4160.ScriptableObjects
 {
@@ -296,7 +297,10 @@ namespace d4160.ScriptableObjects
 #endif
         {
 #if !ENABLE_NAUGHTY_ATTRIBUTES
+            
             [SerializeField] private List<T> _items = new List<T>();
+
+            public List<T> Items { get => _items; set => _items = value; }
 
             public int Count => _items.Count;
             public T this[int index] { 

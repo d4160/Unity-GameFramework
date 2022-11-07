@@ -78,13 +78,13 @@ namespace d4160.Collections
                     break;
                 case Component c:
                     var des = c.GetComponent<IDestroyable>();
-                    if (des != null) { des.Destroy(); } else { GameObject.Destroy(c.gameObject); };
+                    if (des != null) { des.Destroy(); } else { if (Application.isPlaying) GameObject.Destroy(c.gameObject); else GameObject.DestroyImmediate(c.gameObject); };
                     break;
                 case GameObject go:
                     if (go)
                     {
                         des = go.GetComponent<IDestroyable>();
-                        if (des != null) { des.Destroy(); } else { GameObject.Destroy(go); };
+                        if (des != null) { des.Destroy(); } else { if (Application.isPlaying) GameObject.Destroy(go); else GameObject.DestroyImmediate(go); };
                     }
                     break;
             }
