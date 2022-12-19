@@ -10,7 +10,7 @@ namespace d4160.UnityUtils
     /// </summary>
     public class DontDestroyOnLoad : MonoBehaviour
     {
-        protected virtual void OnEnable()
+        protected virtual void Awake()
         {
             SetDontDestroyOnLoad();
         }
@@ -18,7 +18,7 @@ namespace d4160.UnityUtils
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public virtual void SetDontDestroyOnLoad()
+        public void SetDontDestroyOnLoad()
         {
             if(!Application.isPlaying)
                 return;

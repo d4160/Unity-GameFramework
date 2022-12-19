@@ -1,13 +1,13 @@
 #if AGORA
 using System;
 using d4160.Core;
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     [CreateAssetMenu(menuName = "d4160/Chat/Agora Channel")]
     public class AgoraChannelSO : ScriptableObject
@@ -17,21 +17,21 @@ namespace d4160.Agora
         [SerializeField] private ChannelStruct _joinChannelParams;
         [SerializeField] private bool _setExternalVideoSource;
 
-        public event Action<string, uint, int> OnJoinChannelSuccessEvent;
-        public event Action<string, uint, int> OnReJoinChannelSuccessEvent;
-        public event Action<RtcStats> OnLeaveChannelEvent;
-        public event Action<CHANNEL_MEDIA_RELAY_EVENT> OnChannelMediaRelayEventEvent;
-        public event Action<CHANNEL_MEDIA_RELAY_STATE, CHANNEL_MEDIA_RELAY_ERROR> OnChannelMediaRelayStateChangedEvent;
+        public event Action<RtcConnection, int> OnJoinChannelSuccessEvent;
+        public event Action<RtcConnection, int> OnReJoinChannelSuccessEvent;
+        public event Action<RtcConnection, RtcStats> OnLeaveChannelEvent;
+        //public event Action<CHANNEL_MEDIA_RELAY_EVENT> OnChannelMediaRelayEventEvent;
+        //public event Action<CHANNEL_MEDIA_RELAY_STATE, CHANNEL_MEDIA_RELAY_ERROR> OnChannelMediaRelayStateChangedEvent;
 
         private readonly AgoraChannelService _channelService = AgoraChannelService.Instance;
 
-        public string CurrentChannel => _channelService.CurrentChannel;
+        public RtcConnection ChannelInfo => _channelService.ChannelInfo;
 
-        private void CallOnJoinChannelSuccess(string channelName, uint uid, int elapsed) => OnJoinChannelSuccessEvent?.Invoke(channelName, uid, elapsed);
-        private void CallOnReJoinChannelSuccess(string channelName, uint uid, int elapsed) => OnReJoinChannelSuccessEvent?.Invoke(channelName, uid, elapsed);
-        private void CallOnLeaveChannel(RtcStats stats) => OnLeaveChannelEvent?.Invoke(stats);
-        private void CallOnChannelMediaRelayEvent(CHANNEL_MEDIA_RELAY_EVENT events) => OnChannelMediaRelayEventEvent?.Invoke(events);
-        private void CallOnChannelMediaRelayStateChanged(CHANNEL_MEDIA_RELAY_STATE state, CHANNEL_MEDIA_RELAY_ERROR code) => OnChannelMediaRelayStateChangedEvent?.Invoke(state, code);
+        private void CallOnJoinChannelSuccess(RtcConnection conn, int elapsed) => OnJoinChannelSuccessEvent?.Invoke(conn, elapsed);
+        private void CallOnReJoinChannelSuccess(RtcConnection conn, int elapsed) => OnReJoinChannelSuccessEvent?.Invoke(conn, elapsed);
+        private void CallOnLeaveChannel(RtcConnection conn, RtcStats stats) => OnLeaveChannelEvent?.Invoke(conn, stats);
+        //private void CallOnChannelMediaRelayEvent(CHANNEL_MEDIA_RELAY_EVENT events) => OnChannelMediaRelayEventEvent?.Invoke(events);
+        //private void CallOnChannelMediaRelayStateChanged(CHANNEL_MEDIA_RELAY_STATE state, CHANNEL_MEDIA_RELAY_ERROR code) => OnChannelMediaRelayStateChangedEvent?.Invoke(state, code);
 
         public string ChannelName { get => _joinChannelParams.channelName; set => _joinChannelParams.channelName = value; }
 
@@ -41,8 +41,8 @@ namespace d4160.Agora
             AgoraChannelService.OnJoinChannelSuccessEvent += CallOnJoinChannelSuccess;
             AgoraChannelService.OnReJoinChannelSuccessEvent += CallOnReJoinChannelSuccess;
             AgoraChannelService.OnLeaveChannelEvent += CallOnLeaveChannel;
-            AgoraChannelService.OnChannelMediaRelayEventEvent += CallOnChannelMediaRelayEvent;
-            AgoraChannelService.OnChannelMediaRelayStateChangedEvent += CallOnChannelMediaRelayStateChanged;
+            //AgoraChannelService.OnChannelMediaRelayEventEvent += CallOnChannelMediaRelayEvent;
+            //AgoraChannelService.OnChannelMediaRelayStateChangedEvent += CallOnChannelMediaRelayStateChanged;
         }
 
         public void UnregisterEvents(){
@@ -51,8 +51,8 @@ namespace d4160.Agora
             AgoraChannelService.OnJoinChannelSuccessEvent -= CallOnJoinChannelSuccess;
             AgoraChannelService.OnReJoinChannelSuccessEvent -= CallOnReJoinChannelSuccess;
             AgoraChannelService.OnLeaveChannelEvent -= CallOnLeaveChannel;
-            AgoraChannelService.OnChannelMediaRelayEventEvent -= CallOnChannelMediaRelayEvent;
-            AgoraChannelService.OnChannelMediaRelayStateChangedEvent -= CallOnChannelMediaRelayStateChanged;
+            //AgoraChannelService.OnChannelMediaRelayEventEvent -= CallOnChannelMediaRelayEvent;
+            //AgoraChannelService.OnChannelMediaRelayStateChangedEvent -= CallOnChannelMediaRelayStateChanged;
         }   
 
 #if ENABLE_NAUGHTY_ATTRIBUTES
@@ -86,17 +86,17 @@ namespace d4160.Agora
         [Button]
 #endif
         public void JoinChannel() {
-            JoinChannel(_joinChannelParams.channelName, _joinChannelParams.info, _joinChannelParams.uid);
+            JoinChannel(_joinChannelParams.token, _joinChannelParams.channelName, _joinChannelParams.info, _joinChannelParams.uid);
         }
 
         /// <summary>
         ///   Join a RTC channel
         /// </summary>
         /// <param name="channel"></param>
-        public void JoinChannel(string channel, string info = null, uint uid = 0)
+        public void JoinChannel(string token, string channel, string info = null, uint uid = 0)
         {
             _channelService.SetExternalVideoSource = _setExternalVideoSource;
-            _channelService.JoinChannel(channel, info, uid);
+            _channelService.JoinChannel(token, channel, info, uid);
         }
 
 #if ENABLE_NAUGHTY_ATTRIBUTES

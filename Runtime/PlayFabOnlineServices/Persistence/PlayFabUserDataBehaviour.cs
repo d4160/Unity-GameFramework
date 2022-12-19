@@ -1,6 +1,6 @@
 #if PLAYFAB
 using System;
-using d4160.MonoBehaviourData;
+using d4160.MonoBehaviours;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif

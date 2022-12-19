@@ -1,12 +1,12 @@
 #if AGORA
 using System;
 using d4160.Core;
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
 using System.Collections.Generic;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public class AgoraVideoService
     {
@@ -25,7 +25,7 @@ namespace d4160.Agora
             {
                 if (_connection.RtcEngine != null && _deviceManager == null)
                 {
-                    _deviceManager = VideoDeviceManager.GetInstance(_connection.RtcEngine);
+                    //_deviceManager = VideoDeviceManager.GetInstance(_connection.RtcEngine);
                 }
 
                 return _deviceManager;
@@ -49,7 +49,7 @@ namespace d4160.Agora
         {
             if (_connection.RtcEngine != null)
             {
-                _connection.RtcEngine.OnVideoSizeChanged += RaiseOnVideoSizeChanged;
+                //_connection.RtcEngine.OnVideoSizeChanged += RaiseOnVideoSizeChanged;
             }
         }
 
@@ -57,7 +57,7 @@ namespace d4160.Agora
         {
             if (_connection.RtcEngine != null)
             {
-                _connection.RtcEngine.OnVideoSizeChanged -= RaiseOnVideoSizeChanged;
+                //_connection.RtcEngine.OnVideoSizeChanged -= RaiseOnVideoSizeChanged;
             }
         }   
 
@@ -72,7 +72,7 @@ namespace d4160.Agora
             if (enableVideo)
             {
                 _connection.RtcEngine.EnableVideo();
-                if (enableVideoObserver) _connection.RtcEngine.EnableVideoObserver();
+                //if (enableVideoObserver) _connection.RtcEngine.EnableVideoObserver();
 
                 if (!enableLocalVideo) EnableLocalVideo(false);
                 else { if(muteLocalVideoStream) MuteLocalVideoStream(true); }
@@ -80,7 +80,7 @@ namespace d4160.Agora
             else
             {
                 _connection.RtcEngine.DisableVideo();
-                if (!enableVideoObserver) _connection.RtcEngine.DisableVideoObserver();
+                //if (!enableVideoObserver) _connection.RtcEngine.DisableVideoObserver();
             }
         }
 
@@ -102,8 +102,8 @@ namespace d4160.Agora
         {
             if (CheckErrors()) return;
 
-            if (enabled) _connection.RtcEngine.EnableVideoObserver();
-            else _connection.RtcEngine.DisableVideoObserver();
+            //if (enabled) _connection.RtcEngine.EnableVideoObserver();
+            //else _connection.RtcEngine.DisableVideoObserver();
         }
 
         public void MuteLocalVideoStream(bool mute) {
@@ -144,22 +144,22 @@ namespace d4160.Agora
         /// <param name="engine">Video Engine </param>
         public Dictionary<string,string> GetVideoDevices()
         {
-            DeviceManager.CreateAVideoDeviceManager();
+            //DeviceManager.CreateAVideoDeviceManager();
 
-            int count = DeviceManager.GetVideoDeviceCount();
+            //int count = DeviceManager.GetVideoDeviceCount();
 
-            if (count > 0)
-            {
-                Dictionary<string, string> devices = new Dictionary<string, string>();
-                for (int i = 0; i < count; i++)
-                {
-                    string deviceName = null, deviceId = null;
-                    DeviceManager.GetVideoDevice(i, ref deviceName, ref deviceId);
-                    devices.Add(deviceId, deviceName);
-                }
+            //if (count > 0)
+            //{
+            //    Dictionary<string, string> devices = new Dictionary<string, string>();
+            //    for (int i = 0; i < count; i++)
+            //    {
+            //        string deviceName = null, deviceId = null;
+            //        DeviceManager.GetVideoDevice(i, ref deviceName, ref deviceId);
+            //        devices.Add(deviceId, deviceName);
+            //    }
                 
-                return devices;
-            }
+            //    return devices;
+            //}
 
             return null;
             // M31Logger.LogInfo("AGORA: Device count =============== " + cnt, LogLevel);
@@ -167,7 +167,7 @@ namespace d4160.Agora
 
         public void SetVideoDevice(string deviceId)
         {
-            DeviceManager.SetVideoDevice(deviceId);
+            //DeviceManager.SetVideoDevice(deviceId);
         }
 
         public void StopVideoPreview() {

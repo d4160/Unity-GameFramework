@@ -48,6 +48,21 @@ namespace d4160.Events
         void OnInvoked(T param);
     }
 
+    public interface IEventListener<T1, T2>
+    {
+        void OnInvoked(T1 param1, T2 param2);
+    }
+
+    public interface IEventListener<T1, T2, T3>
+    {
+        void OnInvoked(T1 param1, T2 param2, T3 param3);
+    }
+
+    public interface IEventListener<T1, T2, T3, T4>
+    {
+        void OnInvoked(T1 param1, T2 param2, T3 param3, T4 param4);
+    }
+
     // *** When need two or more events with the same generic type in one class, use structs to hold the implamentation passing the dependencies ***
     // public struct EventListener<T> : IEventListener<T>
     // {
@@ -58,28 +73,103 @@ namespace d4160.Events
 
     public abstract class EventSOBase<T1, T2> : ScriptableObject
     {
-        public event Action<T1, T2> OnEvent;
+        private readonly List<IEventListener<T1, T2>> _listeners = new List<IEventListener<T1, T2>>();
 
-        public void Invoke (T1 obj1, T2 obj2) {
-            OnEvent?.Invoke (obj1, obj2);
+        public void AddListener(IEventListener<T1, T2> listener)
+        {
+            if (!_listeners.Contains(listener))
+            {
+                _listeners.Add(listener);
+            }
+        }
+
+        public void RemoveListener(IEventListener<T1, T2> listener)
+        {
+            if (_listeners.Contains(listener))
+            {
+                _listeners.Remove(listener);
+            }
+        }
+
+        public void RemoveAllListeners()
+        {
+            _listeners.Clear();
+        }
+
+        public void Invoke(T1 param1, T2 param2)
+        {
+            for (var i = 0; i < _listeners.Count; i++)
+            {
+                _listeners[i].OnInvoked(param1, param2);
+            }
         }
     }
 
     public abstract class EventSOBase<T1, T2, T3> : ScriptableObject
     {
-        public event Action<T1, T2, T3> OnEvent;
+        private readonly List<IEventListener<T1, T2, T3>> _listeners = new List<IEventListener<T1, T2, T3>>();
 
-        public void Invoke (T1 obj1, T2 obj2, T3 obj3) {
-            OnEvent?.Invoke (obj1, obj2, obj3);
+        public void AddListener(IEventListener<T1, T2, T3> listener)
+        {
+            if (!_listeners.Contains(listener))
+            {
+                _listeners.Add(listener);
+            }
+        }
+
+        public void RemoveListener(IEventListener<T1, T2, T3> listener)
+        {
+            if (_listeners.Contains(listener))
+            {
+                _listeners.Remove(listener);
+            }
+        }
+
+        public void RemoveAllListeners()
+        {
+            _listeners.Clear();
+        }
+
+        public void Invoke(T1 param1, T2 param2, T3 param3)
+        {
+            for (var i = 0; i < _listeners.Count; i++)
+            {
+                _listeners[i].OnInvoked(param1, param2, param3);
+            }
         }
     }
 
     public abstract class EventSOBase<T1, T2, T3, T4> : ScriptableObject
     {
-        public event Action<T1, T2, T3, T4> OnEvent;
+        private readonly List<IEventListener<T1, T2, T3, T4>> _listeners = new List<IEventListener<T1, T2, T3, T4>>();
 
-        public void Invoke (T1 obj1, T2 obj2, T3 obj3, T4 obj4) {
-            OnEvent?.Invoke (obj1, obj2, obj3, obj4);
+        public void AddListener(IEventListener<T1, T2, T3, T4> listener)
+        {
+            if (!_listeners.Contains(listener))
+            {
+                _listeners.Add(listener);
+            }
+        }
+
+        public void RemoveListener(IEventListener<T1, T2, T3, T4> listener)
+        {
+            if (_listeners.Contains(listener))
+            {
+                _listeners.Remove(listener);
+            }
+        }
+
+        public void RemoveAllListeners()
+        {
+            _listeners.Clear();
+        }
+
+        public void Invoke(T1 param1, T2 param2, T3 param3, T4 param4)
+        {
+            for (var i = 0; i < _listeners.Count; i++)
+            {
+                _listeners[i].OnInvoked(param1, param2, param3, param4);
+            }
         }
     }
 }

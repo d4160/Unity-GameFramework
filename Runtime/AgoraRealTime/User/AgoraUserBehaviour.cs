@@ -1,10 +1,10 @@
 #if AGORA
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
-using d4160.MonoBehaviourData;
+using d4160.MonoBehaviours;
 using UltEvents;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public class AgoraUserBehaviour : MonoBehaviourUnityData<AgoraUserSO>
     {
@@ -13,8 +13,8 @@ namespace d4160.Agora
         [Tooltip("If is not null, set as parent in each instantiation.")]
         [SerializeField] private Transform _parent;
         [Header("EVENTS")]
-        [SerializeField] private UltEvent<uint, int> _onUserJoined;
-        [SerializeField] private UltEvent<uint, USER_OFFLINE_REASON> _onUserOffline;
+        [SerializeField] private UltEvent<RtcConnection, uint, int> _onUserJoined;
+        [SerializeField] private UltEvent<RtcConnection, uint, USER_OFFLINE_REASON_TYPE> _onUserOffline;
 
         void OnEnable () {
             if (_data)

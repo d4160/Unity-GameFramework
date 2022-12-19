@@ -1,12 +1,12 @@
 #if AGORA
 using System;
 using d4160.Core;
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
 using System.Collections.Generic;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public class AgoraScreenShareService
     {

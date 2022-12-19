@@ -1,0 +1,17 @@
+{
+    "name": "d4160.UMA",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f4cb6d2c24715bd4884385645277f011",
+        "GUID:abd02ea2a3d741f48b1c16eb7025fec5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

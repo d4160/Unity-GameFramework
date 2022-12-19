@@ -1,5 +1,4 @@
 ﻿using d4160.Singleton;
-using UnityEngine;
 
 namespace d4160.Coroutines
 {
@@ -8,14 +7,7 @@ namespace d4160.Coroutines
     /// </summary>
     public class CoroutineStarter : Singleton<CoroutineStarter>
     {
-        protected override void Awake()
-        {
-            base.Awake();
-
-            gameObject.hideFlags = HideFlags.HideAndDontSave
-                                | HideFlags.HideInInspector;
-
-            DontDestroyOnLoad(gameObject);
-        }
+        protected override bool DontDestroyOnLoadProp => true;
+        protected override bool HideInHierarchy => true;
     }
 }

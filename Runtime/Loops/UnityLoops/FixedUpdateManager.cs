@@ -6,14 +6,17 @@ namespace d4160.Loops
 {
     public sealed class FixedUpdateManager : Singleton<FixedUpdateManager>
     {
-        private static List<IFixedUpdateObject> _updates = new List<IFixedUpdateObject>();
+        protected override bool DontDestroyOnLoadProp => true;
+        protected override bool HideInHierarchy => true;
 
-        public static void RegisterObject(IFixedUpdateObject updateObj)
+        private static readonly List<IFixedUpdateObject> _updates = new();
+
+        public static void AddListener(IFixedUpdateObject updateObj)
         {
             _updates.Add(updateObj);
         }
 
-        public static void UnregisterObject(IFixedUpdateObject updateObj)
+        public static void RemoveListener(IFixedUpdateObject updateObj)
         {
             _updates.Remove(updateObj);
         }

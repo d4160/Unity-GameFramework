@@ -1,12 +1,12 @@
 #if AGORA
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
 using System;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     [CreateAssetMenu(menuName = "d4160/Agora/ScreenShare")]
     public class AgoraScreenShareSO : ScriptableObject

@@ -23,14 +23,36 @@ namespace d4160.Singleton
 
         public static bool Instanced => _instance;
 
-        public static string ResourcesName => $"{typeof(T)} Singleton (R)";
-        public static string NewName => $"{typeof(T)} Singleton (New)";
+        protected virtual bool DontDestroyOnLoadProp { get; } = false;
+        protected virtual bool HideInHierarchy { get; } = false;
+
+        private static string ResourcesName => $"{typeof(T)} Singleton (R)";
+        private static string NewName => $"{typeof(T)} Singleton (New)";
 
         public TConcrete As<TConcrete>() where TConcrete : class => _instance as TConcrete;
 
         protected virtual void Awake()
         {
             SetSingletonOnAwake();
+
+            if (DontDestroyOnLoadProp) SetDontDestroyOnLoad();
+            if (HideInHierarchy) SetHideInHierarchy();
+        }
+
+        public void SetHideInHierarchy()
+        {
+#if UNITY_EDITOR
+            gameObject.hideFlags = HideFlags.HideAndDontSave
+                                | HideFlags.HideInInspector;
+#endif
+        }
+
+        public void SetDontDestroyOnLoad()
+        {
+            if (transform.parent != null)
+                transform.SetParent(null);
+
+            DontDestroyOnLoad(gameObject);
         }
 
         protected virtual void SetSingletonOnAwake()
@@ -65,10 +87,9 @@ namespace d4160.Singleton
         {
             System.Type type = typeof(T);
 
-            ResourcesPathAttribute attribute = System.Attribute.GetCustomAttribute(type, typeof(ResourcesPathAttribute)) as ResourcesPathAttribute;
             T prefab = null;
 
-            if (attribute != null)
+            if (System.Attribute.GetCustomAttribute(type, typeof(ResourcesPathAttribute)) is ResourcesPathAttribute attribute)
             {
                 prefab = Resources.Load<T>(attribute.path);
             }

@@ -1,12 +1,12 @@
 #if AGORA
 using System;
 using d4160.Core;
-using agora_gaming_rtc;
+using Agora.Rtc;
 using d4160.Authentication;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public class AgoraAuthService : BaseAuthService
     {
@@ -34,12 +34,12 @@ namespace d4160.Agora
 
         public void RegisterEvents() {
 
-            _connection.RtcEngine.OnLocalUserRegistered += CallOnLocalUserRegisteredEvent;
+            //_connection.RtcEngine.OnLocalUserRegistered += CallOnLocalUserRegisteredEvent;
         }
 
         public void UnregisterEvents() {
 
-            _connection.RtcEngine.OnLocalUserRegistered -= CallOnLocalUserRegisteredEvent;
+            //_connection.RtcEngine.OnLocalUserRegistered -= CallOnLocalUserRegisteredEvent;
         }
 
         public override void Login(UnityEngine.Promise.Completer completer)

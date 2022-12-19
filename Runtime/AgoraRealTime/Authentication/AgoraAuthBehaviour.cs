@@ -1,12 +1,12 @@
 #if AGORA
-using d4160.MonoBehaviourData;
+using d4160.MonoBehaviours;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
 using UltEvents;
 using UnityEngine;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public class AgoraAuthBehaviour : MonoBehaviourUnityData<AgoraAuthSO>
     {

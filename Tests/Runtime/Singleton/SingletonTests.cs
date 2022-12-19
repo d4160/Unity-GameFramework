@@ -59,7 +59,7 @@ namespace d4160.Singleton.Tests.Runtime
 
             SingletonTests getSingleton = SingletonTests.Instance;
 
-            Assert.AreEqual(SingletonTests.ResourcesName, getSingleton.name);
+            Assert.AreEqual($"{typeof(SingletonTests)} Singleton (R)", getSingleton.name);
 
             yield return null;
 
@@ -73,7 +73,7 @@ namespace d4160.Singleton.Tests.Runtime
         {
             SingletonTests getSingleton = SingletonTests.Instance;
 
-            Assert.AreEqual(SingletonTests.NewName, getSingleton.name);
+            Assert.AreEqual($"{typeof(SingletonTests)} Singleton (New)", getSingleton.name);
 
             yield return null;
 
