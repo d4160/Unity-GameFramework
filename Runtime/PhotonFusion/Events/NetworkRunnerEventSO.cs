@@ -2,7 +2,10 @@ using d4160.Events;
 using Fusion;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "d4160/PhotonFusion/Events/NetworkRunner")]
-public class NetworkRunnerEventSO : EventSOBase<NetworkRunner>
+namespace d4160.Fusion
 {
+    [CreateAssetMenu(menuName = "d4160/Fusion/Events/NetworkRunner")]
+    public class NetworkRunnerEventSO : EventSOBase<NetworkRunner>
+    {
+    }
 }

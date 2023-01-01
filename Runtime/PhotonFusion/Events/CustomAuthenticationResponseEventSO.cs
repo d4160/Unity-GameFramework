@@ -3,7 +3,10 @@ using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "d4160/PhotonFusion/Events/CustomAuthenticationResponse")]
-public class CustomAuthenticationResponseEventSO : EventSOBase<NetworkRunner, Dictionary<string, object>>
+namespace d4160.Fusion
 {
+    [CreateAssetMenu(menuName = "d4160/Fusion/Events/CustomAuthenticationResponse")]
+    public class CustomAuthenticationResponseEventSO : EventSOBase<NetworkRunner, Dictionary<string, object>>
+    {
+    }
 }

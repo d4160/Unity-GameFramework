@@ -1,11 +1,12 @@
 using d4160.Events;
 using Fusion;
 using Fusion.Sockets;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "d4160/PhotonFusion/Events/ConnectionFailed")]
-public class ConnectionFailedEventSO : EventSOBase<NetworkRunner, NetAddress, NetConnectFailedReason>
+namespace d4160.Fusion
 {
+    [CreateAssetMenu(menuName = "d4160/Fusion/Events/ConnectionFailed")]
+    public class ConnectionFailedEventSO : EventSOBase<NetworkRunner, NetAddress, NetConnectFailedReason>
+    {
+    }
 }
