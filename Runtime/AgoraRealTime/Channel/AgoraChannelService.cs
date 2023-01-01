@@ -1,11 +1,11 @@
 #if AGORA
 using System;
 using d4160.Core;
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public enum AgoraChannelType {
         None = 0,
@@ -15,11 +15,11 @@ namespace d4160.Agora
 
     public class AgoraChannelService
     {
-        public static event Action<string, uint, int> OnJoinChannelSuccessEvent;
-        public static event Action<string, uint, int> OnReJoinChannelSuccessEvent;
-        public static event Action<RtcStats> OnLeaveChannelEvent;
-        public static event Action<CHANNEL_MEDIA_RELAY_EVENT> OnChannelMediaRelayEventEvent;
-        public static event Action<CHANNEL_MEDIA_RELAY_STATE, CHANNEL_MEDIA_RELAY_ERROR> OnChannelMediaRelayStateChangedEvent;
+        public static event Action<RtcConnection, int> OnJoinChannelSuccessEvent;
+        public static event Action<RtcConnection, int> OnReJoinChannelSuccessEvent;
+        public static event Action<RtcConnection, RtcStats> OnLeaveChannelEvent;
+        //public static event Action<CHANNEL_MEDIA_RELAY_EVENT> OnChannelMediaRelayEventEvent;
+        //public static event Action<CHANNEL_MEDIA_RELAY_STATE, CHANNEL_MEDIA_RELAY_ERROR> OnChannelMediaRelayStateChangedEvent;
 
         private static event Action<RtcStats> OnLeaveChannelEventTemp;
 
@@ -30,47 +30,52 @@ namespace d4160.Agora
         private static AgoraChannelService _instance;
         private static AgoraUserService _userService = AgoraUserService.Instance;
 
-        public string CurrentChannel { get; private set; }
+        public RtcConnection ChannelInfo { get; private set; }
         public bool SetExternalVideoSource { get; set; }
-        public bool InChannel { get;  private set; }
+        public bool InChannel => ChannelInfo != null;
 
         // TODO ChannelProfile
 
-        private void CallOnJoinChannelSuccess(string channelName, uint uid, int elapsed)
+        public void CallOnJoinChannelSuccess(RtcConnection rtcConn, int elapsed)
         {
-            InChannel = true;
-            CurrentChannel = channelName;
-            _userService.LocalUserUID = uid;
-            
-            M31Logger.LogInfo("AGORA: JoinChannelSuccessHandler: uid = " + uid, LogLevel);
-            OnJoinChannelSuccessEvent?.Invoke(channelName, uid, elapsed);
+            ChannelInfo = rtcConn;
+
+            int build = 0;
+            M31Logger.LogInfo($"AGORA: OnJoinChannelSuccess: channelName = {rtcConn.channelId}, uid = {rtcConn.localUid}", LogLevel);
+            M31Logger.LogInfo($"sdk version: {_connection.RtcEngine.GetVersion(ref build)}");
+            M31Logger.LogInfo($"sdk build: {build}");
+            OnJoinChannelSuccessEvent?.Invoke(rtcConn, elapsed);
+
+            //JoinChannelVideo.MakeVideoView(0);
         }
 
-        private void CallOnReJoinChannelSuccess(string channelName, uint uid, int elapsed)
+        public void CallOnReJoinChannelSuccess(RtcConnection rtcConn, int elapsed)
         {
-            M31Logger.LogInfo("AGORA: ReJoinChannelSuccessHandler: uid = " + uid, LogLevel);
-            OnReJoinChannelSuccessEvent?.Invoke(channelName, uid, elapsed);
+            M31Logger.LogInfo($"AGORA: CallOnReJoinChannelSuccess: channelName = {rtcConn.channelId}, uid = {rtcConn.localUid}", LogLevel);
+            OnReJoinChannelSuccessEvent?.Invoke(rtcConn, elapsed);
         }
 
-        private void CallOnLeaveChannel(RtcStats stats)
+        public void CallOnLeaveChannel(RtcConnection rtcConn, RtcStats stats)
         {
-            InChannel = false;
+            ChannelInfo = null;
             InvokeOnLeaveChannelEventTemp(stats);
 
-            M31Logger.LogInfo("AGORA: LeaveChannel: stats = " + stats, LogLevel);
-            OnLeaveChannelEvent?.Invoke(stats);
+            M31Logger.LogInfo($"AGORA: OnLeaveChannel: duration = {stats.duration}", LogLevel);
+            OnLeaveChannelEvent?.Invoke(rtcConn, stats);
+
+            //JoinChannelVideo.DestroyVideoView(0);
         }
 
         private void CallOnChannelMediaRelayEvent(CHANNEL_MEDIA_RELAY_EVENT events)
         {
             M31Logger.LogInfo("AGORA: ChannelMediaRelay: events = " + events, LogLevel);
-            OnChannelMediaRelayEventEvent?.Invoke(events);
+            //OnChannelMediaRelayEventEvent?.Invoke(events);
         }
 
         private void CallOnChannelMediaRelayStateChanged(CHANNEL_MEDIA_RELAY_STATE state, CHANNEL_MEDIA_RELAY_ERROR code)
         {
             M31Logger.LogInfo("AGORA: ChannelMediaRelayStateChanged: state = " + state, LogLevel);
-            OnChannelMediaRelayStateChangedEvent?.Invoke(state, code);
+            //OnChannelMediaRelayStateChangedEvent?.Invoke(state, code);
         }
 
         private AgoraChannelService()
@@ -84,11 +89,7 @@ namespace d4160.Agora
 
             if (rtcEngine != null)
             {
-                rtcEngine.OnJoinChannelSuccess += CallOnJoinChannelSuccess;
-                rtcEngine.OnReJoinChannelSuccess += CallOnReJoinChannelSuccess;
-                rtcEngine.OnLeaveChannel += CallOnLeaveChannel;
-                rtcEngine.OnChannelMediaRelayEvent += CallOnChannelMediaRelayEvent;
-                rtcEngine.OnChannelMediaRelayStateChanged += CallOnChannelMediaRelayStateChanged;
+                _connection.AgoraEventHandler.ChannelService = this;
             }
             else {
                 M31Logger.LogError("AGORA: RegisterEvents failed. Initialize the RtcEngine first. You can do this calling 'LoadEngine' of AgoraConnectionService or using AgoraConnectionBehaviour or AgoraConnectionSO.", LogLevel);
@@ -100,11 +101,7 @@ namespace d4160.Agora
 
             if (rtcEngine != null)
             {
-                rtcEngine.OnJoinChannelSuccess -= CallOnJoinChannelSuccess;
-                rtcEngine.OnReJoinChannelSuccess -= CallOnReJoinChannelSuccess;
-                rtcEngine.OnLeaveChannel -= CallOnLeaveChannel;
-                rtcEngine.OnChannelMediaRelayEvent -= CallOnChannelMediaRelayEvent;
-                rtcEngine.OnChannelMediaRelayStateChanged -= CallOnChannelMediaRelayStateChanged;
+                _connection.AgoraEventHandler.ChannelService = null;
             }
             //else {
             //    M31Logger.LogError("AGORA: UnregisterEvents failed. Initialize the RtcEngine first.You can do this calling 'LoadEngine' of AgoraConnectionService or using AgoraConnectionBehaviour or AgoraConnectionSO.", LogLevel);
@@ -118,7 +115,7 @@ namespace d4160.Agora
                 // enable video
                 _connection.RtcEngine.EnableVideo();
                 // allow camera output callback
-                _connection.RtcEngine.EnableVideoObserver();
+                //_connection.RtcEngine.EnableVideoObserver();
             }
             else {
                 _connection.RtcEngine.DisableVideo();
@@ -154,22 +151,25 @@ namespace d4160.Agora
         ///   Join a RTC channel
         /// </summary>
         /// <param name="channelName"></param>
-        public void JoinChannel(string channelName, string info = null, uint uid = 0)
+        public void JoinChannel(string token, string channelName, string info = null, uint uid = 0)
         {
-            M31Logger.LogInfo("AGORA: calling join (channel = " + channelName + ")", LogLevel);
+            //M31Logger.LogInfo("AGORA: calling join (channel = " + channelName + ")", LogLevel);
 
             if (CheckErrors()) return;
 
-            CurrentChannel = channelName;
+            _connection.RtcEngine.EnableAudio();
+            _connection.RtcEngine.EnableVideo();
+            VideoEncoderConfiguration config = new VideoEncoderConfiguration();
+            config.dimensions = new VideoDimensions(640, 360);
+            config.frameRate = 15;
+            config.bitrate = 0;
+            _connection.RtcEngine.SetVideoEncoderConfiguration(config);
+            _connection.RtcEngine.SetChannelProfile(CHANNEL_PROFILE_TYPE.CHANNEL_PROFILE_COMMUNICATION);
+            _connection.RtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
 
-            int externalVideo = 0;
-            if (SetExternalVideoSource)
-                externalVideo = _connection.RtcEngine.SetExternalVideoSource(true, false);
+            _connection.RtcEngine.JoinChannel(token, channelName, info, uid);
 
-            // join channel
-            _connection.RtcEngine.JoinChannel(channelName, info, uid);
-
-            M31Logger.LogInfo($"AGORA: Joining to '{channelName}' channel. ExternalVideo response: {externalVideo}", LogLevel);
+            //M31Logger.LogInfo($"AGORA: Joining to '{channelName}' channel. ExternalVideo response: {externalVideo}", LogLevel);
         }
 
         /// <summary>
@@ -186,7 +186,6 @@ namespace d4160.Agora
                 // leave channel
                 _connection.RtcEngine.LeaveChannel();
                 // deregister video frame observers in native-c code
-                _connection.RtcEngine.DisableVideoObserver();
             }
             else {
                 InvokeOnLeaveChannelEventTemp(default);
@@ -216,6 +215,7 @@ namespace d4160.Agora
 
     [Serializable]
     public struct ChannelStruct {
+        public string token;
         public string channelName;
         public string info; // ""
         public uint uid; // 0

@@ -1,13 +1,13 @@
 #if AGORA
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
-using d4160.MonoBehaviourData;
+using d4160.MonoBehaviours;
 using UltEvents;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public class AgoraScreenShareBehaviour : MonoBehaviourUnityData<AgoraScreenShareSO>
     {

@@ -26,7 +26,7 @@ namespace d4160.Events
                 if (_delay != value)
                 {
                     _delay = value;
-                    Setup();
+                    Start();
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace d4160.Events
             }
         }
 
-        public void Setup()
+        public void Start()
         {
             _wait = new WaitForSeconds(_delay);
         }
@@ -95,7 +95,7 @@ namespace d4160.Events
         private IEnumerator DelayedInvoke()
         {
             if (_wait == null)
-                Setup();
+                Start();
 
             yield return _wait;
 

@@ -1,6 +1,6 @@
 #if AGORA
 using UnityEngine;
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     [CreateAssetMenu(menuName = "d4160/Agora/Settings")]
     public class AgoraAuthSettingsSO : ScriptableObject

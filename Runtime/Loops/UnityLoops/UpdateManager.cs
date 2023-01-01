@@ -6,19 +6,22 @@ namespace d4160.Loops
 {
     public sealed class UpdateManager : Singleton<UpdateManager>
     {
-        private static List<IUpdateObject> _updates = new List<IUpdateObject>();
+        protected override bool DontDestroyOnLoadProp => true;
+        protected override bool HideInHierarchy => true;
 
-        public static void RegisterObject(IUpdateObject updateObj)
+        private static readonly List<IUpdateObject> _updates = new();
+
+        public static void AddListener(IUpdateObject updateObj)
         {
             _updates.Add(updateObj);
 
-            if(!UpdateManager.Instanced)
+            if(!Instanced)
             {
-                UpdateManager.InstanceSingleton();
+                InstanceSingleton();
             }
         }
 
-        public static void UnregisterObject(IUpdateObject updateObj)
+        public static void RemoveListener(IUpdateObject updateObj)
         {
             _updates.Remove(updateObj);
         }

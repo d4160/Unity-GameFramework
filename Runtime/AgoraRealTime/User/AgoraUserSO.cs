@@ -1,6 +1,6 @@
 #if AGORA
 using System;
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 using System.Collections.Generic;
 using d4160.Instancers;
@@ -8,7 +8,7 @@ using d4160.Instancers;
 using NaughtyAttributes;
 #endif
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     [CreateAssetMenu(menuName = "d4160/Chat/Agora User")]
     public class AgoraUserSO : ScriptableObject
@@ -18,28 +18,28 @@ namespace d4160.Agora
         [Expandable]
 #endif
         [SerializeField] private ComponentProviderSOBase _provider;
-        [SerializeField] AgoraVideoSurfaceType _agoraVideoSurfaceType = AgoraVideoSurfaceType.Renderer;
+        [SerializeField] VideoSurfaceType _agoraVideoSurfaceType = VideoSurfaceType.Renderer;
         [SerializeField] uint _videoFps = 30;
         [SerializeField] bool _enableFlipHorizontal = true;
         [SerializeField] bool _enableFlipVertical = false;
         [SerializeField] float _otherVideoSurfaceScaleMultiplier = .25f;
 
-        public event Action<uint, int> OnUserJoinedEvent;
-        public event Action<uint, USER_OFFLINE_REASON> OnUserOfflineEvent;
+        public event Action<RtcConnection, uint, int> OnUserJoinedEvent;
+        public event Action<RtcConnection, uint, USER_OFFLINE_REASON_TYPE> OnUserOfflineEvent;
 
         private readonly AgoraUserService _userService = AgoraUserService.Instance; 
 
         public Dictionary<uint, VideoSurface> UserVideoDict => _userService.UserVideoDictionary;
 
         public ComponentProviderSOBase VideoSurfaceProvider { get => _provider; set => _provider = value; }
-        public AgoraVideoSurfaceType AgoraVideoSurfaceType { get => _agoraVideoSurfaceType; set => _agoraVideoSurfaceType = value; }
+        public VideoSurfaceType AgoraVideoSurfaceType { get => _agoraVideoSurfaceType; set => _agoraVideoSurfaceType = value; }
         public uint VideoFps { get => _videoFps; set => _videoFps = value; }
         public bool EnableFlipHorizontal { get => _enableFlipHorizontal; set => _enableFlipHorizontal = value; }
         public bool EnableFlipVertical { get => _enableFlipVertical; set => _enableFlipVertical = value; }
         public float OtherVideoSurfaceScaleMultiplier { get => _otherVideoSurfaceScaleMultiplier; set => _otherVideoSurfaceScaleMultiplier = value; }
 
-        private void CallOnUserJoined(uint uid, int elapsed) => OnUserJoinedEvent?.Invoke(uid, elapsed);
-        private void CallOnUserOfflineEvent(uint uid, USER_OFFLINE_REASON reason) => OnUserOfflineEvent?.Invoke(uid, reason);
+        private void CallOnUserJoined(RtcConnection conn, uint uid, int elapsed) => OnUserJoinedEvent?.Invoke(conn, uid, elapsed);
+        private void CallOnUserOfflineEvent(RtcConnection conn, uint uid, USER_OFFLINE_REASON_TYPE reason) => OnUserOfflineEvent?.Invoke(conn, uid, reason);
 
         public void RegisterEvents () {
             // if (_provider) _provider.RegisterEvents(); // If want events use the ComponentProviderBehaviour

@@ -3,7 +3,7 @@ using NaughtyAttributes;
 #endif
 using UnityEngine;
 
-namespace d4160.MonoBehaviourData
+namespace d4160.MonoBehaviours
 {
     public abstract class MonoBehaviourUnityData<T> : MonoBehaviour
     {

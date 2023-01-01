@@ -1,19 +1,18 @@
 #if AGORA
 using System;
-using d4160.MonoBehaviourData;
+using d4160.MonoBehaviours;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
 using UltEvents;
 using UnityEngine;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
 
     public class AgoraConnectionBehaviour : MonoBehaviourUnityData<AgoraConnectionSO>
     {
         [SerializeField] private UltEvent<int, string> _onEngineError;
-        [SerializeField] private UltEvent<int, string> _onEngineWarning;
 
         void Awake() {
             LoadEngine();
@@ -23,8 +22,7 @@ namespace d4160.Agora
             if (_data)
             {
                 _data.RegisterEvents();
-                AgoraConnectionService.OnEngineWarning += _onEngineWarning.Invoke;
-                AgoraConnectionService.OnEngineError += _onEngineError.Invoke;
+                AgoraConnectionService.OnError += _onEngineError.Invoke;
             }
         }
 
@@ -32,8 +30,7 @@ namespace d4160.Agora
             if (_data)
             {
                 _data.UnregisterEvents();
-                AgoraConnectionService.OnEngineWarning -= _onEngineWarning.Invoke;
-                AgoraConnectionService.OnEngineError -= _onEngineError.Invoke;
+                AgoraConnectionService.OnError -= _onEngineError.Invoke;
             }
         }
 

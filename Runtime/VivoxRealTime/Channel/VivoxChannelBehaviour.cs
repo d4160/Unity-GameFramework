@@ -4,7 +4,7 @@ using VivoxUnity;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
-using d4160.MonoBehaviourData;
+using d4160.MonoBehaviours;
 using UltEvents;
 
 namespace d4160.Chat.Vivox

@@ -4,11 +4,11 @@ using UnityEngine;
 using NaughtyAttributes;
 #endif
 using UltEvents;
-using d4160.MonoBehaviourData;
-using agora_gaming_rtc;
+using d4160.MonoBehaviours;
+using Agora.Rtc;
 using System.Collections.Generic;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public class AgoraVideoBehaviour : MonoBehaviourUnityData<AgoraVideoSO>
     {

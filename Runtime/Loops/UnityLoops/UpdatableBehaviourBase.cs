@@ -6,102 +6,124 @@ namespace d4160.Loops
     {
         protected virtual void OnEnable()
         {
-            UpdateManager.RegisterObject(this);
+            UpdateManager.AddListener(this);
         }
 
         protected virtual void OnDisable()
         {
-            UpdateManager.UnregisterObject(this);
+            UpdateManager.RemoveListener(this);
         }
 
-        public virtual void OnUpdate(float deltaTime)
-        {
-        }
+        public abstract void OnUpdate(float deltaTime);
     }
 
     public abstract class FixedUpdatableBehaviourBase : MonoBehaviour, IFixedUpdateObject
     {
         protected virtual void OnEnable()
         {
-            FixedUpdateManager.RegisterObject(this);
+            FixedUpdateManager.AddListener(this);
         }
 
         protected virtual void OnDisable()
         {
-            FixedUpdateManager.UnregisterObject(this);
+            FixedUpdateManager.RemoveListener(this);
         }
 
-        public virtual void OnFixedUpdate(float deltaTime)
-        {
-        }
+        public abstract void OnFixedUpdate(float deltaTime);
     }
 
     public abstract class LateUpdatableBehaviourBase : MonoBehaviour, ILateUpdateObject
     {
         protected virtual void OnEnable()
         {
-            LateUpdateManager.RegisterObject(this);
+            LateUpdateManager.AddListener(this);
         }
 
         protected virtual void OnDisable()
         {
-            LateUpdateManager.UnregisterObject(this);
+            LateUpdateManager.RemoveListener(this);
         }
 
-        public virtual void OnLateUpdate(float deltaTime)
-        {
-        }
+        public abstract void OnLateUpdate(float deltaTime);
     }
 
     public abstract class WithFixedUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, IFixedUpdateObject
     {
         protected virtual void OnEnable()
         {
-            UpdateManager.RegisterObject(this);
-            FixedUpdateManager.RegisterObject(this);
+            UpdateManager.AddListener(this);
+            FixedUpdateManager.AddListener(this);
         }
 
         protected virtual void OnDisable()
         {
-            UpdateManager.UnregisterObject(this);
-            FixedUpdateManager.UnregisterObject(this);
+            UpdateManager.RemoveListener(this);
+            FixedUpdateManager.RemoveListener(this);
         }
 
-        public virtual void OnUpdate(float deltaTime)
+        public abstract void OnUpdate(float deltaTime);
+
+        public abstract void OnFixedUpdate(float deltaTime);
+    }
+
+    public abstract class WithLateUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, ILateUpdateObject
+    {
+        protected virtual void OnEnable()
         {
+            UpdateManager.AddListener(this);
+            LateUpdateManager.AddListener(this);
         }
 
-        public void OnFixedUpdate(float fixedDeltaTime)
+        protected virtual void OnDisable()
         {
+            UpdateManager.RemoveListener(this);
+            LateUpdateManager.RemoveListener(this);
         }
+
+        public abstract void OnUpdate(float deltaTime);
+
+        public abstract void OnLateUpdate(float deltaTime);
+    }
+
+    public abstract class WithLateFixedUpdatableBehaviourBase : MonoBehaviour, IFixedUpdateObject, ILateUpdateObject
+    {
+        protected virtual void OnEnable()
+        {
+            FixedUpdateManager.AddListener(this);
+            LateUpdateManager.AddListener(this);
+        }
+
+        protected virtual void OnDisable()
+        {
+            FixedUpdateManager.RemoveListener(this);
+            LateUpdateManager.RemoveListener(this);
+        }
+
+        public abstract void OnFixedUpdate(float deltaTime);
+
+        public abstract void OnLateUpdate(float deltaTime);
     }
 
     public abstract class AllUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, IFixedUpdateObject, ILateUpdateObject
     {
         protected virtual void OnEnable()
         {
-            UpdateManager.RegisterObject(this);
-            FixedUpdateManager.RegisterObject(this);
-            LateUpdateManager.RegisterObject(this);
+            UpdateManager.AddListener(this);
+            FixedUpdateManager.AddListener(this);
+            LateUpdateManager.AddListener(this);
         }
 
         protected virtual void OnDisable()
         {
-            UpdateManager.UnregisterObject(this);
-            FixedUpdateManager.UnregisterObject(this);
-            LateUpdateManager.UnregisterObject(this);
+            UpdateManager.RemoveListener(this);
+            FixedUpdateManager.RemoveListener(this);
+            LateUpdateManager.RemoveListener(this);
         }
 
-        public virtual void OnUpdate(float deltaTime)
-        {
-        }
+        public abstract void OnUpdate(float deltaTime);
 
-        public void OnFixedUpdate(float fixedDeltaTime)
-        {
-        }
+        public abstract void OnFixedUpdate(float deltaTime);
 
-        public void OnLateUpdate(float deltaTime)
-        {
-        }
+        public abstract void OnLateUpdate(float deltaTime);
     }
 }

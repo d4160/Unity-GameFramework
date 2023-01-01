@@ -1,28 +1,30 @@
 #if AGORA
 using System;
 using d4160.Core;
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 using M31Logger = d4160.Logging.LoggerM31;
 using System.Collections.Generic;
 using d4160.Instancers;
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     public class AgoraUserService
     {
-        public static event Action<uint, int> OnUserJoinedEvent;
-        public static event Action<uint, USER_OFFLINE_REASON> OnUserOfflineEvent;
+        public static event Action<RtcConnection, uint, int> OnUserJoinedEvent;
+        public static event Action<RtcConnection, uint, USER_OFFLINE_REASON_TYPE> OnUserOfflineEvent;
 
         public LogLevelType LogLevel { get; set; } = LogLevelType.Debug;
         public bool AutoVideoSurface { get; set; } = true;
-        public AgoraVideoSurfaceType AgoraVideoSurfaceType { get; set; } = AgoraVideoSurfaceType.Renderer;
+        public VideoSurfaceType AgoraVideoSurfaceType { get; set; } = VideoSurfaceType.Renderer;
         public uint VideoFps { get; set; } = 30;
         public bool EnableFlipHorizontal { get; set; } = true;
         public bool EnableFlipVertical { get; set; } = false;
         public uint LocalUserUID { get; internal set; }
 
-        private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance; 
+        private readonly AgoraConnectionService _connection = AgoraConnectionService.Instance;
+        private readonly AgoraChannelService _channel = AgoraChannelService.Instance;
+
         public static AgoraUserService Instance => _instance ?? (_instance = new AgoraUserService());
         private static AgoraUserService _instance;
 
@@ -32,27 +34,42 @@ namespace d4160.Agora
         public ComponentProviderSOBase VideoSurfaceProvider { get; set; }
         public float OtherVideoSurfaceScaleMultiplier { get; set; } // 0.25f
 
-        private void CallOnUserJoined(uint uid, int elapsed)
+        public void CallOnUserJoined(RtcConnection conn, uint uid, int elapsed)
         {
             if (CheckErrors()) return;
 
             if (!_userVideoDict.ContainsKey(uid))
                 _userVideoDict.Add(uid, null);
 
-            M31Logger.LogInfo($"onUserJoined: uid = {uid} elapsed = {elapsed}", LogLevel);
+            M31Logger.LogInfo($"Agora: OnUserJoined channel: {conn.channelId} uid: ${uid} elapsed: {elapsed}");
 
             if (AutoVideoSurface)
             {
                 VideoSurface videoSurface = VideoSurfaceProvider.InstantiateAs<VideoSurface>();
                 if (!ReferenceEquals(videoSurface, null))
                 {
-                    // configure videoSurface
-                    videoSurface.transform.localScale = Vector3.one * OtherVideoSurfaceScaleMultiplier;
-                    videoSurface.SetForUser(uid);
+                    if (uid == 0)
+                    {
+                        videoSurface.SetForUser(uid);
+                    }
+                    else
+                    {
+                        videoSurface.SetForUser(uid, _channel.ChannelInfo.channelId, VIDEO_SOURCE_TYPE.VIDEO_SOURCE_REMOTE);
+                    }
+
+                    videoSurface.OnTextureSizeModify += (int width, int height) =>
+                    {
+                        float scale = (float)height / (float)width;
+                        videoSurface.transform.localScale = new Vector3(-5, 5 * scale, 1);
+                        Debug.Log("OnTextureSizeModify: " + width + "  " + height);
+                    };
+
                     videoSurface.SetEnable(true);
-                    videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType);
-                    videoSurface.SetGameFps(VideoFps);
-                    videoSurface.EnableFilpTextureApply(EnableFlipHorizontal, EnableFlipVertical);
+                    // configure videoSurface
+                    //videoSurface.transform.localScale = Vector3.one * OtherVideoSurfaceScaleMultiplier;
+                    //videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType);
+                    //videoSurface.SetGameFps(VideoFps);
+                    //videoSurface.EnableFilpTextureApply(EnableFlipHorizontal, EnableFlipVertical);
                     //Vector2 pos = AgoraUIUtils.GetRandomPosition(100);
                     //videoSurface.transform.localPosition = new Vector3(pos.x, pos.y, 0);
 
@@ -64,12 +81,12 @@ namespace d4160.Agora
                 }
             }
 
-            OnUserJoinedEvent?.Invoke(uid, elapsed);
+            OnUserJoinedEvent?.Invoke(conn, uid, elapsed);
         }
 
-        private void CallOnUserOfflineEvent(uint uid, USER_OFFLINE_REASON reason)
+        public void CallOnUserOfflineEvent(RtcConnection conn, uint uid, USER_OFFLINE_REASON_TYPE reason)
         {
-            M31Logger.LogInfo($"onUserOffline: uid = {uid} reason = {reason}", LogLevel);
+            M31Logger.LogInfo($"Agora: OnUserOffline: uid = {uid} reason = {reason}", LogLevel);
             
             if (_userVideoDict.ContainsKey(uid))
             {
@@ -86,7 +103,7 @@ namespace d4160.Agora
                 _userVideoDict.Remove(uid);
             }
 
-            OnUserOfflineEvent?.Invoke(uid, reason);
+            OnUserOfflineEvent?.Invoke(conn, uid, reason);
         }
 
         private AgoraUserService()
@@ -98,8 +115,7 @@ namespace d4160.Agora
         {
             if (_connection.RtcEngine != null)
             {
-                _connection.RtcEngine.OnUserJoined += CallOnUserJoined;
-                _connection.RtcEngine.OnUserOffline += CallOnUserOfflineEvent;
+                _connection.AgoraEventHandler.UserService = this;
             }
         }
 
@@ -107,8 +123,7 @@ namespace d4160.Agora
         {
             if (_connection.RtcEngine != null)
             {
-                _connection.RtcEngine.OnUserJoined -= CallOnUserJoined;
-                _connection.RtcEngine.OnUserOffline -= CallOnUserOfflineEvent;
+                _connection.AgoraEventHandler.UserService = null;
             }
         }   
 

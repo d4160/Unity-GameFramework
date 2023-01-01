@@ -1,13 +1,13 @@
 #if AGORA
 using System;
-using agora_gaming_rtc;
+using Agora.Rtc;
 using UnityEngine;
 using System.Collections.Generic;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
 
-namespace d4160.Agora
+namespace d4160.Agora_
 {
     [CreateAssetMenu(menuName = "d4160/Agora/Video")]
     public class AgoraVideoSO : ScriptableObject

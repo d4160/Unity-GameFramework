@@ -6,14 +6,17 @@ namespace d4160.Loops
 {
     public sealed class LateUpdateManager : Singleton<LateUpdateManager>
     {
-        private static List<ILateUpdateObject> _updates = new List<ILateUpdateObject>();
+        protected override bool DontDestroyOnLoadProp => true;
+        protected override bool HideInHierarchy => true;
 
-        public static void RegisterObject(ILateUpdateObject updateObj)
+        private static readonly List<ILateUpdateObject> _updates = new();
+
+        public static void AddListener(ILateUpdateObject updateObj)
         {
             _updates.Add(updateObj);
         }
 
-        public static void UnregisterObject(ILateUpdateObject updateObj)
+        public static void RemoveListener(ILateUpdateObject updateObj)
         {
             _updates.Remove(updateObj);
         }
