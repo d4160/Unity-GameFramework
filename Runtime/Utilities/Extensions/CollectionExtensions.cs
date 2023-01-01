@@ -6,13 +6,17 @@ namespace d4160.Collections
 {
     public static class CollectionExtensions
     {
-        public static void Shuffle<T>(this IList<T> source)
+        public static void Shuffle<T>(this IList<T> source, Action<int, int> onItem = null)
         {
             int n = source.Count;
             while (n > 1)
             {
                 n--;
+
                 int k = UnityEngine.Random.Range(0, n + 1);
+
+                onItem?.Invoke(n, k);
+
                 T value = source[k];
                 source[k] = source[n];
                 source[n] = value;

@@ -71,7 +71,8 @@ namespace d4160.Persistence
                         }
                         else
                         {
-                            storeVar.variableSO.RawValue = PlayerPrefs.GetString(storeVar.key, storeVar.variableSO.RawValue.ToString());
+                            //Debug.Log(storeVar.key);
+                            storeVar.variableSO.RawValue = PlayerPrefs.GetString(storeVar.key, storeVar.variableSO.RawValue?.ToString());
                         }
                         break;
                 }
@@ -146,5 +147,10 @@ namespace d4160.Persistence
         public string key;
         public bool encrypt;
         public VariableSOBase variableSO;
+
+        public void ResetValue()
+        {
+            variableSO.ResetValue();
+        }
     }
 }

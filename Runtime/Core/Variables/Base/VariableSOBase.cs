@@ -21,10 +21,9 @@ namespace d4160.Variables
             }
         }
 
-        public void SetValue(T value)
+        public void SetValueWithoutNotify(T value)
         {
             _value = value;
-            _onChange?.Invoke(_value);
         }
 
         public void SetValue(VariableSOBase<T> variable)
@@ -37,10 +36,17 @@ namespace d4160.Variables
         {
             return variable.Value;
         }
+
+        public override void ResetValue()
+        {
+            SetValueWithoutNotify(default);
+        }
     }
 
     public abstract class VariableSOBase : ScriptableObject
     {
         public abstract object RawValue { get; set; }
+
+        public abstract void ResetValue();
     }
 }

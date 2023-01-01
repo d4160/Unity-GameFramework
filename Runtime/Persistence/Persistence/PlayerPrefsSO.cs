@@ -10,6 +10,15 @@ namespace d4160.Persistence
 
         private static PlayerPrefsService _service = PlayerPrefsService.Instance;
 
+        [ContextMenu("ResetValues")]
+        private void ResetValues()
+        {
+            for (int i = 0; i < _storeVariables.Count; i++)
+            {
+                _storeVariables[i].ResetValue();
+            }
+        }
+
         public void Save()
         {
             _service.StoreVariables = _storeVariables;
