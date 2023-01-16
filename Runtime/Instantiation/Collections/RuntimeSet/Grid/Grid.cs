@@ -1,11 +1,11 @@
 using System;
-using CodeMonkey.Utils;
-using d4160.Instancers;
+using d4160.Collections;
 using d4160.UnityUtils;
 using TMPro;
 using UnityEngine;
 
-namespace d4160.Grid {
+namespace d4160.Grid 
+{
     public class Grid<T>
     {
         public event EventHandler<OnGridValueChangedEventArgs> OnGridValueChanged;
@@ -102,7 +102,7 @@ namespace d4160.Grid {
                 _gridArray[x, y] = ProcessValue(x, y, value);
 
                 if(_gridArray[x, y] is IRuntimeObject2D gridObj) {
-                    gridObj.SetXY(x, y);
+                    gridObj.X= x; gridObj.Y = y;
                 }
                 OnGridValueChanged?.Invoke(this, new OnGridValueChangedEventArgs { x = x, y = y });
             }
@@ -181,7 +181,8 @@ namespace d4160.Grid {
     }
 
     [System.Serializable]
-    public struct GridGizmosSettings {
+    public struct GridGizmosSettings 
+    {
         public bool gizmosEnabled;
         public bool onDrawGizmosSelected;
         public Color gridColor;

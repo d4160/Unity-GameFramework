@@ -6,7 +6,7 @@ namespace d4160.Collections
 {
     public class RuntimeSet<T>
     {
-        private List<T> _items = new List<T>();
+        private readonly List<T> _items = new ();
 
         public List<T> Items => _items;
 

@@ -6,7 +6,7 @@ namespace d4160.Collections
 {
     public abstract class RuntimeSetSOBase<T> : ScriptableObject
     {
-        private readonly RuntimeSet<T> _runtimeSet = new RuntimeSet<T>();
+        private readonly RuntimeSet<T> _runtimeSet = new ();
 
         public List<T> Items => _runtimeSet.Items;
 
