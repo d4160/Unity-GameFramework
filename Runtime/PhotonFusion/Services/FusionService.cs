@@ -34,6 +34,10 @@ namespace d4160.Fusion
         public INetworkSceneManager SceneManager { get; set; }
         public bool ProvideInput { get; set; }
 
+        public bool IsConnectedToServer => _runner != null && _runner.IsConnectedToServer;
+        public bool IsRunning => _runner != null && _runner.IsRunning;
+        public bool IsSharedModeMasterClient => _runner != null && _runner.IsSharedModeMasterClient;
+
         // SOEvents
         public NetworkRunnerEventSO OnConnectedToServerEventSO { get; set; }
         public ConnectionFailedEventSO OnConnectionFailedEventSO { get; set; }
@@ -62,7 +66,7 @@ namespace d4160.Fusion
 
         public void OnConnectedToServer(NetworkRunner runner)
         {
-            if (LoggerSO) LoggerSO.LogInfo($"OnConnectedToServer; Tick={runner.Tick.Raw}; ActivePlayers={runner.ActivePlayers.Count()}; UserId={runner.UserId}");
+            if (LoggerSO) LoggerSO.LogInfo($"OnConnectedToServer; Tick={runner.Tick.Raw}; Mode={runner.Mode}; GameMode={runner.GameMode}; IsServer={runner.IsServer}; IsClient={runner.IsClient}; IsPlayer={runner.IsPlayer}; IsSharedModeMasterClient={runner.IsSharedModeMasterClient}; IsCloudReady=${runner.IsCloudReady}; IsConnectedToServer=${runner.IsConnectedToServer}; IsRunning={runner.IsRunning}; ActivePlayers={runner.ActivePlayers.Count()}; UserId={runner.UserId}");
 
             if (OnConnectedToServerEventSO) OnConnectedToServerEventSO.Invoke(runner);
         }
@@ -118,7 +122,7 @@ namespace d4160.Fusion
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
-            if (LoggerSO) LoggerSO.LogInfo($"OnPlayerJoined; Tick={runner.Tick.Raw}; IsServer={runner.IsServer}; UserId={runner.GetPlayerUserId(player)}; PlayerId={player.PlayerId}; RawEncoded={player.RawEncoded}");
+            if (LoggerSO) LoggerSO.LogInfo($"OnPlayerJoined; Tick={runner.Tick.Raw}; Mode={runner.Mode}; GameMode={runner.GameMode}; IsServer={runner.IsServer}; IsClient={runner.IsClient}; IsPlayer={runner.IsPlayer}; IsSharedModeMasterClient={runner.IsSharedModeMasterClient}; Player={player}; ActorId={runner.GetPlayerActorId(player)}; UserId={runner.GetPlayerUserId(player)}; PlayerId={player.PlayerId}; RawEncoded={player.RawEncoded}");
 
             if (OnPlayerJoinedEventSO) OnPlayerJoinedEventSO.Invoke(runner, player);
         }

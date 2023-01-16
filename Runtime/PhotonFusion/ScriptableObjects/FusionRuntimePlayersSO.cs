@@ -50,7 +50,7 @@ namespace d4160.Fusion
 
         void IEventListener<NetworkRunner, PlayerRef>.OnInvoked(NetworkRunner runner, PlayerRef player)
         {
-            if (runner.IsServer)
+            if (runner.IsServer || (runner.GameMode == GameMode.Shared && player == runner.LocalPlayer))
             {
                 Vector3 spawnPosition = SpawnPointT ? SpawnPointT.position : spawnPoint + separatorBetween * _spawnedCharacters.Count * (_spawnedCharacters.Count % 2 == 0 ? 1 : -1);
                 NetworkObject networkPlayerObject = runner.Spawn(playerSO.playerPrefab, spawnPosition, SpawnPointT ? SpawnPointT.rotation : Quaternion.identity, player);

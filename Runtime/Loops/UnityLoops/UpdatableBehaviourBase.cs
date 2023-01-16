@@ -47,7 +47,7 @@ namespace d4160.Loops
         public abstract void OnLateUpdate(float deltaTime);
     }
 
-    public abstract class WithFixedUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, IFixedUpdateObject
+    public abstract class FixedWithUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, IFixedUpdateObject
     {
         protected virtual void OnEnable()
         {
@@ -66,7 +66,7 @@ namespace d4160.Loops
         public abstract void OnFixedUpdate(float deltaTime);
     }
 
-    public abstract class WithLateUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, ILateUpdateObject
+    public abstract class LateWithUpdatableBehaviourBase : MonoBehaviour, IUpdateObject, ILateUpdateObject
     {
         protected virtual void OnEnable()
         {
@@ -85,7 +85,7 @@ namespace d4160.Loops
         public abstract void OnLateUpdate(float deltaTime);
     }
 
-    public abstract class WithLateFixedUpdatableBehaviourBase : MonoBehaviour, IFixedUpdateObject, ILateUpdateObject
+    public abstract class LateWithFixedUpdatableBehaviourBase : MonoBehaviour, IFixedUpdateObject, ILateUpdateObject
     {
         protected virtual void OnEnable()
         {
