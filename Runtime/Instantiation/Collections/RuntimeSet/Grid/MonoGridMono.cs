@@ -6,19 +6,19 @@ using UnityEngine;
 
 namespace d4160.Grid
 {
-    public abstract class GridMonoBehaviour<T> : GridBehaviour where T : MonoBehaviour
+    public abstract class MonoGridMono<T> : GridMono where T : MonoBehaviour
     {
         [SerializeField] protected T _prefab;
         [Tooltip("The Transform parent to store the instances for this Grid")]
         [SerializeField] protected Transform _parent;
-        protected GridMono<T> _grid;
+        protected MonoGrid<T> _grid;
 
         public IProvider<T> Provider { get => _grid?.Provider; set { if (_grid != null) _grid.Provider = value; } }
         public T Prefab => _prefab;
 
-        protected override void InstantiateGrid(bool drawText = false, Color textColor = default, int textFontSize = 5, Transform textParent = null)
+        protected override void CreateGrid(bool drawText = false, Color textColor = default, int textFontSize = 5, Transform textParent = null)
         {
-            _grid = new GridMono<T>(_width, _height, _cellSize, transform.position, drawText, textColor, textFontSize, textParent);
+            _grid = new MonoGrid<T>(_width, _height, _cellSize, transform.position, drawText, textColor, textFontSize, textParent);
         }
 
 #if ENABLE_NAUGHTY_ATTRIBUTES
@@ -97,7 +97,7 @@ namespace d4160.Grid
 
         protected override void DrawGizmos()
         {
-            if (_grid == null) InstantiateGrid();
+            if (_grid == null) CreateGrid();
 
             _grid.CellSize = _cellSize;
             _grid.OriginPosition = transform.position;

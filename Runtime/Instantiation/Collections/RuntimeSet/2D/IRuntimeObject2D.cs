@@ -1,7 +1,8 @@
-namespace d4160.Grid
+namespace d4160.Collections
 {
     public interface IRuntimeObject2D 
     {
-        void SetXY(int x, int y);
+        int X { get; set; }
+        int Y { get; set; }
     }
 }
