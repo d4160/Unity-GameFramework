@@ -1,9 +1,10 @@
 using Agora.Rtc;
 using UnityEngine;
-namespace d4160.Agora_
+
+namespace d4160.AgoraRtc
 {
-    [CreateAssetMenu(menuName = "d4160/AgoraRTC/Settings")]
-    public class AgoraRTCSettingsSO : ScriptableObject
+    [CreateAssetMenu(menuName = "d4160/AgoraRtc/Settings")]
+    public class AgoraRtcSettingsSO : ScriptableObject
     {
         [SerializeField] private string _appID = "your_appid";
         [SerializeField] private ulong _context = 0;

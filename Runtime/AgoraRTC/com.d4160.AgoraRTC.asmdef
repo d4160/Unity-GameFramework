@@ -1,5 +1,5 @@
 {
-    "name": "com.d4160.AgoraRTC",
+    "name": "com.d4160.AgoraRtc",
     "rootNamespace": "",
     "references": [
         "GUID:ac14623fa12af43459993b14d4fce20c",
