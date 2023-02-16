@@ -145,5 +145,8 @@ namespace d4160.Collections
             }
             return key;
         }
+
+        public static void RemoveLast<T>(this IList<T> source) => source.RemoveAt(source.Count - 1);
+        public static void RemoveFirst<T>(this IList<T> source) => source.RemoveAt(0);
     }
 }

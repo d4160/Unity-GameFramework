@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
@@ -12,9 +13,14 @@ namespace d4160.Events
         void OnInvoked();
     }
 
+    public interface IEventListenerCollection
+    {
+        void OnInvoked(int i);
+    }
+
     public abstract class EventSOBase<T> : ScriptableObject
     {
-        private readonly List<IEventListener<T>> _listeners = new List<IEventListener<T>>();
+        private readonly List<IEventListener<T>> _listeners = new();
 
         public void AddListener(IEventListener<T> listener) 
         {
@@ -27,6 +33,20 @@ namespace d4160.Events
         {
             if (_listeners.Contains(listener)) {
                 _listeners.Remove(listener);
+            }
+        }
+
+        public void RemoveListener(IEventListenerCollection<T> listenerCollection)
+        {
+            for (int i = _listeners.Count - 1; i >= 0; i--)
+            {
+                if (_listeners[i] is IEventListenerWithCollection<T> wl)
+                {
+                    if (wl.ListenerCollection == listenerCollection)
+                    {
+                        _listeners.RemoveAt(i);
+                    }
+                }
             }
         }
 
@@ -43,9 +63,59 @@ namespace d4160.Events
         }
     }
 
+    public static class EventExtensions
+    {
+        public static void AddListener<T>(this IList<EventSOBase<T>> source, IEventListenerCollection<T> eventListenerColl)
+        {
+            EventListenerCollection<T>[] listeners = new EventListenerCollection<T>[source.Count];
+            for (int i = 0; i < source.Count; i++)
+            {
+                listeners[i] = new EventListenerCollection<T>(i, eventListenerColl);
+                source[i].AddListener(listeners[i]);
+            }
+        }
+
+        public static void RemoveListener<T>(this IList<EventSOBase<T>> source, IEventListenerCollection<T> eventListenerColl)
+        {
+            for (int i = 0; i < source.Count; i++)
+            {
+                source[i].RemoveListener(eventListenerColl);
+            }
+        }
+    }
+
+    public struct EventListenerCollection<T> : IEventListenerWithCollection<T>
+    {
+        public int i;
+        public IEventListenerCollection<T> listenerColl;
+
+        public IEventListenerCollection<T> ListenerCollection => listenerColl;
+
+        public EventListenerCollection(int i, IEventListenerCollection<T> listenerColl)
+        {
+            this.i = i;
+            this.listenerColl = listenerColl;
+        }
+
+        public void OnInvoked(T param)
+        {
+            listenerColl.OnInvoked(i, param);
+        }
+    }
+
     public interface IEventListener<T> 
     {
         void OnInvoked(T param);
+    }
+
+    public interface IEventListenerWithCollection<T> : IEventListener<T>
+    {
+        IEventListenerCollection<T> ListenerCollection { get; }
+    }
+
+    public interface IEventListenerCollection<T>
+    {
+        void OnInvoked(int i, T param);
     }
 
     public interface IEventListener<T1, T2>

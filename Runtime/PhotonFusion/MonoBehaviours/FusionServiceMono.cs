@@ -7,7 +7,7 @@ namespace d4160.Fusion
 {
     [RequireComponent(typeof(NetworkRunner))]
     [RequireComponent(typeof(NetworkSceneManagerDefault))]
-    public class FusionServiceBehaviour : MonoBehaviourUnityData<FusionServiceSO>
+    public class FusionServiceMono : MonoBehaviourUnityData<FusionServiceSO>
     {
         private NetworkRunner _runner;
         private NetworkSceneManagerDefault _sceneManager;

@@ -12,7 +12,7 @@ namespace d4160.Fusion
         public FusionRuntimePlayersSO runtimePlayersSO;
         public LoggerSO loggerSO;
 
-        private readonly FusionService _service = FusionService.Instance;
+        private static readonly FusionService _service = FusionService.Instance;
 
         public bool IsConnectedToServer => _service.IsConnectedToServer;
         public bool IsRunning => _service.IsRunning;

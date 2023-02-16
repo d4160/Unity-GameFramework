@@ -18,7 +18,7 @@ namespace d4160.Fusion
         public NetworkRunnerEventSO onInializedEventSO;
         public FusionPlayerSO playerSO;
 
-        public FusionService PhotonFusionService => FusionService.Instance;
+        private static readonly FusionService _service = FusionService.Instance;
 
         [Button]
         public void StartGame()
@@ -30,19 +30,19 @@ namespace d4160.Fusion
         public async void StartGame(GameMode mode)
         {
             // Start or join (depends on gamemode) a session with a specific name
-            await PhotonFusionService.Runner.StartGame(new StartGameArgs()
+            await _service.Runner.StartGame(new StartGameArgs()
             {
                 GameMode = mode,
                 SessionName = sessionName,
                 Scene = SceneManager.GetActiveScene().buildIndex,
-                SceneManager = PhotonFusionService.SceneManager,
+                SceneManager = _service.SceneManager,
                 PlayerCount = playerCount,
                 IsOpen = isOpen,
                 IsVisible = isVisible,
                 MatchmakingMode = matchmakingMode,
                 Initialized = (runner) =>
                 {
-                    PhotonFusionService.LoggerSO.LogInfo($"OnInitialized; Tick={runner.Tick.Raw} SessionName={sessionName}");
+                    _service.LoggerSO.LogInfo($"OnInitialized; Tick={runner.Tick.Raw} SessionName={sessionName}");
                     if (onInializedEventSO) onInializedEventSO.Invoke(runner);
                 },
                 AuthValues = playerSO ? playerSO.AuthValues : null
@@ -58,7 +58,7 @@ namespace d4160.Fusion
         [Button]
         public void Shutdown()
         {
-            PhotonFusionService.Runner.Shutdown(false);
+            _service.Runner.Shutdown(false);
         }
     }
 }

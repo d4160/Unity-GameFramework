@@ -1,0 +1,23 @@
+{
+    "name": "com.d4160.PlayFab",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0da6d172d18a54e4389d0dce1e1ffdf2",
+        "GUID:abd02ea2a3d741f48b1c16eb7025fec5",
+        "GUID:ed053b1c1336e5a40a2196e16eb58cd7",
+        "GUID:f3f1532e2b5a9c14e84d5497a2ec90a8",
+        "GUID:57a6d82589ae03c4cabdc058f719f231",
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "PLAYFAB"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
