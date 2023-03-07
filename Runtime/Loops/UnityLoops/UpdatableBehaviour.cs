@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace d4160.Loops
 {
-    public abstract class UpdatableBehaviourBase : MonoBehaviour, IUpdateObject
+    public abstract class UpdatableBehaviour : MonoBehaviour, IUpdateObject
     {
         protected virtual void OnEnable()
         {

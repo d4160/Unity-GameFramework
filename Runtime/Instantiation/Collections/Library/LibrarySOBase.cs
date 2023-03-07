@@ -17,15 +17,12 @@ namespace d4160.Collections
 
         private T2 GetAs<T2>(T instance) where T2 : class
         {
-            switch (instance) {
-                case Component c:
-                    var newC = c as T2;
-                    return newC != null ? newC : c.GetComponent<T2>();
-                case GameObject go:
-                    return go.GetComponent<T2>();
-                default:
-                    return instance as T2;
-            }
+            return instance switch
+            {
+                Component c => c is T2 newC ? newC : c.GetComponent<T2>(),
+                GameObject go => go.GetComponent<T2>(),
+                _ => instance as T2,
+            };
         }
     }
 }
