@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 namespace d4160.Collections
 {
@@ -131,6 +132,8 @@ namespace d4160.Collections
         }
 
         public static T Random<T>(this IList<T> source) => source.Count > 0 ? source[UnityEngine.Random.Range(0, source.Count)] : default;
+
+        public static W Random<T, W>(this IDictionary<T, W> source) => source.Count > 0 ? source.ElementAt(UnityEngine.Random.Range(0, source.Count)).Value : default;
 
         public static T KeyByValue<T, W>(this IDictionary<T, W> source, W value)
         {

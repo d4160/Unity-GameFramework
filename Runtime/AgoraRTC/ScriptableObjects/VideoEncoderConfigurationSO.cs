@@ -16,6 +16,11 @@ namespace d4160.AgoraRtc
         [SerializeField] private DEGRADATION_PREFERENCE _degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_QUALITY;
         [SerializeField] private VIDEO_MIRROR_MODE_TYPE _mirrorMode = VIDEO_MIRROR_MODE_TYPE.VIDEO_MIRROR_MODE_DISABLED;
 
+        private readonly AgoraRtcService _service = AgoraRtcService.Instance;
+
+        public int DimensionsWidth => _dimensionsWidth;
+        public int DimensionsHeight => _dimensionsHeight;
+
         public VideoEncoderConfiguration AgoraRtcVideoEncoderConfiguration => new() { 
             codecType = _codecType,
             dimensions = new VideoDimensions(_dimensionsWidth, _dimensionsHeight),
@@ -26,5 +31,10 @@ namespace d4160.AgoraRtc
             degradationPreference = _degradationPreference,
             mirrorMode = _mirrorMode
         };
+
+        public void SetVideoEncoderConfiguration()
+        {
+            _service.SetVideoEncoderConfiguration(AgoraRtcVideoEncoderConfiguration);
+        }
     }
 }

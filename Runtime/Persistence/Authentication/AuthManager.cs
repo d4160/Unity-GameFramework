@@ -10,7 +10,7 @@ using LoggerM31 = d4160.Logging.LoggerM31;
 using Unity.EditorCoroutines.Editor;
 #endif
 
-namespace d4160.Authentication
+namespace d4160.UGS.Authentication
 {
     public static class AuthManager
     {

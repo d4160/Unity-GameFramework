@@ -5,6 +5,7 @@ using System.Linq;
 using NaughtyAttributes;
 #endif
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace d4160.Events
 {
@@ -59,6 +60,21 @@ namespace d4160.Events
             for (var i = 0; i < _listeners.Count; i++)
             {
                 _listeners[i].OnInvoked(obj);
+            }
+        }
+
+        public readonly struct EventListener : IEventListener<T>
+        {
+            private readonly UnityAction<T> callback;
+
+            public EventListener(UnityAction<T> callback)
+            {
+                this.callback = callback;
+            }
+
+            public void OnInvoked(T param)
+            {
+                callback?.Invoke(param);
             }
         }
     }
@@ -170,7 +186,22 @@ namespace d4160.Events
         {
             for (var i = 0; i < _listeners.Count; i++)
             {
-                _listeners[i].OnInvoked(param1, param2);
+                _listeners[i]?.OnInvoked(param1, param2);
+            }
+        }
+
+        public readonly struct EventListener : IEventListener<T1, T2>
+        {
+            private readonly UnityAction<T1, T2> callback;
+
+            public EventListener(UnityAction<T1, T2> callback)
+            {
+                this.callback = callback;
+            }
+
+            public void OnInvoked(T1 param1, T2 param2)
+            {
+                callback?.Invoke(param1, param2);
             }
         }
     }
@@ -207,6 +238,21 @@ namespace d4160.Events
                 _listeners[i].OnInvoked(param1, param2, param3);
             }
         }
+
+        public readonly struct EventListener : IEventListener<T1, T2,T3>
+        {
+            private readonly UnityAction<T1, T2, T3> callback;
+
+            public EventListener(UnityAction<T1, T2, T3> callback)
+            {
+                this.callback = callback;
+            }
+
+            public void OnInvoked(T1 param1, T2 param2, T3 param3)
+            {
+                callback?.Invoke(param1, param2, param3);
+            }
+        }
     }
 
     public abstract class EventSOBase<T1, T2, T3, T4> : ScriptableObject
@@ -239,6 +285,21 @@ namespace d4160.Events
             for (var i = 0; i < _listeners.Count; i++)
             {
                 _listeners[i].OnInvoked(param1, param2, param3, param4);
+            }
+        }
+
+        public readonly struct EventListener : IEventListener<T1, T2, T3, T4>
+        {
+            private readonly UnityAction<T1, T2, T3, T4> callback;
+
+            public EventListener(UnityAction<T1, T2, T3, T4> callback)
+            {
+                this.callback = callback;
+            }
+
+            public void OnInvoked(T1 param1, T2 param2, T3 param3, T4 param4)
+            {
+                callback?.Invoke(param1, param2, param3, param4);
             }
         }
     }

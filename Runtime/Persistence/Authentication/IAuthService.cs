@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Promise;
 
-namespace d4160.Authentication
+namespace d4160.UGS.Authentication
 {
     /// <summary>
     /// Contract for authentication

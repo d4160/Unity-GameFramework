@@ -14,7 +14,7 @@ namespace d4160.Variables
 #endif
         [SerializeField] public T _constantValue;
 #if ENABLE_NAUGHTY_ATTRIBUTES
-        [HideIf("_useConstant")]
+        [HideIf("_useConstant"), Expandable]
 #endif
         [SerializeField] protected TVarSO _variable;
 

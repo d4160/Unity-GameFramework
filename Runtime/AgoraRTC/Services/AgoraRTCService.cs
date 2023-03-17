@@ -2,6 +2,7 @@ using Agora.Rtc;
 using d4160.Events;
 using d4160.Logging;
 using System;
+using UnityEngine;
 
 namespace d4160.AgoraRtc
 {
@@ -39,6 +40,8 @@ namespace d4160.AgoraRtc
                                         Settings.AudioScenarioType);
             _rtcEngine.Initialize(context);
             _rtcEngine.InitEventHandler(handler);
+
+            LogInfo($"[InitRtcEngine] Success");
         }
 
         private bool CheckAppId() => Settings.AppID.Length > 10;
@@ -51,22 +54,48 @@ namespace d4160.AgoraRtc
             RtcEngine.Dispose();
         }
 
-        public void JoinChannel(string token, string channelName, JoinChannelModules modules = JoinChannelModules.Both, CLIENT_ROLE_TYPE clientRoleType = CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER, CHANNEL_PROFILE_TYPE channelProfileType = CHANNEL_PROFILE_TYPE.CHANNEL_PROFILE_LIVE_BROADCASTING, VideoEncoderConfiguration videoEncoderConfig = null)
+        public void JoinChannel(string token, string channelName, JoinChannelModules modules = JoinChannelModules.EnableAudio | JoinChannelModules.EnableVideo, CLIENT_ROLE_TYPE clientRoleType = CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER, CHANNEL_PROFILE_TYPE channelProfileType = CHANNEL_PROFILE_TYPE.CHANNEL_PROFILE_LIVE_BROADCASTING, VideoEncoderConfiguration videoEncoderConfig = null, ChannelMediaOptions options = null)
         {
             if ((modules & JoinChannelModules.EnableAudio) != 0)
             {
                 RtcEngine.EnableAudio();
+
+                if ((modules & JoinChannelModules.EnableLocalAudio) == 0)
+                {
+                    RtcEngine.EnableLocalAudio(false);
+                }
+            }
+            else
+            {
+                RtcEngine.DisableAudio();
             }
 
             if ((modules & JoinChannelModules.EnableVideo) != 0)
             {
                 RtcEngine.SetVideoEncoderConfiguration(videoEncoderConfig);
                 RtcEngine.EnableVideo();
+
+                if ((modules & JoinChannelModules.EnableLocalVideo) == 0)
+                {
+                    RtcEngine.EnableLocalVideo(false);
+                }
+            }
+            else
+            {
+                RtcEngine.DisableVideo();
             }
 
             RtcEngine.SetChannelProfile(channelProfileType);
             RtcEngine.SetClientRole(clientRoleType);
-            RtcEngine.JoinChannel(token, channelName);
+
+            if (options == null)
+            {
+                RtcEngine.JoinChannel(token, channelName);
+            }
+            else
+            {
+                RtcEngine.JoinChannel(token, channelName, 0, options);
+            }
         }
 
         public void LeaveChannel()
@@ -80,9 +109,29 @@ namespace d4160.AgoraRtc
             RtcEngine.EnableVideo();
         }
 
+        public void EnableLocalVideo(bool enabled)
+        {
+            RtcEngine.EnableLocalVideo(enabled);
+        }
+
+        public void MuteLocalVideoStream(bool mute)
+        {
+            RtcEngine.MuteLocalVideoStream(mute);
+        }
+
         public void EnableAudio()
         {
             RtcEngine.EnableAudio();
+        }
+
+        public void EnableLocalAudio(bool enabled)
+        {
+            RtcEngine.EnableLocalAudio(enabled);
+        }
+
+        public void MuteLocalAudioStream(bool mute)
+        {
+            RtcEngine.MuteLocalAudioStream(mute);
         }
 
         public void DisableVideo()
@@ -93,6 +142,41 @@ namespace d4160.AgoraRtc
         public void DisableAudio()
         {
             RtcEngine.DisableAudio();
+        }
+
+        public void StartPreview()
+        {
+            RtcEngine.StartPreview();
+        }
+
+        public void StopPreview()
+        {
+            RtcEngine.StopPreview();
+        }
+
+        public void UpdateChannelMediaOptions(ChannelMediaOptions options)
+        {
+            RtcEngine.UpdateChannelMediaOptions(options);
+        }
+
+        public void SetVideoEncoderConfiguration(VideoEncoderConfiguration config)
+        {
+            RtcEngine.SetVideoEncoderConfiguration(config);
+        }
+
+        public IVideoDeviceManager GetVideoDeviceManager()
+        {
+            return RtcEngine.GetVideoDeviceManager();
+        }
+
+        public IAudioDeviceManager GetAudioDeviceManager()
+        {
+            return RtcEngine.GetAudioDeviceManager();
+        }
+
+        public ScreenCaptureSourceInfo[] GetScreenCaptureSources(SIZE thumbSize, SIZE iconSize, bool includeScreen)
+        {
+            return RtcEngine.GetScreenCaptureSources(thumbSize, iconSize, includeScreen);
         }
 
         public void LogInfo(string message)
@@ -107,7 +191,8 @@ namespace d4160.AgoraRtc
         None = 0,
         EnableAudio = 0x1,
         EnableVideo = 0x2,
-        Both = 0x3
+        EnableLocalAudio = 0x4,
+        EnableLocalVideo = 0x8
     }
 
     internal class UserEventHandler : IRtcEngineEventHandler
@@ -131,6 +216,7 @@ namespace d4160.AgoraRtc
             _service.LogInfo($"SDK Version: {_service.RtcEngine.GetVersion(ref build)}");
             _service.LogInfo($"OnJoinChannelSuccess(RtcConnection, int); ChannelId:{connection.channelId}; LocalUid:{connection.localUid}; Elapsed:{elapsed};");
 
+            //Debug.Log($"[OnJoinChannelSuccess] IsCallbackNull?: {_service.OnJoinChannelSuccess == null}");
             if (_service.OnJoinChannelSuccess) _service.OnJoinChannelSuccess.Invoke(connection, elapsed);
         }
 
@@ -146,10 +232,10 @@ namespace d4160.AgoraRtc
             if (_service.OnLeaveChannelSuccess) _service.OnLeaveChannelSuccess.Invoke(connection, stats);
         }
 
-        public override void OnClientRoleChanged(RtcConnection connection, CLIENT_ROLE_TYPE oldRole, CLIENT_ROLE_TYPE newRole)
+        public override void OnClientRoleChanged(RtcConnection connection, CLIENT_ROLE_TYPE oldRole, CLIENT_ROLE_TYPE newRole, ClientRoleOptions newRoleOptions)
         {
-            _service.LogInfo($"OnClientRoleChanged(RtcConnection, CLIENT_ROLE_TYPE, CLIENT_ROLE_TYPE); ChannelId:{connection.channelId}; LocalUid:{connection.localUid}; OldRole:{oldRole}; NewRole:{newRole};");
-            if (_service.OnClientRoleChanged) _service.OnClientRoleChanged.Invoke(connection, oldRole, newRole);
+            _service.LogInfo($"[OnClientRoleChanged] ChannelId:{connection.channelId}; LocalUid:{connection.localUid}; OldRole:{oldRole}; NewRole:{newRole}; AudienceLatencyLevel:{newRoleOptions.audienceLatencyLevel};");
+            if (_service.OnClientRoleChanged) _service.OnClientRoleChanged.Invoke(connection, oldRole, newRole, newRoleOptions);
         }
 
         public override void OnUserJoined(RtcConnection connection, uint uid, int elapsed)

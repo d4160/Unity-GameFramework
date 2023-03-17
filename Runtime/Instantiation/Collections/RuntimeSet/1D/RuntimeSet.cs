@@ -34,6 +34,14 @@ namespace d4160.Collections
             }
         }
 
+        public void AddRange(IList<T> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                Add(list[i]);
+            }
+        }
+
         public void Insert(int index, T instance) 
         {
             if (!_items.Contains(instance)) 
@@ -83,8 +91,7 @@ namespace d4160.Collections
                 case GameObject go:
                     if (go)
                     {
-                        des = go.GetComponent<IDestroyable>();
-                        if (des != null) { des.Destroy(); } else { if (Application.isPlaying) GameObject.Destroy(go); else GameObject.DestroyImmediate(go); };
+                        if (go.TryGetComponent(out des)) { des.Destroy(); } else { if (Application.isPlaying) GameObject.Destroy(go); else GameObject.DestroyImmediate(go); };
                     }
                     break;
             }
@@ -92,10 +99,11 @@ namespace d4160.Collections
 
         private T2 GetAs<T2>(T instance) where T2 : class
         {
-            switch (instance) {
+            switch (instance)
+            {
                 case Component c:
                     var newC = c as T2;
-                    return newC != null ? newC : c.GetComponent<T2>();
+                    return newC ?? c.GetComponent<T2>();
                 case GameObject go:
                     return go.GetComponent<T2>();
                 default:
