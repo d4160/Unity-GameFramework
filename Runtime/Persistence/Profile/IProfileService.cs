@@ -1,5 +1,3 @@
-using UnityEngine.Promise;
-
 namespace d4160.Profile
 {
     public interface IProfileService
@@ -11,7 +9,7 @@ namespace d4160.Profile
         {
             string DisplayName { get; }
 
-            void GetPlayerProfile(Completer completer);
+            void GetPlayerProfile();
         }
     }
 }

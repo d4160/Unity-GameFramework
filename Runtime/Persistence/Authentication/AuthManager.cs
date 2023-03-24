@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Promise;
+//using UnityEngine.Promise;
 using d4160.Coroutines;
 using d4160.Core;
 using LoggerM31 = d4160.Logging.LoggerM31;
@@ -108,28 +108,28 @@ namespace d4160.UGS.Authentication
             }
         }
 
-        static void FailInitialization(Completer aCompleter, Exception reason, string message, LogLevelType logLevelToCheck, AuthenticationStatus newStatus)
-        {
-            Clear();
+        //static void FailInitialization(Completer aCompleter, Exception reason, string message, LogLevelType logLevelToCheck, AuthenticationStatus newStatus)
+        //{
+        //    Clear();
 
-            LoggerM31.Log(message, LogLevel, logLevelToCheck);
+        //    LoggerM31.Log(message, LogLevel, logLevelToCheck);
 
-            _authenticationStatus = newStatus;
+        //    _authenticationStatus = newStatus;
 
-            aCompleter.Reject(reason);
+        //    aCompleter.Reject(reason);
 
-            switch(newStatus) {
-                case AuthenticationStatus.LoginFailed:
-                    OnLoginFailed?.Invoke(reason);
-                    break;
-                case AuthenticationStatus.RegisterFailed:
-                    OnRegisterFailed?.Invoke(reason);
-                    break;
-                case AuthenticationStatus.LogoutFailed:
-                    OnLogoutFailed?.Invoke(reason);
-                    break;
-            }
-        }
+        //    switch(newStatus) {
+        //        case AuthenticationStatus.LoginFailed:
+        //            OnLoginFailed?.Invoke(reason);
+        //            break;
+        //        case AuthenticationStatus.RegisterFailed:
+        //            OnRegisterFailed?.Invoke(reason);
+        //            break;
+        //        case AuthenticationStatus.LogoutFailed:
+        //            OnLogoutFailed?.Invoke(reason);
+        //            break;
+        //    }
+        //}
 
         public static void Login(IAuthService authService) {
 
@@ -138,23 +138,23 @@ namespace d4160.UGS.Authentication
                 return;
             }
 
-            StartCoroutine(LoginRoutine(authService));
+            //StartCoroutine(LoginRoutine(authService));
         }
 
-        private static IEnumerator LoginRoutine(IAuthService authService) {
+        //private static IEnumerator LoginRoutine(IAuthService authService) {
             
-            using (var loginDeferred = LoginInternal(authService))
-            {
-                yield return loginDeferred.Wait();
+        //    using (var loginDeferred = LoginInternal(authService))
+        //    {
+        //        yield return loginDeferred.Wait();
 
-            }
-        }
+        //    }
+        //}
 
-        public static Deferred LoginInternal(IAuthService authService)
+        public static void LoginInternal(IAuthService authService)
         {
-            Promises.GetHandles(out var deferred, out var completer);
+            //Promises.GetHandles(out var deferred, out var completer);
 
-            if (RejectIfArgNull(authService, nameof(authService), completer)) return deferred;
+            //if (RejectIfArgNull(authService, nameof(authService), completer)) return deferred;
 
             if (_authenticationStatus == AuthenticationStatus.LoggingIn ||
                 _authenticationStatus == AuthenticationStatus.LoggedIn)
@@ -162,20 +162,20 @@ namespace d4160.UGS.Authentication
                 string message = "AuthManager is already logged on and cannot be logged on again.";
                 LoggerM31.LogWarning(message, LogLevel);
 
-                completer.Reject(new Exception(message));
+                //completer.Reject(new Exception(message));
 
-                return deferred;
+                //return deferred;
             }
 
             _authenticationStatus = AuthenticationStatus.LoggingIn;
 
             AuthManager.AuthLayer = authService;
 
-            var routine = LoginRoutine(completer);
+           // var routine = LoginRoutine(completer);
 
-            StartCoroutine(routine);
+            //StartCoroutine(routine);
 
-            return deferred;
+            //return deferred;
         }
 
         public static void Register(IAuthService authService) {
@@ -185,44 +185,44 @@ namespace d4160.UGS.Authentication
                 return;
             }
 
-            StartCoroutine(RegisterRoutine(authService));
+            //StartCoroutine(RegisterRoutine(authService));
         }
 
-        private static IEnumerator RegisterRoutine(IAuthService authService) {
+        //private static IEnumerator RegisterRoutine(IAuthService authService) {
 
-            using (var registerDeferred = RegisterInternal(authService))
-            {
-                yield return registerDeferred.Wait();
-            }
-        }
+        //    using (var registerDeferred = RegisterInternal(authService))
+        //    {
+        //        yield return registerDeferred.Wait();
+        //    }
+        //}
 
-        public static Deferred RegisterInternal(IAuthService authLayer)
-        {
-            Promises.GetHandles(out var deferred, out var completer);
+        //public static Deferred RegisterInternal(IAuthService authLayer)
+        //{
+        //    Promises.GetHandles(out var deferred, out var completer);
 
-            if (RejectIfArgNull(authLayer, nameof(authLayer), completer)) return deferred;
+        //    if (RejectIfArgNull(authLayer, nameof(authLayer), completer)) return deferred;
 
-            if (_authenticationStatus == AuthenticationStatus.SigningUp ||
-                _authenticationStatus == AuthenticationStatus.SignedUp)
-            {
-                string message = "AuthManager is already signed up and cannot be signed up again.";
-                LoggerM31.Log(message, LogLevel, LogLevelType.Warning);
+        //    if (_authenticationStatus == AuthenticationStatus.SigningUp ||
+        //        _authenticationStatus == AuthenticationStatus.SignedUp)
+        //    {
+        //        string message = "AuthManager is already signed up and cannot be signed up again.";
+        //        LoggerM31.Log(message, LogLevel, LogLevelType.Warning);
 
-                completer.Reject(new Exception(message));
+        //        completer.Reject(new Exception(message));
 
-                return deferred;
-            }
+        //        return deferred;
+        //    }
 
-            _authenticationStatus = AuthenticationStatus.SigningUp;
+        //    _authenticationStatus = AuthenticationStatus.SigningUp;
 
-            AuthManager.AuthLayer = authLayer;
+        //    AuthManager.AuthLayer = authLayer;
 
-            var routine = RegisterRoutine(completer);
+        //    var routine = RegisterRoutine(completer);
 
-            StartCoroutine(routine);
+        //    StartCoroutine(routine);
 
-            return deferred;
-        }
+        //    return deferred;
+        //}
 
         public static void Logout() {
 
@@ -231,160 +231,160 @@ namespace d4160.UGS.Authentication
                 return;
             }
 
-            StartCoroutine(LogoutRoutine());
+            //StartCoroutine(LogoutRoutine());
         }
 
-        private static IEnumerator LogoutRoutine() {
+        //private static IEnumerator LogoutRoutine() {
 
-            using (var logoutDeferred = LogoutInternal())
-            {
-                yield return logoutDeferred.Wait();
-            }
-        }
+        //    using (var logoutDeferred = LogoutInternal())
+        //    {
+        //        yield return logoutDeferred.Wait();
+        //    }
+        //}
 
-        public static Deferred LogoutInternal()
-        {
-            Promises.GetHandles(out var deferred, out var completer);
+        //public static Deferred LogoutInternal()
+        //{
+        //    Promises.GetHandles(out var deferred, out var completer);
 
-            if (RejectIfArgNull(AuthLayer, nameof(AuthLayer), completer)) return deferred;
+        //    if (RejectIfArgNull(AuthLayer, nameof(AuthLayer), completer)) return deferred;
 
-            if (_authenticationStatus == AuthenticationStatus.NotAuthenticated)
-            {
-                string message = "AuthManager is already not authenticated and cannot do anything.";
-                LoggerM31.Log(message, LogLevel, LogLevelType.Warning);
+        //    if (_authenticationStatus == AuthenticationStatus.NotAuthenticated)
+        //    {
+        //        string message = "AuthManager is already not authenticated and cannot do anything.";
+        //        LoggerM31.Log(message, LogLevel, LogLevelType.Warning);
 
-                completer.Reject(new Exception(message));
+        //        completer.Reject(new Exception(message));
 
-                return deferred;
-            }
+        //        return deferred;
+        //    }
 
-            _authenticationStatus = AuthenticationStatus.LoggingOut;
+        //    _authenticationStatus = AuthenticationStatus.LoggingOut;
 
-            var routine = LogoutRoutine(completer);
-            StartCoroutine(routine);
+        //    var routine = LogoutRoutine(completer);
+        //    StartCoroutine(routine);
 
-            return deferred;
-        }
+        //    return deferred;
+        //}
 
-        static IEnumerator LoginRoutine(Completer completer)
-        {
-            Promises.GetHandles(out var dalInitDeferred, out var dalInitCompleter);
+        //static IEnumerator LoginRoutine(Completer completer)
+        //{
+        //    Promises.GetHandles(out var dalInitDeferred, out var dalInitCompleter);
 
-            try
-            {
-                AuthLayer?.Login(dalInitCompleter);
-            }
-            catch (Exception e)
-            {
-                dalInitCompleter.Reject(e);
-            }
+        //    try
+        //    {
+        //        AuthLayer?.Login(dalInitCompleter);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dalInitCompleter.Reject(e);
+        //    }
 
-            if (!dalInitDeferred.isDone)
-                yield return dalInitDeferred.Wait();
+        //    if (!dalInitDeferred.isDone)
+        //        yield return dalInitDeferred.Wait();
 
-            var isFulfilled = dalInitDeferred.isFulfilled;
-            var error = dalInitDeferred.error;
-            dalInitDeferred.Release();
+        //    var isFulfilled = dalInitDeferred.isFulfilled;
+        //    var error = dalInitDeferred.error;
+        //    dalInitDeferred.Release();
 
-            if (!isFulfilled)
-            {
-                FailInitialization(completer, error, $"{nameof(AuthManager)} failed to login: {error}", LogLevelType.Warning, AuthenticationStatus.LoginFailed);
+        //    if (!isFulfilled)
+        //    {
+        //        FailInitialization(completer, error, $"{nameof(AuthManager)} failed to login: {error}", LogLevelType.Warning, AuthenticationStatus.LoginFailed);
 
-                yield break;
-            }
+        //        yield break;
+        //    }
 
-            _authenticationStatus = AuthenticationStatus.LoggedIn;
+        //    _authenticationStatus = AuthenticationStatus.LoggedIn;
 
-            LoggerM31.LogInfo($"Successfully logged in AuthManager version {CurrentVersion}", LogLevel);
+        //    LoggerM31.LogInfo($"Successfully logged in AuthManager version {CurrentVersion}", LogLevel);
 
-            completer.Resolve();
-            OnLoggedIn?.Invoke();
-        }
+        //    completer.Resolve();
+        //    OnLoggedIn?.Invoke();
+        //}
 
-        static IEnumerator RegisterRoutine(Completer completer)
-        {
-            Promises.GetHandles(out var dalInitDeferred, out var dalInitCompleter);
+        //static IEnumerator RegisterRoutine(Completer completer)
+        //{
+        //    Promises.GetHandles(out var dalInitDeferred, out var dalInitCompleter);
 
-            try
-            {
-                AuthLayer?.Register(dalInitCompleter);
-            }
-            catch (Exception e)
-            {
-                dalInitCompleter.Reject(e);
-            }
+        //    try
+        //    {
+        //        AuthLayer?.Register(dalInitCompleter);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dalInitCompleter.Reject(e);
+        //    }
 
-            if (!dalInitDeferred.isDone)
-                yield return dalInitDeferred.Wait();
+        //    if (!dalInitDeferred.isDone)
+        //        yield return dalInitDeferred.Wait();
 
-            var isFulfilled = dalInitDeferred.isFulfilled;
-            var error = dalInitDeferred.error;
-            dalInitDeferred.Release();
+        //    var isFulfilled = dalInitDeferred.isFulfilled;
+        //    var error = dalInitDeferred.error;
+        //    dalInitDeferred.Release();
 
-            if (!isFulfilled)
-            {
-                FailInitialization(completer, error, $"{nameof(AuthManager)} failed to register: {error}", LogLevelType.Warning, AuthenticationStatus.RegisterFailed);
+        //    if (!isFulfilled)
+        //    {
+        //        FailInitialization(completer, error, $"{nameof(AuthManager)} failed to register: {error}", LogLevelType.Warning, AuthenticationStatus.RegisterFailed);
 
-                yield break;
-            }
+        //        yield break;
+        //    }
 
-            _authenticationStatus = AuthenticationStatus.SignedUp;
+        //    _authenticationStatus = AuthenticationStatus.SignedUp;
 
-            LoggerM31.LogInfo($"Successfully signed up AuthManager version {CurrentVersion}", LogLevel);
+        //    LoggerM31.LogInfo($"Successfully signed up AuthManager version {CurrentVersion}", LogLevel);
 
-            completer.Resolve();
-            OnLoggedIn?.Invoke();
-        }
+        //    completer.Resolve();
+        //    OnLoggedIn?.Invoke();
+        //}
 
-        static IEnumerator LogoutRoutine(Completer completer)
-        {
-            Promises.GetHandles(out var dalInitDeferred, out var dalInitCompleter);
+        //static IEnumerator LogoutRoutine(Completer completer)
+        //{
+        //    Promises.GetHandles(out var dalInitDeferred, out var dalInitCompleter);
 
-            try
-            {
-                AuthLayer?.Logout(dalInitCompleter);
-            }
-            catch (Exception e)
-            {
-                dalInitCompleter.Reject(e);
-            }
+        //    try
+        //    {
+        //        AuthLayer?.Logout(dalInitCompleter);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dalInitCompleter.Reject(e);
+        //    }
 
-            if (!dalInitDeferred.isDone)
-                yield return dalInitDeferred.Wait();
+        //    if (!dalInitDeferred.isDone)
+        //        yield return dalInitDeferred.Wait();
 
-            var isFulfilled = dalInitDeferred.isFulfilled;
-            var error = dalInitDeferred.error;
-            dalInitDeferred.Release();
+        //    var isFulfilled = dalInitDeferred.isFulfilled;
+        //    var error = dalInitDeferred.error;
+        //    dalInitDeferred.Release();
 
-            if (!isFulfilled)
-            {
-                FailInitialization(completer, error, $"{nameof(AuthManager)} failed to logout: {error}", LogLevelType.Warning, AuthenticationStatus.LogoutFailed);
+        //    if (!isFulfilled)
+        //    {
+        //        FailInitialization(completer, error, $"{nameof(AuthManager)} failed to logout: {error}", LogLevelType.Warning, AuthenticationStatus.LogoutFailed);
 
-                yield break;
-            }
+        //        yield break;
+        //    }
 
-            _authenticationStatus = AuthenticationStatus.NotAuthenticated;
+        //    _authenticationStatus = AuthenticationStatus.NotAuthenticated;
 
-            LoggerM31.LogInfo($"Successfully logged out AuthManager version {CurrentVersion}", LogLevel);
+        //    LoggerM31.LogInfo($"Successfully logged out AuthManager version {CurrentVersion}", LogLevel);
 
-            completer.Resolve();
-            OnLoggedOut?.Invoke();
-        }
+        //    completer.Resolve();
+        //    OnLoggedOut?.Invoke();
+        //}
 
         private static void Clear(){
             _authenticationStatus = AuthenticationStatus.NotAuthenticated;
             AuthLayer = null;
         }
 
-        public static bool RejectIfArgNull(object value, string name, Rejectable rejectable)
-        {
-            if (value is null)
-            {
-                rejectable.Reject(new ArgumentNullException(name));
-                return true;
-            }
+        //public static bool RejectIfArgNull(object value, string name, Rejectable rejectable)
+        //{
+        //    if (value is null)
+        //    {
+        //        rejectable.Reject(new ArgumentNullException(name));
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
     }
 }

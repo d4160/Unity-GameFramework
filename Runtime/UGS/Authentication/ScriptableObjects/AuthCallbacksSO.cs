@@ -2,12 +2,18 @@ using Unity.Services.Authentication;
 using UnityEngine;
 using d4160.Logging;
 using d4160.Events;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+using NaughtyAttributes;
+#endif
 
 namespace d4160.UGS.Authentication
 {
     [CreateAssetMenu(menuName = "d4160/UGS/Authentication/AuthCallbacks")]
     public class AuthCallbacksSO : ScriptableObject
     {
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
         [SerializeField] LoggerSO _logger;
 
         [Header("Events")]

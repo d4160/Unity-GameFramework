@@ -1,5 +1,4 @@
-﻿using UnityEngine.Promise;
-
+﻿
 namespace d4160.UGS.Authentication
 {
     public class LocalAuthService : BaseAuthService
@@ -9,16 +8,16 @@ namespace d4160.UGS.Authentication
             DisplayName = displayName;
         }
 
-        public override void Login(Completer completer)
+        public override void Login()
         {
             GenerateIdAndSessionTicket();
-            completer.Resolve();
+            //completer.Resolve();
         }
 
-        public override void Register(Completer completer)
+        public override void Register()
         {
             GenerateIdAndSessionTicket();
-            completer.Resolve();
+            //completer.Resolve();
         }
 
         private void GenerateIdAndSessionTicket() {
@@ -26,12 +25,12 @@ namespace d4160.UGS.Authentication
             SessionTicket = System.Guid.NewGuid().ToString();
         }
 
-        public override void Logout(Completer completer)
+        public override void Logout()
         {
             Id = string.Empty;
             SessionTicket = string.Empty;
 
-            completer.Resolve();
+            //completer.Resolve();
         }
     }
 }

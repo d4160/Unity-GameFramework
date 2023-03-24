@@ -1,0 +1,16 @@
+{
+    "name": "com.d4160.Quiz",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ed053b1c1336e5a40a2196e16eb58cd7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

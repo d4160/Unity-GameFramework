@@ -1,5 +1,4 @@
-﻿using UnityEngine.Promise;
-
+﻿
 namespace d4160.UGS.Authentication
 {
     /// <summary>
@@ -13,10 +12,10 @@ namespace d4160.UGS.Authentication
         public virtual string SessionTicket { get; set; }
 
         /// <inheritdoc />
-        public abstract void Login(Completer completer);
+        public abstract void Login();
 
-        public abstract void Register(Completer completer);
+        public abstract void Register();
 
-        public abstract void Logout(Completer completer);
+        public abstract void Logout();
     }
 }

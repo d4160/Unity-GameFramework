@@ -1,4 +1,3 @@
-using UnityEngine.Promise;
 
 namespace d4160.Profile
 {
@@ -10,6 +9,6 @@ namespace d4160.Profile
         public virtual string DisplayName { get; protected set; }
 
         /// <inheritdoc />
-        public abstract void GetPlayerProfile(Completer completer);
+        public abstract void GetPlayerProfile();
     }
 }

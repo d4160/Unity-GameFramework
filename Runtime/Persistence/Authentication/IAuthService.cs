@@ -1,4 +1,4 @@
-﻿using UnityEngine.Promise;
+﻿//using UnityEngine.Promise;
 
 namespace d4160.UGS.Authentication
 {
@@ -19,10 +19,10 @@ namespace d4160.UGS.Authentication
         /// <param name="completer">
         /// When done, this completer is resolved or rejected.
         /// </param>
-        void Login(Completer completer);
+        void Login();
 
-        void Register(Completer completer);
+        void Register();
 
-        void Logout(Completer completer);
+        void Logout();
     }
 }
