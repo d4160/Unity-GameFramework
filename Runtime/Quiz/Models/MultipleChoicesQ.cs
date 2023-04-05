@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace d4160.Quiz_
+namespace d4160.Quizzes
 {
     [System.Serializable]
     public class MultipleChoicesQ : QuestionBase

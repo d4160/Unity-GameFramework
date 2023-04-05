@@ -38,7 +38,7 @@ namespace d4160.UGS.Lobbies
                 Player = player.GetPlayer()
             };
 
-            Debug.Log($"[Lobby created] PlayerId: {options.Player.Id}");
+            //Debug.Log($"[Lobby created] PlayerId: {options.Player.Id}");
 
             try
             {

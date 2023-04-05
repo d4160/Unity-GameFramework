@@ -1,4 +1,3 @@
-using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using d4160.Variables;
 #if ENABLE_NAUGHTY_ATTRIBUTES
@@ -27,6 +26,10 @@ namespace d4160.AWS.Cognito
         [Expandable]
 #endif
         [SerializeField] private CognitoIdentityProviderClientSO _client;
+
+        [Header("Output")]
+        [SerializeField] private StringVariableSO _idToken;
+        [SerializeField] private StringVariableSO _accessToken;
 
         private InitiateAuthRequest _request;
 
@@ -64,7 +67,12 @@ namespace d4160.AWS.Cognito
         public async Task<InitiateAuthResponse> InitiateAuthAsync(bool forceCreateNewClient = false, bool forceCreateNewRequest = false, bool forceUpdateAuthParams = true)
         {
             //try {
-            return await _client.GetClient(forceCreateNewClient).InitiateAuthAsync(GetRequest(forceCreateNewRequest, forceUpdateAuthParams));
+            var response = await _client.GetClient(forceCreateNewClient).InitiateAuthAsync(GetRequest(forceCreateNewRequest, forceUpdateAuthParams));
+
+            _idToken.Value = response.AuthenticationResult.IdToken;
+            _accessToken.Value = response.AuthenticationResult.AccessToken;
+
+            return response;
             //}
             //catch(AmazonCognitoIdentityProviderException ex)
             //{

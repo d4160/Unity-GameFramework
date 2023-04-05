@@ -2,6 +2,7 @@ using d4160.MonoBehaviours;
 using UnityEngine;
 using d4160.Loops;
 using NaughtyAttributes;
+using Unity.Services.Authentication;
 #if ENABLE_QUANTUM_CONSOLE
 using QFSW.QC;
 #endif
@@ -11,12 +12,13 @@ namespace d4160.UGS.Lobbies
     public class LobbyMono : MonoBehaviourUnityData<LobbySO, RuntimeLobbiesSO, UpdateLobbySO, UpdatePlayerSO>, IUpdateObject
     {
         [SerializeField, Range(0, 30)] private float _heartbeatTimerMax = 15f;
-        [SerializeField, Range(1.1f, 30)] private float _lobbyUpdateTimerMax = 15f;
+        [SerializeField, Range(1.1f, 30)] private float _lobbyUpdateTimerMax = 2.1f;
+        [SerializeField, Range(1.1f, 30)] private float _listLobbiesTimerMax = 3.1f;
 
         [SerializeField] private CreateLobbySO _createLobby;
         [SerializeField] private JoinLobbySO _joinLobby;
 
-        private float _heartbeatTimer, _lobbyUpdateTimer;
+        private float _heartbeatTimer, _lobbyUpdateTimer, _listLobbiesTimer;
 
         private void OnEnable()
         {
@@ -117,6 +119,19 @@ namespace d4160.UGS.Lobbies
                 {
                     _lobbyUpdateTimer = _lobbyUpdateTimerMax;
                     _data1.GetLobbyAsync();
+                }
+
+                
+            }
+
+            if (_data2 && AuthenticationService.Instance.IsSignedIn)
+            {
+                _listLobbiesTimer -= Time.deltaTime;
+
+                if (_listLobbiesTimer <= 0)
+                {
+                    _listLobbiesTimer = _listLobbiesTimerMax;
+                    _data2.ListLobbiesAsync();
                 }
             }
         }

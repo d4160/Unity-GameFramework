@@ -15,7 +15,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "DOOZY_UI"
+        "ENABLE_DOOZY_UI"
     ],
     "versionDefines": [],
     "noEngineReferences": false

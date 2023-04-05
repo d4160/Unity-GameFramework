@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace d4160.Quiz_
+namespace d4160.Quizzes
 {
     [System.Serializable]
     public class QuizAnswersList

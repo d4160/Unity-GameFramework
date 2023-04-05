@@ -28,9 +28,9 @@ namespace d4160.AWS.Cognito
 
         private ResendConfirmationCodeRequest _request;
 
-        public StringVariableSO UsernameVar => _usernameVar;
+        public StringVariableSO Username => _usernameVar;
 
-        public ResendConfirmationCodeRequest GetRequest(bool forceCreateNew = false)
+        public ResendConfirmationCodeRequest GetRequest(bool forceCreateNew = false, bool updateAttributes = true)
         {
             if (_request == null || forceCreateNew)
             {
@@ -40,13 +40,17 @@ namespace d4160.AWS.Cognito
                     Username = _usernameVar,
                 };
             }
+            else if (updateAttributes)
+            {
+                _request.Username = _usernameVar;
+            }
 
             return _request;
         }
 
-        public async Task<ResendConfirmationCodeResponse> ResendConfirmationCodeAsync(bool forceCreateNewClient = false, bool forceCreateNewRequest = false)
+        public async Task<ResendConfirmationCodeResponse> ResendConfirmationCodeAsync(bool forceCreateNewClient = false, bool forceCreateNewRequest = false, bool updateAttributes = true)
         {
-            return await _client.GetClient(forceCreateNewClient).ResendConfirmationCodeAsync(GetRequest(forceCreateNewRequest));
+            return await _client.GetClient(forceCreateNewClient).ResendConfirmationCodeAsync(GetRequest(forceCreateNewRequest, updateAttributes));
         }
     }
 }

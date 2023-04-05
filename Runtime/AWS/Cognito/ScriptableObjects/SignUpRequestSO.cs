@@ -39,6 +39,8 @@ namespace d4160.AWS.Cognito
         private SignUpRequest _request;
 
         public StringStringDictionaryItemSO[] UserAttributes => _attributes;
+        public StringVariableSO Username => _usernameVar;
+        public StringVariableSO Password => _passwordVar;
 
         private List<AttributeType> GetUserAttributes()
         {
@@ -64,6 +66,8 @@ namespace d4160.AWS.Cognito
             }
             else if (forceUpdateUserAttrs)
             {
+                _request.Username = _usernameVar;
+                _request.Password = _passwordVar;
                 _request.UserAttributes = GetUserAttributes();
             }
 

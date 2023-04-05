@@ -10,8 +10,8 @@ namespace d4160.UGS.Lobbies
     {
         public LobbyPlayerData[] playerData;
 
-        public Player GetPlayer() => new Player() { Data = LobbyPlayerData.GetPlayerData(playerData) };
+        public Player GetPlayer() => new () { Data = LobbyPlayerData.GetPlayerData(playerData) };
 
-        public Player GetPlayer(string id) => new Player(id) { Data = LobbyPlayerData.GetPlayerData(playerData) };
+        public Player GetPlayer(string id) => new (id) { Data = LobbyPlayerData.GetPlayerData(playerData) };
     }
 }

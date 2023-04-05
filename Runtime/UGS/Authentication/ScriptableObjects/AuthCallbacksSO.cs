@@ -2,6 +2,7 @@ using Unity.Services.Authentication;
 using UnityEngine;
 using d4160.Logging;
 using d4160.Events;
+using d4160.Variables;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
@@ -15,6 +16,10 @@ namespace d4160.UGS.Authentication
         [Expandable]
 #endif
         [SerializeField] LoggerSO _logger;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
+        [SerializeField] StringVariableSO _playerId;
 
         [Header("Events")]
         [SerializeField] private VoidEventSO _onSignedIn;
@@ -26,12 +31,14 @@ namespace d4160.UGS.Authentication
         {
             AuthenticationService.Instance.SignedIn += () =>
             {
+                _playerId.Value = AuthenticationService.Instance.PlayerId;
+
                 if (_onSignedIn)
                 {
                     _onSignedIn.Invoke();
                 }
 
-                if (_logger) _logger.LogInfo($"[SignedIn] PlayerId: {AuthenticationService.Instance.PlayerId};"); // AccessToken: {AuthenticationService.Instance.AccessToken};
+                if (_logger) _logger.LogInfo($"[SignedIn] PlayerId: {_playerId.Value};"); // AccessToken: {AuthenticationService.Instance.AccessToken};
             };
 
             AuthenticationService.Instance.SignInFailed += (err) =>

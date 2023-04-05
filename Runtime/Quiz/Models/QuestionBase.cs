@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace d4160.Quiz_
+namespace d4160.Quizzes
 {
     [System.Serializable]
     public abstract class QuestionBase

@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using Sabresaurus.PlayerPrefsUtilities;
 using UnityEngine;
+using d4160.Collections;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+using NaughtyAttributes;
+#endif
 
 namespace d4160.Persistence
 {
@@ -84,60 +88,99 @@ namespace d4160.Persistence
             for (int i = 0; i < StoreVariables.Count; i++)
             {
                 var storeVar = StoreVariables[i];
-                switch (storeVar.variableSO.RawValue)
-                {
-                    case int val:
-                        if (storeVar.encrypt) 
-                        {
-                            PlayerPrefsUtility.SetEncryptedInt(storeVar.key, val);
-                        }
-                        else
-                        {
-                            PlayerPrefs.SetInt(storeVar.key, val);
-                        }
-                        break;
-                    case float val:
-                        if (storeVar.encrypt)
-                        {
-                            PlayerPrefsUtility.SetEncryptedFloat(storeVar.key, val);
-                        }
-                        else
-                        {
-                            PlayerPrefs.SetFloat(storeVar.key, val);
-                        }
-                        break;
-                    case bool val:
-                        if (storeVar.encrypt)
-                        {
-                            PlayerPrefsUtility.SetEncryptedBool(storeVar.key, val);
-                        }
-                        else
-                        {
-                            PlayerPrefsUtility.SetBool(storeVar.key, val);
-                        }
-                        break;
-                    case string val:
-                        if (storeVar.encrypt)
-                        {
-                            PlayerPrefsUtility.SetEncryptedString(storeVar.key, val);
-                        }
-                        else
-                        {
-                            PlayerPrefs.SetString(storeVar.key, val);
-                        }
-                        break;
-                    default:
-                        if (storeVar.encrypt)
-                        {
-                            PlayerPrefsUtility.SetEncryptedString(storeVar.key, storeVar.variableSO.RawValue.ToString());
-                        }
-                        else
-                        {
-                            PlayerPrefs.SetString(storeVar.key, storeVar.variableSO.RawValue.ToString());
-                        }
-                        break;
-                }
+                Save(storeVar);
             }
+        }
+
+        public void Save(int index)
+        {
+            if (StoreVariables.IsValidIndex(index))
+            {
+                Save(StoreVariables[index]);
+            }
+        }
+
+        public void Save(VariableSOKey storeVar)
+        {
+            switch (storeVar.variableSO.RawValue)
+            {
+                case int val:
+                    if (storeVar.encrypt)
+                    {
+                        PlayerPrefsUtility.SetEncryptedInt(storeVar.key, val);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt(storeVar.key, val);
+                    }
+                    break;
+                case float val:
+                    if (storeVar.encrypt)
+                    {
+                        PlayerPrefsUtility.SetEncryptedFloat(storeVar.key, val);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetFloat(storeVar.key, val);
+                    }
+                    break;
+                case bool val:
+                    if (storeVar.encrypt)
+                    {
+                        PlayerPrefsUtility.SetEncryptedBool(storeVar.key, val);
+                    }
+                    else
+                    {
+                        PlayerPrefsUtility.SetBool(storeVar.key, val);
+                    }
+                    break;
+                case string val:
+                    if (storeVar.encrypt)
+                    {
+                        PlayerPrefsUtility.SetEncryptedString(storeVar.key, val);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetString(storeVar.key, val);
+                    }
+                    break;
+                default:
+                    if (storeVar.encrypt)
+                    {
+                        PlayerPrefsUtility.SetEncryptedString(storeVar.key, storeVar.variableSO.RawValue.ToString());
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetString(storeVar.key, storeVar.variableSO.RawValue.ToString());
+                    }
+                    break;
+            }
+        }
+
+        public void Delete()
+        {
+            for (int i = 0; i < StoreVariables.Count; i++)
+            {
+                var storeVar = StoreVariables[i];
+                string encryptedKey = storeVar.encrypt ? GetEncryptedKey(storeVar.key) : storeVar.key;
+                PlayerPrefs.DeleteKey(encryptedKey);
+                storeVar.ResetValue();
+            }
+        }
+
+        public void Delete(int index)
+        {
+            if (StoreVariables.IsValidIndex(index))
+            {
+                string encryptedKey = StoreVariables[index].encrypt ? GetEncryptedKey(StoreVariables[index].key) : StoreVariables[index].key;
+                PlayerPrefs.DeleteKey(encryptedKey);
+                StoreVariables[index].ResetValue();
+            }
+        }
+
+        private string GetEncryptedKey(string key)
+        {
+            return PlayerPrefsUtility.KEY_PREFIX + SimpleEncryption.EncryptString(key);
         }
     }
 
@@ -146,11 +189,19 @@ namespace d4160.Persistence
     {
         public string key;
         public bool encrypt;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
         public VariableSOBase variableSO;
 
         public void ResetValue()
         {
             variableSO.ResetValue();
+        }
+
+        public T GetAs<T>() where T : VariableSOBase
+        {
+            return variableSO.GetAs<T>();
         }
     }
 }

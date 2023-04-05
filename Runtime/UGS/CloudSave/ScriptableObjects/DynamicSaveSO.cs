@@ -248,6 +248,8 @@ namespace d4160.UGS.CloudSave
 
                 DynamicPairList = new DynamicPairList();
                 _autoincrement.Value = 0;
+                _dynamicPairListJson.Value = string.Empty;
+                _jsonToSave.Value = string.Empty;
 
                 await CloudSaveService.Instance.Data.ForceDeleteAsync(_dynamicPairListJson.Key);
                 await CloudSaveService.Instance.Data.ForceDeleteAsync(_autoincrement.Key);

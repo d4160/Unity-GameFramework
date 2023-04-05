@@ -49,6 +49,7 @@ namespace d4160.SceneManagement {
         private int _loadedCountTarget;
 
         public string Label => _label;
+        public string Description => _description;
         public SceneManagerSO SceneManager { get => _sceneManager;  set => _sceneManager = value; }
         public int ManagerIndex { get => _managerIndex; set => _managerIndex = value; }
 

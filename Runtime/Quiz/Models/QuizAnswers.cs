@@ -1,9 +1,8 @@
 using d4160.Collections;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using static PlasticGui.WorkspaceWindow.CodeReview.Summary.CommentSummaryData;
 
-namespace d4160.Quiz_
+namespace d4160.Quizzes
 {
     [System.Serializable]
     public class QuizAnswers

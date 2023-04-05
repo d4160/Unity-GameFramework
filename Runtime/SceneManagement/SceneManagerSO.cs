@@ -30,6 +30,8 @@ namespace d4160.SceneManagement {
         private int _lastLoadedIndex;
         private string _lastLoadedLabel;
 
+        public SceneCollectionSO[] SceneCollections => _sceneCollections;
+
         public AssetManagementType SceneAssetType { get => _sceneAssetType; set => _sceneAssetType = value; }
         public int SelectedSceneCollection { get => _selectedSceneCollection; set => _selectedSceneCollection = value; }
 

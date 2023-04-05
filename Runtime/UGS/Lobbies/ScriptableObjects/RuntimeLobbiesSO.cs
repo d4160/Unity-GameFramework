@@ -1,4 +1,5 @@
 using d4160.Collections;
+using d4160.Events;
 using System.Collections.Generic;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
@@ -17,6 +18,9 @@ namespace d4160.UGS.Lobbies
         public bool randomSampleResults = false;
         public QueryFilterData[] filters;
         public QueryOrderData[] orders;
+
+        [Header("Events")]
+        [SerializeField] private VoidEventSO _onListUpdated;
 
         public async void ListLobbiesAsync()
         {
@@ -42,6 +46,8 @@ namespace d4160.UGS.Lobbies
                 if (qResponse.Results.Count > 0)
                 {
                     AddRange(qResponse.Results);
+
+                    if (_onListUpdated) _onListUpdated.Invoke();
                 }
             }
             catch(LobbyServiceException e)

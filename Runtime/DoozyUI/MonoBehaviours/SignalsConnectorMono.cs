@@ -1,12 +1,16 @@
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace d4160.DoozyUI
 {
-    public class StreamsConnectorMono : MonoBehaviour
+    public class SignalsConnectorMono : MonoBehaviour
     {
-        [SerializeField] private StreamSO[] _streams;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
+        [SerializeField] private SignalStreamSO[] _streams;
 
         private void Awake()
         {
@@ -20,6 +24,8 @@ namespace d4160.DoozyUI
         {
             for (int i = 0; i < _streams.Length; i++)
             {
+                if (i == 1)
+                    Debug.Log($"[SignalsConnector] Registered: {_streams[i].category}, {_streams[i]._name}");
                 _streams[i].RegisterEvents();
             }
         }

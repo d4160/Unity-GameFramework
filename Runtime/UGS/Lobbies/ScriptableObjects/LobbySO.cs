@@ -22,7 +22,7 @@ namespace d4160.UGS.Lobbies
             for (int i = 0; i < lobby.Players.Count; i++)
             {
                 Player p = lobby.Players[i];
-                Debug.Log($"{p.Id} {p.Data[playerNameKey]}");
+                Debug.Log($"{p.Id} {p.Data[playerNameKey].Value}");
             }
         }
 
@@ -125,7 +125,7 @@ namespace d4160.UGS.Lobbies
     {
         public StringReference key;
         public VisibilityOptions visibility;
-        public StringReference value;
+        public VariableReferenceBase<VariableSOBase, string> value;
         public IndexOptions index;
 
         public static Dictionary<string, DataObject> GetLobbyData(LobbyData[] lobbyData)
@@ -137,7 +137,7 @@ namespace d4160.UGS.Lobbies
                 for (int i = 0; i < lobbyData.Length; i++)
                 {
                     LobbyData l = lobbyData[i];
-                    lData.Add(l.key, new(l.visibility, l.value, l.index));
+                    lData.Add(l.key, new(l.visibility, l.value.StringValue, l.index));
                 }
             }
 
@@ -150,7 +150,7 @@ namespace d4160.UGS.Lobbies
     {
         public StringReference key;
         public PlayerDataObject.VisibilityOptions visibility;
-        public StringReference value;
+        public VariableReferenceBase<VariableSOBase, string> value;
 
         public static Dictionary<string, PlayerDataObject> GetPlayerData(LobbyPlayerData[] playerData)
         {
@@ -161,7 +161,7 @@ namespace d4160.UGS.Lobbies
                 for (int i = 0; i < playerData.Length; i++)
                 {
                     LobbyPlayerData p = playerData[i];
-                    pData.Add(p.key, new(p.visibility, p.value));
+                    pData.Add(p.key, new(p.visibility, p.value.StringValue));
                 }
             }
 

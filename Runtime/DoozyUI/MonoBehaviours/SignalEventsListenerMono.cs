@@ -12,7 +12,7 @@ namespace d4160.DoozyUI
     public class SignalEventsListenerMono : MonoBehaviour, IEventListenerCollection<Signal>
     {
 #if ENABLE_NAUGHTY_ATTRIBUTES
-        [OnValueChanged("_OnSignalInspectorChanged")]
+        [OnValueChanged("_OnSignalInspectorChanged"), Expandable]
 #endif
         [SerializeField] private SignalEventSO[] _signalEvents;
 

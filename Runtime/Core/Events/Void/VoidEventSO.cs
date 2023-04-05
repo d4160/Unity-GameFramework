@@ -5,6 +5,7 @@ using d4160.Coroutines;
 using NaughtyAttributes;
 #endif
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace d4160.Events 
 {
@@ -102,6 +103,21 @@ namespace d4160.Events
             InvokeInternal();
 
             _storedRoutine = null;
+        }
+
+        public readonly struct EventListener : IEventListener
+        {
+            private readonly UnityAction callback;
+
+            public EventListener(UnityAction callback)
+            {
+                this.callback = callback;
+            }
+
+            public void OnInvoked()
+            {
+                callback?.Invoke();
+            }
         }
     }
 }
