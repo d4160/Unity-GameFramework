@@ -4,6 +4,7 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Lobbies;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace d4160.UGS.Lobbies
 {
@@ -37,7 +38,7 @@ namespace d4160.UGS.Lobbies
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public async void UpdateLobbyAsync()
+        public async Task UpdateLobbyAsync()
         {
             UpdateLobbyOptions options = new()
             {
@@ -45,6 +46,53 @@ namespace d4160.UGS.Lobbies
                 MaxPlayers = maxPlayers,
                 IsPrivate = isPrivate,
                 IsLocked = isLocked,
+                Data = LobbyData.GetLobbyData(lobbyData)
+            };
+
+            try
+            {
+                lobby.Lobby = await LobbyService.Instance.UpdateLobbyAsync(lobby.Lobby.Id, options);
+
+                // TODO: Implement LoggerSO
+                Debug.Log($"[UpdateLobbyAsync] Name: {lobby.Lobby.Name}; MaxPlayers: {lobby.Lobby.MaxPlayers}; Id: {lobby.Lobby.Id}: Code: {lobby.Lobby.LobbyCode}");
+
+                lobby.PrintPlayers(lobby.Lobby);
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
+        }
+
+        public async Task UpdateLobbyParamsAsync()
+        {
+            UpdateLobbyOptions options = new()
+            {
+                Name = _name,
+                MaxPlayers = maxPlayers,
+                IsPrivate = isPrivate,
+                IsLocked = isLocked
+            };
+
+            try
+            {
+                lobby.Lobby = await LobbyService.Instance.UpdateLobbyAsync(lobby.Lobby.Id, options);
+
+                // TODO: Implement LoggerSO
+                Debug.Log($"[UpdateLobbyAsync] Name: {lobby.Lobby.Name}; MaxPlayers: {lobby.Lobby.MaxPlayers}; Id: {lobby.Lobby.Id}: Code: {lobby.Lobby.LobbyCode}");
+
+                lobby.PrintPlayers(lobby.Lobby);
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
+        }
+
+        public async Task UpdateLobbyDataAsync()
+        {
+            UpdateLobbyOptions options = new()
+            {
                 Data = LobbyData.GetLobbyData(lobbyData)
             };
 

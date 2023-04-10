@@ -23,6 +23,7 @@ namespace d4160.UGS.Lobbies
         private void OnEnable()
         {
             UpdateManager.AddListener(this);
+            _lobbyUpdateTimer = _lobbyUpdateTimerMax;
         }
 
         private void OnDisable()
@@ -120,8 +121,6 @@ namespace d4160.UGS.Lobbies
                     _lobbyUpdateTimer = _lobbyUpdateTimerMax;
                     _data1.GetLobbyAsync();
                 }
-
-                
             }
 
             if (_data2 && AuthenticationService.Instance.IsSignedIn)

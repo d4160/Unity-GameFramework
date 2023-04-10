@@ -15,6 +15,40 @@ namespace d4160.Quizzes
         public int totalScore;
         public int maxScore;
 
+        [JsonIgnore]
+        public bool HasAnswers => answers.Count > 0;
+        [JsonIgnore]
+        public bool SomeAnswered
+        {
+            get
+            {
+                for (int i = 0; i < answers.Count; i++)
+                {
+                    if (answers[i].Answered)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        [JsonIgnore]
+        public bool SomeScored
+        {
+            get
+            {
+                for (int i = 0; i < answers.Count; i++)
+                {
+                    if (answers[i].Scored)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
         public void AddAnswer(AnswerBase answer)
         {
             if (!answers.Contains(answer))

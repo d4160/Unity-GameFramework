@@ -19,7 +19,7 @@ namespace d4160.UGS.Relay
 #endif
         public string connectionType = "dtls";
 
-        public async Task<string> CreateRelay(int maxConnections)
+        public async Task<string> CreateRelayAsync(int maxConnections)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace d4160.UGS.Relay
             }
         }
 
-        public async Task JoinRelay(string joinCode)
+        public async Task JoinRelayAsync(string joinCode)
         {
             try
             {
@@ -55,13 +55,21 @@ namespace d4160.UGS.Relay
                 RelayServerData relayServerData = new (alloc, connectionType);
 
                 NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-                
+
                 NetworkManager.Singleton.StartClient();
 
             }
             catch (RelayServiceException e)
             {
                 Debug.LogException(e);
+            }
+        }
+
+        public void CleanUp()
+        {
+            if (NetworkManager.Singleton != null)
+            {
+                Destroy(NetworkManager.Singleton.gameObject);
             }
         }
     }

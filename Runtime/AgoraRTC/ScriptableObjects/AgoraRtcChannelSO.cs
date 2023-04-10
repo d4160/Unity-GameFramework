@@ -25,7 +25,7 @@ namespace d4160.AgoraRtc
         [SerializeField] private ChannelMediaOptionsSO _channelMediaOptions;
         [SerializeField] private bool _setMediaOptionsWhenJoin = false;
 
-        public string ChannelName => _channelName;
+        public string ChannelName { get => _channelName; set => _channelName = value; }
 
 #if UNITY_EDITOR
         private bool _IsVideoModule => (_modulesToActiveWhenJoin & JoinChannelModules.EnableVideo) != 0;
@@ -39,6 +39,11 @@ namespace d4160.AgoraRtc
         public void JoinChannel()
         {
             _service.JoinChannel(_token, _channelName, _modulesToActiveWhenJoin, _clientRoleType, _channelProfileType, _videoEncoderConfig.AgoraRtcVideoEncoderConfiguration, _setMediaOptionsWhenJoin ? _channelMediaOptions.GetChannelMediaOptions() : null);
+        }
+
+        public void JoinChannel(string channelName)
+        {
+            _service.JoinChannel(_token, channelName, _modulesToActiveWhenJoin, _clientRoleType, _channelProfileType, _videoEncoderConfig.AgoraRtcVideoEncoderConfiguration, _setMediaOptionsWhenJoin ? _channelMediaOptions.GetChannelMediaOptions() : null);
         }
 
 #if ENABLE_NAUGHTY_ATTRIBUTES

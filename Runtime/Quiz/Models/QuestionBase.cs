@@ -34,7 +34,7 @@ namespace d4160.Quizzes
 
         public virtual int ValidateAnswer(AnswerBase answer)
         {
-            answer.Answered = true;
+            answer.Scored = true;
             answer.Score = 0;
             answer.IsCorrect = true;
             return 0;
@@ -75,17 +75,24 @@ namespace d4160.Quizzes
     [System.Serializable]
     public abstract class AnswerBase
     {
-        [HideInInspector] public bool answered;
+        //[HideInInspector] public bool answered;
         [HideInInspector] public bool isCorrect;
         [HideInInspector] public int score;
         [HideInInspector] public int index;
         [HideInInspector] public QuestionType type;
 
         [JsonIgnore]
+        public bool Scored
+        {
+            get;
+            set;
+        }
+
+        [JsonIgnore]
         public bool Answered
         {
-            get => answered;
-            set => answered = value;
+            get;
+            private set;
         }
 
         [JsonIgnore]
@@ -107,6 +114,11 @@ namespace d4160.Quizzes
         {
             get => index;
             set => index = value;
+        }
+
+        public virtual void Answer()
+        {
+            Answered = true;
         }
     }
 }

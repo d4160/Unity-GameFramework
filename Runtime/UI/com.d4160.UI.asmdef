@@ -1,9 +1,9 @@
 {
-    "name": "com.d4160.Quiz",
+    "name": "com.d4160.UI",
     "rootNamespace": "",
     "references": [
-        "GUID:ed053b1c1336e5a40a2196e16eb58cd7",
-        "GUID:abd02ea2a3d741f48b1c16eb7025fec5"
+        "GUID:abd02ea2a3d741f48b1c16eb7025fec5",
+        "GUID:ed053b1c1336e5a40a2196e16eb58cd7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

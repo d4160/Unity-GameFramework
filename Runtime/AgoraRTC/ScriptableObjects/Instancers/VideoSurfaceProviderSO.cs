@@ -63,11 +63,13 @@ namespace d4160.AgoraRtc
         {
             _runtimeDictionary.Clear();
 
-            LocalVideoSurface.SetEnable(false);
+            if (LocalVideoSurface)
+                LocalVideoSurface.SetEnable(false);
 
             for (int i = 0; i < StaticVideoSurfaces.Count; i++)
             {
-                StaticVideoSurfaces[i].SetEnable(false);
+                if (StaticVideoSurfaces[i])
+                    StaticVideoSurfaces[i].SetEnable(false);
             }
         }
 

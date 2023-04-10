@@ -42,7 +42,7 @@ namespace d4160.Quizzes
 
                     if (correctsCount == correctIndexes.Length)
                     {
-                        answer.Answered = true;
+                        answer.Scored = true;
                         answer.Score = score;
                         answer.IsCorrect = true;
 
@@ -51,7 +51,7 @@ namespace d4160.Quizzes
                 }
             }
 
-            answer.Answered = true;
+            answer.Scored = true;
             answer.Score = 0;
             answer.IsCorrect = false;
             return 0;

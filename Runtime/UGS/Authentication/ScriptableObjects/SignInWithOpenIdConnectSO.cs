@@ -25,6 +25,7 @@ namespace d4160.UGS.Authentication
 
         public async Task SignInWithOpenIdConnectAsync()
         {
+            Debug.Log("[SignInWithOpenIdConnectAsync]");
             await AuthenticationService.Instance.SignInWithOpenIdConnectAsync(
                 _providerName, _idToken);
         }

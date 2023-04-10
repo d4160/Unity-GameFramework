@@ -24,8 +24,8 @@ namespace d4160.DoozyUI
         {
             for (int i = 0; i < _streams.Length; i++)
             {
-                if (i == 1)
-                    Debug.Log($"[SignalsConnector] Registered: {_streams[i].category}, {_streams[i]._name}");
+                //if (i == 1)
+                //    Debug.Log($"[SignalsConnector] Registered: {_streams[i].category}, {_streams[i]._name}");
                 _streams[i].RegisterEvents();
             }
         }

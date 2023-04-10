@@ -4,8 +4,9 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using static Unity.Services.Lobbies.Models.DataObject;
 using d4160.Variables;
-using NaughtyAttributes;
 using Unity.Services.Authentication;
+using d4160.Events;
+using System.Threading.Tasks;
 
 namespace d4160.UGS.Lobbies
 {
@@ -13,8 +14,10 @@ namespace d4160.UGS.Lobbies
     public class LobbySO : ScriptableObject
     {
         public StringReference playerNameKey;
+        [SerializeField] private VoidEventSO _onGetLobby;
 
         public Lobby Lobby { get; internal set; }
+        public bool IsHost => Lobby != null && Lobby.HostId == AuthenticationService.Instance.PlayerId;
 
         internal void PrintPlayers(Lobby lobby)
         {
@@ -48,6 +51,7 @@ namespace d4160.UGS.Lobbies
                 try
                 {
                     Lobby = await LobbyService.Instance.GetLobbyAsync(Lobby.Id);
+                    if (_onGetLobby) _onGetLobby.Invoke();
                 }
                 catch (LobbyServiceException e)
                 {
@@ -56,13 +60,14 @@ namespace d4160.UGS.Lobbies
             }
         }
 
-        public async void LeaveLobbyAsync()
+        public async Task LeaveLobbyAsync()
         {
             if (Lobby != null)
             {
                 try
                 {
                     await LobbyService.Instance.RemovePlayerAsync(Lobby.Id, AuthenticationService.Instance.PlayerId);
+                    Lobby = null;
                 }
                 catch (LobbyServiceException e)
                 {
@@ -104,17 +109,33 @@ namespace d4160.UGS.Lobbies
             }
         }
 
-        public async void DeleteLobbyAsync()
+        public async Task DeleteLobbyAsync()
         {
             if (Lobby != null)
             {
                 try
                 {
                     await LobbyService.Instance.DeleteLobbyAsync(Lobby.Id);
+                    Lobby = null;
                 }
                 catch (LobbyServiceException e)
                 {
                     Debug.LogException(e);
+                }
+            }
+        }
+
+        public async void LeaveOrDeleteLobby()
+        {
+            if (Lobby != null)
+            {
+                if (IsHost)
+                {
+                    await DeleteLobbyAsync();
+                }
+                else
+                {
+                    await LeaveLobbyAsync();
                 }
             }
         }
