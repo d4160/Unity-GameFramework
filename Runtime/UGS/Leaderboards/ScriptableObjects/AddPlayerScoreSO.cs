@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Services.Leaderboards;
 using System.Threading.Tasks;
@@ -23,9 +21,19 @@ namespace d4160.LeaderBoards
 #endif
         [SerializeField] private DoubleVariableSO _score;
 
+        public async Task<LeaderboardEntry> AddPlayerScoreAsync(double score)
+        {
+            return await AddPlayerScoreInternalAsync(score);
+        }
+
         public async Task<LeaderboardEntry> AddPlayerScoreAsync()
         {
-            return await LeaderboardsService.Instance.AddPlayerScoreAsync(_leaderboardId, _score);
+            return await AddPlayerScoreInternalAsync(_score);
+        }
+
+        private async Task<LeaderboardEntry> AddPlayerScoreInternalAsync(double score)
+        {
+            return await LeaderboardsService.Instance.AddPlayerScoreAsync(_leaderboardId, score);
         }
     }
 }

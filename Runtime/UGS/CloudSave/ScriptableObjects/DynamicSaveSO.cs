@@ -90,7 +90,7 @@ namespace d4160.UGS.CloudSave
             await CreateDynamicPairAsync(id, isOwner, updateIfFound);
         }
 
-        public async Task CreateDynamicPairAsync(string id, bool isOwner = true, bool updateIfFound = true)
+        public async Task<bool> CreateDynamicPairAsync(string id, bool isOwner = true, bool updateIfFound = true)
         {
             bool found = false;
             for (int i = 0; i < DynamicPairList.Count; i++)
@@ -104,7 +104,7 @@ namespace d4160.UGS.CloudSave
                 }
             }
 
-            if (found) return;
+            if (found) return false;
 
             var data = new Dictionary<string, object>();
             //string log = string.Empty;
@@ -127,6 +127,8 @@ namespace d4160.UGS.CloudSave
             //Debug.Log(log);
 
             await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+
+            return true;
         }
 
         public async Task<string> ReadDynamicPairAsync(string id)

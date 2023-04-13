@@ -8,7 +8,7 @@ namespace d4160.Quizzes
     {
         public List<QuizAnswers> answersList = new();
 
-        public void AddAnswer(QuizAnswers quizAnswer)
+        public void AddAnswers(QuizAnswers quizAnswer)
         {
             if (!answersList.Contains(quizAnswer))
             {
