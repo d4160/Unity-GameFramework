@@ -29,11 +29,38 @@ namespace d4160.AgoraRtc
             }
         }
 
-        internal void SetScreenCaptureSources(ScreenCaptureSourceInfo[] sources)
+        internal void SetScreenCaptureSources(ScreenCaptureSourceInfo[] sources, params string[] ignores)
         {
             Clear();
 
-            AddRange(sources);
+            if (ignores.Length > 0)
+            {
+                //Debug.Log($"Ignoring: {ignores.Length}");
+                List<ScreenCaptureSourceInfo> sourceList = new();
+                for (int i = 0; i < sources.Length; i++)
+                {
+                    bool ignore = false;
+                    for (int j = 0; j < ignores.Length; j++)
+                    {
+                        if (sources[i].sourceName.Contains(ignores[j]))
+                        {
+                            ignore = true;
+                            break;
+                        }
+                    }
+
+                    if (!ignore)
+                    {
+                        sourceList.Add(sources[i]);
+                    }
+                }
+
+                AddRange(sourceList);
+            }
+            else
+            {
+                AddRange(sources);
+            }
 
             SetScreenCaptureSource(0);
         }

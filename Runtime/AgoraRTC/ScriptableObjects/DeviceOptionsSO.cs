@@ -1,4 +1,5 @@
 using Agora.Rtc;
+using Amazon.Runtime;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 using System.Collections.Generic;
@@ -65,6 +66,7 @@ namespace d4160.AgoraRtc
 #endif
         public DeviceInfo[] GetVideoDevices()
         {
+            if (_service.RtcEngine == null) return null;
             _videoManagerVar.Value = new (_service.GetVideoDeviceManager());
             return _videoManagerVar.Value.EnumerateVideoDevices();
         }
@@ -80,15 +82,20 @@ namespace d4160.AgoraRtc
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public ScreenCaptureSourceInfo[] GetScreenCaptureSources()
+        public List<ScreenCaptureSourceInfo> GetScreenCaptureSources(params string[] ignores)
         {
+            if (_service.RtcEngine == null) return null;
+
             SIZE thumbS = new (thumbSize.x, thumbSize.y);
             SIZE iconS = new (iconSize.x, iconSize.y);
 
             ScreenCaptureSourceInfo[] sources = _service.GetScreenCaptureSources(thumbS, iconS, includeScreen);
-            _captureSourceInfoRuntimeSet.SetScreenCaptureSources(sources);
+            
+            if (sources == null || sources.Length == 0) return null;
 
-            return sources;
+            _captureSourceInfoRuntimeSet.SetScreenCaptureSources(sources, ignores);
+
+            return _captureSourceInfoRuntimeSet.Items;
         }
 
         public List<Texture2D> GetScreenCaptureSourceThumbs() => _captureSourceInfoRuntimeSet.GetScreenCaptureSourceThumbs();

@@ -19,7 +19,7 @@ namespace d4160.Events
         void OnInvoked(int i);
     }
 
-    public abstract class EventSOBase<T> : ScriptableObject
+    public abstract class EventSOBase<T> : EventSOBase
     {
         private readonly List<IEventListener<T>> _listeners = new();
 
@@ -77,6 +77,11 @@ namespace d4160.Events
                 callback?.Invoke(param);
             }
         }
+    }
+
+    public abstract class EventSOBase : ScriptableObject
+    {
+
     }
 
     public static class EventExtensions

@@ -488,5 +488,38 @@ namespace d4160.Variables
         {
             return this as T;
         }
+
+        public bool TryGetValue<T>(out T value)
+        {
+            try
+            {
+                value = (this as VariableSOBase<T>).Value;
+                return true;
+            }
+            catch
+            {
+                // ignored
+            }
+            value = default;
+            return false;
+        }
+
+        public bool TrySetValue<T>(T newValue)
+        {
+            try
+            {
+                (this as VariableSOBase<T>).Value = newValue;
+                return true;
+            }
+            catch
+            {
+                // ignored
+            }
+            return false;
+        }
+
+        public T GetValueUnsafe<T>() => (this as VariableSOBase<T>).Value;
+
+        public T SetValueUnsafe<T>(T newVal) => (this as VariableSOBase<T>).Value = newVal;
     }
 }
