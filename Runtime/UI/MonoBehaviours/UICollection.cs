@@ -1,5 +1,4 @@
 using d4160.Collections;
-using Mono.CSharp;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -92,6 +91,7 @@ namespace d4160.UIs
             for (int i = _items.Count - 1; i >= 0; i--)
             {
                 _items[i].gameObject.SetActive(false);
+                _items[i].transform.SetAsLastSibling();
                 _stack.Enqueue(_items[i]);
                 _items.RemoveAt(i);
             }
@@ -114,10 +114,10 @@ namespace d4160.UIs
 
                 _nextIndex = _items.Count;
 
-                for (int i = 0; i < _items.Count; i++)
-                {
-                    Debug.Log($"i:{i}, Index:{_items[i].Index}, Data:{_items[i].Data}");
-                }
+                //for (int i = 0; i < _items.Count; i++)
+                //{
+                //    Debug.Log($"i:{i}, Index:{_items[i].Index}, Data:{_items[i].Data}");
+                //}
             }
         }
 

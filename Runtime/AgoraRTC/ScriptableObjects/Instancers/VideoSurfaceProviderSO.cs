@@ -235,7 +235,7 @@ namespace d4160.AgoraRtc
             bool isRenderer = vSurface.GetComponent<Renderer>();
             Vector3 scale = GetFixedScale(new Vector3(size, isRenderer ? 1f : size * ScaleFactor, isRenderer ? size * ScaleFactor : 1));
             vSurface.transform.localScale = scale;
-            vSurface.transform.eulerAngles = isRenderer ? fixRotationRenderer : fixRotationRawImage;
+            vSurface.transform.localEulerAngles = isRenderer ? fixRotationRenderer : fixRotationRawImage;
         }
 
         private Vector3 GetFixedScale(Vector3 v)
