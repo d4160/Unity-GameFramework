@@ -7,6 +7,7 @@ using d4160.Variables;
 using Unity.Services.Authentication;
 using d4160.Events;
 using System.Threading.Tasks;
+using d4160.Collections;
 
 namespace d4160.UGS.Lobbies
 {
@@ -18,6 +19,21 @@ namespace d4160.UGS.Lobbies
 
         public Lobby Lobby { get; internal set; }
         public bool IsHost => Lobby != null && Lobby.HostId == AuthenticationService.Instance.PlayerId;
+        public int PlayersCount => Lobby != null ? (Lobby.MaxPlayers - Lobby.AvailableSlots) : 0;
+
+        public string GetData(LobbyDataSO data, int index)
+        {
+            if (Lobby == null) return string.Empty;
+            if (!data.lobbyData.IsValidIndex(index)) return string.Empty;
+            if (!Lobby.Data.ContainsKey(data.lobbyData[index].key)) return string.Empty;
+
+            return Lobby.Data[data.lobbyData[index].key].Value;
+        }
+
+        public string GetPlayerName(Player player)
+        {
+            return player.Data[playerNameKey].Value;
+        }
 
         internal void PrintPlayers(Lobby lobby)
         {

@@ -101,7 +101,7 @@ namespace d4160.AgoraRtc
         public void LeaveChannel()
         {
             //RtcEngine.InitEventHandler(null);
-            RtcEngine.LeaveChannel();
+            RtcEngine?.LeaveChannel();
         }
 
         public void EnableVideo()

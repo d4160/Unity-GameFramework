@@ -260,8 +260,8 @@ namespace CodeMonkey.Utils {
 
         // Is Mouse over a UI Element? Used for ignoring World clicks through UI
         public static bool IsPointerOverUI() {
-            Debug.Log(EventSystem.current.IsPointerOverGameObject());
-
+            //Debug.Log(EventSystem.current.IsPointerOverGameObject());
+      
             // if (EventSystem.current.IsPointerOverGameObject()) {
             //     return true;
             // } else {

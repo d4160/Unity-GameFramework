@@ -1,0 +1,20 @@
+{
+    "name": "com.d4160.DissonanceVoIp",
+    "rootNamespace": "",
+    "references": [
+        "GUID:61106e8dfb7a4e64a96af0eccfe1209f",
+        "GUID:abd02ea2a3d741f48b1c16eb7025fec5",
+        "GUID:ed053b1c1336e5a40a2196e16eb58cd7",
+        "GUID:b5741eea126329748b37b6a85528eed0",
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

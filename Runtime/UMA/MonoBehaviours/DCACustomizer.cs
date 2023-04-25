@@ -52,6 +52,8 @@ namespace d4160.UMA
             }
         }
 
+        public DynamicCharacterAvatar StaticDCA { get => _staticDCA; set => _staticDCA = value; }
+
         private void OnEnable()
         {
             _onGenreChanged.AddListener(this);

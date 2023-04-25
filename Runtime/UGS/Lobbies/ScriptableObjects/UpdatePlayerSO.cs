@@ -1,5 +1,6 @@
 using d4160.Variables;
 using NaughtyAttributes;
+using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using UnityEngine;
@@ -18,8 +19,15 @@ namespace d4160.UGS.Lobbies
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public async void UpdatePlayerAsync()
+        public async void UpdatePlayer()
         {
+            await UpdatePlayerAsync();
+        }
+
+        public async Task UpdatePlayerAsync()
+        {
+            if (lobby.Lobby == null) return;
+
             UpdatePlayerOptions options = new()
             {
                 Data = LobbyPlayerData.GetPlayerData(playerData)
