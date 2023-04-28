@@ -6,10 +6,12 @@ using UMA.CharacterSystem;
 using UMA;
 using d4160.Singleton;
 using NaughtyAttributes;
+using System.Collections.Generic;
+using System;
 
 namespace d4160.UMA
 {
-    public class DCACustomizer : Singleton<DCACustomizer>, IEventListener<int>
+    public class DCACustomizer : Singleton<DCACustomizer>
     {
         [Header("References")]
         [SerializeField] private DynamicCharacterAvatar _staticDCA;
@@ -22,6 +24,9 @@ namespace d4160.UMA
         [Expandable]
 #endif
         [SerializeField] private ObjectLibrarySO _umaRacesLib;
+        [SerializeField] private UmaRefsGroupLibrarySO _dnaLib;
+        [SerializeField] private StringLibrarySO _slotLib;
+        [SerializeField] private DualObjectLibrarySO _hairDualLib;
 
         [Header("Variables")]
 #if ENABLE_NAUGHTY_ATTRIBUTES
@@ -37,6 +42,14 @@ namespace d4160.UMA
         [Header("Events")]
         [SerializeField] private IntEventSO _onGenreChanged;
 
+        private IntEventSO.EventListener _onGenreChangedLtn;
+        private GameObjectEventSO.EventListener _onLocalPlayerChangedLtn;
+
+        private Dictionary<string, DnaSetter> _localAvatarDna;
+        private Dictionary<string, DnaSetter> _staticAvatarDna;
+
+        private DynamicCharacterAvatar _oldLocalAvatar;
+
         private bool ApplyChangesForLocalAvatar => Avatar && (!_staticDCA || !_applyChangesOnlyForStaticDCA);
 
         private DynamicCharacterAvatar _avatar;
@@ -47,39 +60,133 @@ namespace d4160.UMA
                 if (!_avatar && _localPlayerVar.Value)
                 {
                     _avatar = _localPlayerVar.Value.GetComponentInChildren<DynamicCharacterAvatar>();
+                    _oldLocalAvatar = _avatar;
                 }
                 return _avatar;
             }
         }
 
-        public DynamicCharacterAvatar StaticDCA { get => _staticDCA; set => _staticDCA = value; }
+        public DynamicCharacterAvatar StaticDCA { 
+            get => _staticDCA; 
+            set
+            {
+                if (_staticDCA != value)
+                {
+                    if (_staticDCA != null) _staticDCA.CharacterUpdated.RemoveListener(StaticAvatar_CharacterUpdated);
+
+                    _staticDCA = value;
+                    if (value)
+                    {
+                        _staticAvatarDna = _staticDCA.GetDNA();
+                        _staticDCA.CharacterUpdated.AddListener(StaticAvatar_CharacterUpdated);
+                    }
+                }
+            } 
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _onGenreChangedLtn = new((genre) => {
+                if (ApplyChangesForLocalAvatar)
+                {
+                    Avatar.ChangeRace(_umaRacesLib.GetAs<RaceData>(genre));
+                }
+
+                if (_staticDCA)
+                {
+                    _staticDCA.ChangeRace(_umaRacesLib.GetAs<RaceData>(genre));
+                }
+            });
+
+            _onLocalPlayerChangedLtn = new((go) => {
+
+                if (_oldLocalAvatar) _oldLocalAvatar.CharacterUpdated.RemoveListener(LocalAvatar_CharacterUpdated);
+                if (go)
+                {
+                    _localAvatarDna = Avatar.GetDNA();
+                    Avatar.CharacterUpdated.AddListener(LocalAvatar_CharacterUpdated);
+                }
+            });
+        }
 
         private void OnEnable()
         {
-            _onGenreChanged.AddListener(this);
+            _onGenreChanged.AddListener(_onGenreChangedLtn);
+            _localPlayerVar.OnValueChange.AddListener(_onLocalPlayerChangedLtn);
         }
 
         private void Start()
         {
             LoadRecipe();
-        }
 
-        private void OnDisable()
-        {
-            _onGenreChanged.RemoveListener(this);
-        }
-
-        void IEventListener<int>.OnInvoked(int newGenre)
-        {
-            if (ApplyChangesForLocalAvatar)
+            if (_localPlayerVar.Value)
             {
-                Avatar.ChangeRace(_umaRacesLib.GetAs<RaceData>(newGenre));
+                _localAvatarDna = Avatar.GetDNA();
+                Avatar.CharacterUpdated.AddListener(LocalAvatar_CharacterUpdated);
             }
 
             if (_staticDCA)
             {
-                _staticDCA.ChangeRace(_umaRacesLib.GetAs<RaceData>(newGenre));
+                _staticAvatarDna = _staticDCA.GetDNA();
+                _staticDCA.CharacterUpdated.AddListener(StaticAvatar_CharacterUpdated);
             }
+        }
+
+        private void OnDisable()
+        {
+            _onGenreChanged.RemoveListener(_onGenreChangedLtn);
+            _localPlayerVar.OnValueChange.RemoveListener(_onLocalPlayerChangedLtn);
+        }
+
+        private void OnDestroy()
+        {
+            if (Avatar)
+                Avatar.CharacterUpdated.RemoveListener(LocalAvatar_CharacterUpdated);
+
+            if (_staticDCA)
+                _staticDCA.CharacterUpdated.RemoveListener(LocalAvatar_CharacterUpdated);
+        }
+
+        private void LocalAvatar_CharacterUpdated(UMAData data)
+        {
+            _localAvatarDna = Avatar.GetDNA();
+        }
+
+        private void StaticAvatar_CharacterUpdated(UMAData data)
+        {
+            _staticAvatarDna = _staticDCA.GetDNA();
+        }
+
+        public void SetDNA(int index, float value)
+        {
+            _dnaLib.SetDNA(index, ApplyChangesForLocalAvatar ? _localAvatarDna : _staticAvatarDna, value, ApplyChangesForLocalAvatar ? Avatar : StaticDCA);
+        }
+
+        public void SetColor(int index, Color color)
+        {
+            _dnaLib.SetColor(index, ApplyChangesForLocalAvatar ? Avatar : StaticDCA, color);
+        }
+
+        public void SetHairSlot(int slotIdx, int index, int genre)
+        {
+            SetSlot(_hairDualLib, slotIdx, index, genre);
+        }
+
+        private void SetSlot(DualObjectLibrarySO dualLib, int slotIdx, int index, int genre)
+        {
+            if (!_slotLib.Items.IsValidIndex(slotIdx)) return;
+
+            var recipe = dualLib.GetAs<UMAWardrobeRecipe>(index, genre);
+
+            DynamicCharacterAvatar avatar = ApplyChangesForLocalAvatar ? Avatar : StaticDCA;
+
+            if (recipe)
+                avatar.SetSlot(recipe);
+            else
+                avatar.ClearSlot(_slotLib[slotIdx]);
+
+            avatar.BuildCharacter();
         }
 
         public void SaveRecipe()

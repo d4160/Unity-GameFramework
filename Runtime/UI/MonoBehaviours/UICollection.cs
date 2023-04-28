@@ -19,22 +19,28 @@ namespace d4160.UIs
             set => _items[index] = value;
         }
 
-        public void AddOrUpdateElements(IList<TData> data, bool disableAllFirst = true)
+        public void AddOrUpdateElements(IList<TData> data, Transform parent = null, bool disableAllFirst = true)
         {
             if (disableAllFirst)
                 DisableAllInstances();
+
+            if (parent == null)
+                parent = _parent;
 
             int nextI = disableAllFirst ? 0 : _items.Count;
 
             for (int i = 0; i < data.Count; i++, nextI++)
             {
-                AddOrUpdateElement(data[i]);
+                AddOrUpdateElement(data[i], parent);
             }
         }
 
-        public void AddOrUpdateElement(TData data)
+        public void AddOrUpdateElement(TData data, Transform parent = null)
         {
-            TElem instance = InstantiatePrefab(_nextIndex);
+            if (parent == null)
+                parent = _parent;
+
+            TElem instance = InstantiatePrefab(_nextIndex, parent);
             instance.Collection = this as TCollec;
             instance.SetData(data);
 
@@ -47,7 +53,7 @@ namespace d4160.UIs
         {
         }
 
-        protected TElem InstantiatePrefab(int index)
+        protected TElem InstantiatePrefab(int index, Transform parent)
         {
             TElem instance;
             if (_items.IsValidIndex(index)) // to reuse and override without exchange between stack and list
@@ -58,13 +64,13 @@ namespace d4160.UIs
             }
             else
             {
-                instance = InstantiatePrefab();
+                instance = InstantiatePrefab(parent);
             }
             instance.Index = index;
             return instance;
         }
 
-        protected TElem InstantiatePrefab(TElem instance)
+        protected TElem InstantiatePrefab(TElem instance, Transform parent)
         {
             if (_items.Contains(instance))
             {
@@ -72,12 +78,13 @@ namespace d4160.UIs
                 return instance;
             }
 
-            return InstantiatePrefab();
+            return InstantiatePrefab(parent);
         }
 
-        protected TElem InstantiatePrefab()
+        protected TElem InstantiatePrefab(Transform parent)
         {
-            TElem instance = _stack.Count > 0 ? _stack.Dequeue() : Instantiate(_prefab, _parent);
+            TElem instance = _stack.Count > 0 ? _stack.Dequeue() : Instantiate(_prefab, parent);
+            instance.transform.SetParent(parent, false);
             instance.transform.localScale = Vector3.one;
             instance.gameObject.SetActive(true);
             instance.SetInteractable(true);
