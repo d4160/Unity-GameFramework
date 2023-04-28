@@ -7,7 +7,6 @@ using UMA;
 using d4160.Singleton;
 using NaughtyAttributes;
 using System.Collections.Generic;
-using System;
 
 namespace d4160.UMA
 {
@@ -24,9 +23,42 @@ namespace d4160.UMA
         [Expandable]
 #endif
         [SerializeField] private ObjectLibrarySO _umaRacesLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
         [SerializeField] private UmaRefsGroupLibrarySO _dnaLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
+        [SerializeField] private UmaRefsGroupLibrarySO _colorLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
         [SerializeField] private StringLibrarySO _slotLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
         [SerializeField] private DualObjectLibrarySO _hairDualLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
+        [SerializeField] private ObjectLibrarySO _beardLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
+        [SerializeField] private DualObjectLibrarySO _overClothingDualLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
+        [SerializeField] private DualObjectLibrarySO _chestDualLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
+        [SerializeField] private DualObjectLibrarySO _legsDualLib;
+#if ENABLE_NAUGHTY_ATTRIBUTES
+        [Expandable]
+#endif
+        [SerializeField] private DualObjectLibrarySO _feetDualLib;
 
         [Header("Variables")]
 #if ENABLE_NAUGHTY_ATTRIBUTES
@@ -165,7 +197,7 @@ namespace d4160.UMA
 
         public void SetColor(int index, Color color)
         {
-            _dnaLib.SetColor(index, ApplyChangesForLocalAvatar ? Avatar : StaticDCA, color);
+            _colorLib.SetColor(index, ApplyChangesForLocalAvatar ? Avatar : StaticDCA, color);
         }
 
         public void SetHairSlot(int slotIdx, int index, int genre)
@@ -173,11 +205,53 @@ namespace d4160.UMA
             SetSlot(_hairDualLib, slotIdx, index, genre);
         }
 
+        // Only for genre male
+        public void SetBeardSlot(int slotIdx, int index)
+        {
+            SetSlot(_beardLib, slotIdx, index);
+        }
+
+        public void SetOverClothingSlot(int slotIdx, int index, int genre)
+        {
+            SetSlot(_overClothingDualLib, slotIdx, index, genre);
+        }
+
+        public void SetChestSlot(int slotIdx, int index, int genre)
+        {
+            SetSlot(_chestDualLib, slotIdx, index, genre);
+        }
+
+        public void SetLegsSlot(int slotIdx, int index, int genre)
+        {
+            SetSlot(_legsDualLib, slotIdx, index, genre);
+        }
+
+        public void SetFeetSlot(int slotIdx, int index, int genre)
+        {
+            SetSlot(_feetDualLib, slotIdx, index, genre);
+        }
+
         private void SetSlot(DualObjectLibrarySO dualLib, int slotIdx, int index, int genre)
         {
             if (!_slotLib.Items.IsValidIndex(slotIdx)) return;
 
             var recipe = dualLib.GetAs<UMAWardrobeRecipe>(index, genre);
+
+            DynamicCharacterAvatar avatar = ApplyChangesForLocalAvatar ? Avatar : StaticDCA;
+
+            if (recipe)
+                avatar.SetSlot(recipe);
+            else
+                avatar.ClearSlot(_slotLib[slotIdx]);
+
+            avatar.BuildCharacter();
+        }
+
+        private void SetSlot(ObjectLibrarySO lib, int slotIdx, int index)
+        {
+            if (!_slotLib.Items.IsValidIndex(slotIdx)) return;
+
+            var recipe = lib.GetAs<UMAWardrobeRecipe>(index);
 
             DynamicCharacterAvatar avatar = ApplyChangesForLocalAvatar ? Avatar : StaticDCA;
 
