@@ -116,6 +116,32 @@ namespace d4160.UMA
             } 
         }
 
+        [ContextMenu("PrintStaticAvatarDNA")]
+        private void PrintStaticAvatarDNA()
+        {
+            PrintAvatarDNA(_staticAvatarDna);
+        }
+
+        [ContextMenu("PrintLocalAvatarDNA")]
+        private void PrintLocalAvatarDNA()
+        {
+            PrintAvatarDNA(_localAvatarDna);
+        }
+
+        private void PrintAvatarDNA(Dictionary<string, DnaSetter> dna)
+        {
+            if (dna != null)
+            {
+                string s = string.Empty;
+                foreach (var item in dna)
+                {
+                    s += $"{item.Key},";
+                }
+
+                Debug.Log(s);
+            }
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -136,7 +162,7 @@ namespace d4160.UMA
                 if (_oldLocalAvatar) _oldLocalAvatar.CharacterUpdated.RemoveListener(LocalAvatar_CharacterUpdated);
                 if (go)
                 {
-                    _localAvatarDna = Avatar.GetDNA();
+                    //_localAvatarDna = Avatar.GetDNA();
                     Avatar.CharacterUpdated.AddListener(LocalAvatar_CharacterUpdated);
                 }
             });
@@ -154,13 +180,13 @@ namespace d4160.UMA
 
             if (_localPlayerVar.Value)
             {
-                _localAvatarDna = Avatar.GetDNA();
+                //_localAvatarDna = Avatar.GetDNA();
                 Avatar.CharacterUpdated.AddListener(LocalAvatar_CharacterUpdated);
             }
 
             if (_staticDCA)
             {
-                _staticAvatarDna = _staticDCA.GetDNA();
+                //_staticAvatarDna = _staticDCA.GetDNA();
                 _staticDCA.CharacterUpdated.AddListener(StaticAvatar_CharacterUpdated);
             }
         }
@@ -192,7 +218,7 @@ namespace d4160.UMA
 
         public void SetDNA(int index, float value)
         {
-            _dnaLib.SetDNA(index, ApplyChangesForLocalAvatar ? _localAvatarDna : _staticAvatarDna, value, ApplyChangesForLocalAvatar ? Avatar : StaticDCA);
+            _dnaLib.SetDNA(index, ApplyChangesForLocalAvatar ? (_localAvatarDna ??= Avatar.GetDNA()) : (_staticAvatarDna ??= StaticDCA.GetDNA()), value, ApplyChangesForLocalAvatar ? Avatar : StaticDCA);
         }
 
         public void SetColor(int index, Color color)

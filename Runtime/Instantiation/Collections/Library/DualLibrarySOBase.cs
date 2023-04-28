@@ -39,6 +39,8 @@ namespace d4160.Collections
         public int GetCount(int libIndex = 0) => libIndex == 0 ? _library1.Count : _library2.Count;
         public T1 GetRandom(int libIndex = 0) => libIndex == 0 ? _library1.Random : _library2.Random;
 
+        public TLib1 GetLibrary(int libIndex) => libIndex == 0 ? _library1 : _library2;
+
         public T2 GetAs<T2>(int i, int libIndex = 0) where T2 : class => GetAs<T2>(libIndex == 0 ? _library1[i] : _library2[i]);
         public T2 RandomAs<T2>(int libIndex = 0) where T2 : class => GetAs<T2>(GetRandom(libIndex));
 
