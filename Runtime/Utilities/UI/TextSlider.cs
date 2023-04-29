@@ -110,6 +110,8 @@ namespace d4160.Utilities.UIs
                 else if (_selected > _values.LastIndex()) _selected = 0;
             }
 
+            _labelTxt.text = _values[_selected].ToString();
+
             if (notify)
             {
                 _onValueChanged?.Invoke(_selected, _values[_selected]);
