@@ -1,4 +1,5 @@
 using d4160.Collections;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -17,7 +18,7 @@ namespace d4160.Utilities.UIs
         }
     }
 
-    public abstract class SliderBase<T, TSelectable> : MonoBehaviour
+    public abstract class SliderBase<T, TSelectable> : MonoBehaviour where T : IEquatable<T>
     {
         [SerializeField] protected bool _clamp = true;
 
@@ -58,6 +59,31 @@ namespace d4160.Utilities.UIs
         public void SetValuesWithoutNotify(List<T> values, int selected = 0)
         {
             SetValues(values, selected, false);
+        }
+
+        public void SetValues(List<T> values, T selected)
+        {
+            SetValues(values, selected, true);
+        }
+
+        public void SetValuesWithoutNotify(List<T> values, T selected)
+        {
+            SetValues(values, selected, false);
+        }
+
+        private void SetValues(List<T> values, T selected, bool notify)
+        {
+            int sel = 0;
+            for (int i = 0; i < values.Count; i++)
+            {
+                if (values[i].Equals(selected))
+                {
+                    sel = i;
+                    break;
+                }
+            }
+
+            SetValues(values, sel, notify);
         }
 
         private void SetValues(List<T> values, int selected, bool notify)

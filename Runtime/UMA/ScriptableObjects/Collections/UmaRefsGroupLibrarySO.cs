@@ -17,12 +17,32 @@ namespace d4160.UMA
             group.SetDNA(dna, value, avatar);
         }
 
+        public float GetDNA(int groupIdx, Dictionary<string, DnaSetter> dna)
+        {
+            var group = this[groupIdx];
+            if (group == null) return 0;
+
+            return group.GetDNA(dna);
+        }
+
         public void SetColor(int groupIdx, DynamicCharacterAvatar avatar, Color color)
         {
             var group = this[groupIdx];
             if (group == null) return;
 
-            group.SetColor(avatar, color);
+            try
+            {
+                group.SetColor(avatar, color);
+            }
+            catch { }
+        }
+
+        public Color GetColor(int groupIdx, DynamicCharacterAvatar avatar)
+        {
+            var group = this[groupIdx];
+            if (group == null) return Color.white;
+
+            return group.GetColor(avatar);
         }
     }
 
@@ -42,6 +62,13 @@ namespace d4160.UMA
             if (avatar) avatar.BuildCharacter();
         }
 
+        public float GetDNA(Dictionary<string, DnaSetter> dna) 
+        {
+            if (_refs.Length == 0) return 0;
+
+            return dna[_refs[0]].Get();
+        }
+
         public void SetColor(DynamicCharacterAvatar avatar, Color color)
         {
             for (int i = 0; i < _refs.Length; i++)
@@ -52,20 +79,18 @@ namespace d4160.UMA
             avatar.UpdateColors(true);
         }
 
-        public void SetSlot(DynamicCharacterAvatar avatar, UMATextRecipe recipe)
+        public Color GetColor(DynamicCharacterAvatar avatar)
         {
-            if (_refs.Length > 1) 
-            {
-                Debug.LogWarning("[UMARefGroup>SetSlot] Only one slot name is allowed at the time");
-                return; 
-            }
+            if (_refs.Length == 0) return Color.white;
 
-            for (int i = 0; i < _refs.Length; i++)
+            try
             {
-                avatar.SetSlot(recipe);
+                return avatar.GetColor(_refs[0]).color;
             }
-
-            avatar.UpdateColors(true);
+            catch
+            {
+                return Color.white;
+            }
         }
     }
 }

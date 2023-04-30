@@ -7,6 +7,7 @@ using UMA;
 using d4160.Singleton;
 using NaughtyAttributes;
 using System.Collections.Generic;
+using System;
 
 namespace d4160.UMA
 {
@@ -109,7 +110,14 @@ namespace d4160.UMA
                     _staticDCA = value;
                     if (value)
                     {
-                        _staticAvatarDna = _staticDCA.GetDNA();
+                        try
+                        {
+                            _staticAvatarDna = _staticDCA.GetDNA();
+                        }
+                        catch
+                        {
+                            _staticAvatarDna = null;
+                        }
                         _staticDCA.CharacterUpdated.AddListener(StaticAvatar_CharacterUpdated);
                     }
                 }
@@ -221,9 +229,25 @@ namespace d4160.UMA
             _dnaLib.SetDNA(index, ApplyChangesForLocalAvatar ? (_localAvatarDna ??= Avatar.GetDNA()) : (_staticAvatarDna ??= StaticDCA.GetDNA()), value, ApplyChangesForLocalAvatar ? Avatar : StaticDCA);
         }
 
+        public float GetDNA(int index)
+        {
+            try {
+                return _dnaLib.GetDNA(index, ApplyChangesForLocalAvatar ? (_localAvatarDna ??= Avatar.GetDNA()) : (_staticAvatarDna ??= StaticDCA.GetDNA()));
+            }
+            catch
+            {
+                return 0.5f;
+            }
+        }
+
         public void SetColor(int index, Color color)
         {
             _colorLib.SetColor(index, ApplyChangesForLocalAvatar ? Avatar : StaticDCA, color);
+        }
+
+        public Color GetColor(int index)
+        {
+            return _colorLib.GetColor(index, ApplyChangesForLocalAvatar ? Avatar : StaticDCA);
         }
 
         public void SetHairSlot(int slotIdx, int index, int genre)
@@ -287,6 +311,22 @@ namespace d4160.UMA
                 avatar.ClearSlot(_slotLib[slotIdx]);
 
             avatar.BuildCharacter();
+        }
+
+        public T GetSlotOrDefault<T>(int slotIdx, Func<UMATextRecipe, T> returnVal, T defaultVal)
+        {
+            UMATextRecipe recipe = GetSlot(slotIdx);
+            if (recipe == null) return defaultVal;
+            else return returnVal(recipe);
+        }
+
+        public UMATextRecipe GetSlot(int slotIdx)
+        {
+            if (!_slotLib.Items.IsValidIndex(slotIdx)) return default;
+
+            DynamicCharacterAvatar avatar = ApplyChangesForLocalAvatar ? Avatar : StaticDCA;
+            UMATextRecipe recipe = avatar.GetWardrobeItem(_slotLib[slotIdx]);
+            return recipe;
         }
 
         public void SaveRecipe()
