@@ -325,8 +325,15 @@ namespace d4160.UMA
             if (!_slotLib.Items.IsValidIndex(slotIdx)) return default;
 
             DynamicCharacterAvatar avatar = ApplyChangesForLocalAvatar ? Avatar : StaticDCA;
-            UMATextRecipe recipe = avatar.GetWardrobeItem(_slotLib[slotIdx]);
-            return recipe;
+            try
+            {
+                UMATextRecipe recipe = avatar.GetWardrobeItem(_slotLib[slotIdx]);
+                return recipe;
+            }
+            catch
+            {
+                return default;
+            }
         }
 
         public void SaveRecipe()
