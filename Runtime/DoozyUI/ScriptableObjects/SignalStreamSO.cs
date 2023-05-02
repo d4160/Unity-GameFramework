@@ -1,3 +1,4 @@
+using d4160.Coroutines;
 using Doozy.Runtime.Signals;
 using UnityEngine;
 
@@ -49,6 +50,13 @@ namespace d4160.DoozyUI
         public void SendSignal<T>(T val, string message = "")
         {
             SignalStream.SendSignal(val, message);
+        }
+
+        public void SendSignalDelayed<T>(T val, float delay, string message = "")
+        {
+            CoroutineStarter.Instance.WaitAndExecute(delay, () => {
+                SendSignal(val, message);
+            });
         }
     }
 }

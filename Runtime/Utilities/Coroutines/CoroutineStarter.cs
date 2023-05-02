@@ -1,4 +1,7 @@
 ﻿using d4160.Singleton;
+using System;
+using System.Collections;
+using UnityEngine;
 
 namespace d4160.Coroutines
 {
@@ -9,5 +12,20 @@ namespace d4160.Coroutines
     {
         protected override bool DontDestroyOnLoadProp => true;
         protected override bool HideInHierarchy => true;
+
+        public void WaitAndExecute(float wait, Action callback)
+        {
+            StartCoroutine(WaitAndExecuteCo(wait, callback));
+        }
+
+        private IEnumerator WaitAndExecuteCo(float wait, Action callback)
+        {
+            if (wait > 0)
+            {
+                yield return new WaitForSeconds(wait);
+            }
+
+            callback?.Invoke();
+        }
     }
 }
