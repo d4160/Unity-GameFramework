@@ -2,6 +2,7 @@ using Agora.Rtc;
 using d4160.Collections;
 using d4160.Coroutines;
 using d4160.Instancers;
+using d4160.Variables;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 using System.Collections;
@@ -15,11 +16,14 @@ namespace d4160.AgoraRtc
     [CreateAssetMenu(menuName = "d4160/AgoraRtc/Instancers/VideoSurface Provider")]
     public class VideoSurfaceProviderSO : ScriptableObject
     {
-        public Vector3 fixRotationRawImage = new Vector3(0f, 0f, 180.0f);
-        public Vector3 fixRotationRenderer = new Vector3(-90f, 0f, 0f);
-        public Vector3 fixLocalScale = new Vector3(-1f, 1f, 1f);
+        public Vector3 fixRotationRawImage = new (0f, 0f, 180.0f);
+        public Vector3 fixRotationRenderer = new (-90f, 0f, 0f);
+        public Vector3 fixLocalScale = new (-1f, 1f, 1f);
 
-        [Header("References")]
+        [Header("Variables")]
+        [SerializeField] private BoolVariableSO _desactiveVSurfaceOnDisableVar;
+
+        [Header("Data")]
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Expandable]
 #endif
@@ -150,9 +154,9 @@ namespace d4160.AgoraRtc
                                 StaticVideoSurfaces[i].SetEnable(false);
                                 StaticVideoSurfaces[i].SetForUser(0, "", isScreenCapture ? VIDEO_SOURCE_TYPE.VIDEO_SOURCE_SCREEN : VIDEO_SOURCE_TYPE.VIDEO_SOURCE_CAMERA);
                                 int _i = i;
-                                CoroutineStarter.Instance.StartCoroutine(WaitEndOfFrameCo(() => {
+                                CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
                                     StaticVideoSurfaces[_i].SetEnable(true);
-                                }));
+                                });
 
                                 // TODO: Update locally the new state, so need to override the logic for local, not NetworkList
                             }
@@ -210,9 +214,9 @@ namespace d4160.AgoraRtc
                     }
 
                     vSurface.SetEnable(false);
-                    CoroutineStarter.Instance.StartCoroutine(WaitEndOfFrameCo(() => {
+                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
                         vSurface.SetEnable(true);
-                    }));
+                    });
                 }
                 else
                 {
@@ -221,16 +225,9 @@ namespace d4160.AgoraRtc
             }
         }
 
-        private IEnumerator WaitEndOfFrameCo(UnityAction thenCallback)
-        {
-            if (_waitForEndOfFrame == null) _waitForEndOfFrame = new WaitForEndOfFrame();
-            yield return _waitForEndOfFrame;
-
-            thenCallback?.Invoke();
-        }
-
         public void FixVideoSurface(VideoSurface vSurface)
         {
+            if (!vSurface.gameObject.activeSelf) vSurface.gameObject.SetActive(true);
             float size = Mathf.Abs(vSurface.transform.localScale.x);
             bool isRenderer = vSurface.GetComponent<Renderer>();
             Vector3 scale = GetFixedScale(new Vector3(size, isRenderer ? 1f : size * ScaleFactor, isRenderer ? size * ScaleFactor : 1));
@@ -245,6 +242,11 @@ namespace d4160.AgoraRtc
         }
 
         public void DisableStaticVideoSurface(uint userId = 0, bool addToList = true)
+        {
+            DisableStaticVideoSurface(userId, addToList, _desactiveVSurfaceOnDisableVar);
+        }
+
+        public void DisableStaticVideoSurface(uint userId, bool addToList, bool desactiveVSurfaceOnDisable)
         {
             if (_runtimeDictionary.ContainsKey(userId) && StaticVideoSurfaces != null)
             {
@@ -264,10 +266,21 @@ namespace d4160.AgoraRtc
                     else if (vSurface.SOURCE_TYPE == VIDEO_SOURCE_TYPE.VIDEO_SOURCE_SCREEN)
                         _screenCapture.StopScreenCapture();
                 }
+
+                if (desactiveVSurfaceOnDisable) {
+                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                        vSurface.gameObject.SetActive(false);
+                    });
+                }
             }
         }
 
         public void DisableStaticVideoSurfaceByIndex(int index)
+        {
+            DisableStaticVideoSurfaceByIndex(index, _desactiveVSurfaceOnDisableVar);
+        }
+
+        public void DisableStaticVideoSurfaceByIndex(int index, bool desactiveVSurfaceOnDisable)
         {
             //Debug.Log($"DisableByIndex: {index}; Count: {StaticVideoSurfaces.Count}");
             if (StaticVideoSurfaces != null && StaticVideoSurfaces.IsValidIndex(index))
@@ -295,10 +308,22 @@ namespace d4160.AgoraRtc
                             _screenCapture.StopScreenCapture();
                     }
                 }
+
+                if (desactiveVSurfaceOnDisable)
+                {
+                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                        vSurface.gameObject.SetActive(false);
+                    });
+                }
             }
         }
 
         public void DisableAllStaticVideoSurfaces(uint uid)
+        {
+            DisableAllStaticVideoSurfaces(uid, _desactiveVSurfaceOnDisableVar);
+        }
+
+        public void DisableAllStaticVideoSurfaces(uint uid, bool desactiveVSurfaceOnDisable)
         {
             if (StaticVideoSurfaces != null)
             {
@@ -312,6 +337,14 @@ namespace d4160.AgoraRtc
 
                         if (uid == 0)
                             isScreenCapture = vSurface.SOURCE_TYPE == VIDEO_SOURCE_TYPE.VIDEO_SOURCE_SCREEN;
+
+                        if (desactiveVSurfaceOnDisable)
+                        {
+                            int _i = i;
+                            CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                                StaticVideoSurfaces[_i].gameObject.SetActive(false);
+                            });
+                        }
                     }
                 }
 

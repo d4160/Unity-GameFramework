@@ -13,6 +13,13 @@ namespace d4160.Coroutines
         protected override bool DontDestroyOnLoadProp => true;
         protected override bool HideInHierarchy => true;
 
+        private WaitForEndOfFrame _waitForEndOfFrame;
+
+        public void WaitForEndOfFrameAndExecute(Action callback)
+        {
+            StartCoroutine(WaitAndExecuteCo(0, callback));
+        }
+
         public void WaitAndExecute(float wait, Action callback)
         {
             StartCoroutine(WaitAndExecuteCo(wait, callback));
@@ -20,7 +27,11 @@ namespace d4160.Coroutines
 
         private IEnumerator WaitAndExecuteCo(float wait, Action callback)
         {
-            if (wait > 0)
+            if (wait == 0)
+            {
+                yield return _waitForEndOfFrame ??= new WaitForEndOfFrame();
+            }
+            else
             {
                 yield return new WaitForSeconds(wait);
             }
