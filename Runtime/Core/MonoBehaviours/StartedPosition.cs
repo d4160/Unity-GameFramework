@@ -30,7 +30,8 @@ public class StartedPosition : MonoBehaviour
     {
         for (int i = 0; i < _transforms.Length; i++)
         {
-            _transforms[i].SetPositionAndRotation(transform.position, transform.rotation);
+            if (_transforms[i])
+                _transforms[i].SetPositionAndRotation(transform.position, transform.rotation);
         }      
     }
 }
