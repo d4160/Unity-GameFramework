@@ -51,6 +51,7 @@ namespace d4160.AgoraRtc
 #endif
         public void LeaveChannel()
         {
+            _channelName = string.Empty;
             _service.LeaveChannel();
         }
 
