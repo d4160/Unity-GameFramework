@@ -14,6 +14,9 @@ namespace d4160.Quizzes
         public List<QuestionBase> questions = new();
 
         [JsonIgnore]
+        public bool Sent { get; set; }
+
+        [JsonIgnore]
         public List<QuizAnswers> QuizAnswers { get; private set; } = new();
 
         public static readonly JsonSerializerSettings Settings = new()

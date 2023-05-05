@@ -15,7 +15,14 @@ namespace d4160.Netcode
         {
             if (NetworkManager.Singleton)
             {
+                Debug.Log("Register NetworkManager Events");
                 NetworkManager.Singleton.OnClientDisconnectCallback += InvokeOnClientDisconnect;
+            }
+            else
+            {
+                Debug.Log("Register NetworkManager Events");
+                var netMan = FindObjectOfType<NetworkManager>();
+                netMan.OnClientDisconnectCallback += InvokeOnClientDisconnect;
             }
         }
 
@@ -29,11 +36,10 @@ namespace d4160.Netcode
 
         private void InvokeOnClientDisconnect(ulong clientId)
         {
-            if (_onClientDisconnect)
-            {
-                if (_logger) _logger.LogInfo($"[OnClientDisconnect] ClientId: {clientId}");
-                _onClientDisconnect.Invoke(clientId);
-            }
+            Debug.Log("InvokeOnClientDisconnect");
+            if (_logger) _logger.LogInfo($"[OnClientDisconnect] ClientId: {clientId}");
+
+            if (_onClientDisconnect) _onClientDisconnect.Invoke(clientId);
         }
     }
 }
