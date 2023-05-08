@@ -75,9 +75,9 @@ namespace d4160.UGS.Lobbies
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public void LeaveLobby()
+        public async void LeaveLobby()
         {
-            _data1.LeaveLobbyAsync();
+            await _data1.LeaveLobbyAsync();
         }
 
 #if ENABLE_QUANTUM_CONSOLE
@@ -86,9 +86,9 @@ namespace d4160.UGS.Lobbies
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public void DeleteLobby()
+        public async void DeleteLobby()
         {
-            _data1.DeleteLobbyAsync();
+            await _data1.DeleteLobbyAsync();
         }
 
 #if ENABLE_QUANTUM_CONSOLE

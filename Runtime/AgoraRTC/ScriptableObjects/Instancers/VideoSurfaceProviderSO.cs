@@ -190,7 +190,7 @@ namespace d4160.AgoraRtc
                     }
                 }
 
-                FixVideoSurface(vSurface);
+                bool activeSelf = FixVideoSurface(vSurface);
                 vSurface.SetForUser(userId, userId == 0 ? "" : _channel.ChannelName, userId == 0 ? (isScreenCapture ? VIDEO_SOURCE_TYPE.VIDEO_SOURCE_SCREEN : VIDEO_SOURCE_TYPE.VIDEO_SOURCE_CAMERA) : VIDEO_SOURCE_TYPE.VIDEO_SOURCE_REMOTE);
 
                 if (removeFromList)
@@ -220,19 +220,32 @@ namespace d4160.AgoraRtc
                 }
                 else
                 {
-                    vSurface.SetEnable(true);
+                    //if (activeSelf)
+                    //{
+                    //    vSurface.SetEnable(true);
+                    //}
+                    //else
+                    //{
+                    vSurface.SetEnable(false);
+                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                        vSurface.SetEnable(true);
+                    });
+                    //}
                 }
             }
         }
 
-        public void FixVideoSurface(VideoSurface vSurface)
+        public bool FixVideoSurface(VideoSurface vSurface)
         {
-            if (!vSurface.gameObject.activeSelf) vSurface.gameObject.SetActive(true);
+            bool activeSelf = vSurface.gameObject.activeSelf;
+            if (!activeSelf) vSurface.gameObject.SetActive(true);
             float size = Mathf.Abs(vSurface.transform.localScale.x);
             bool isRenderer = vSurface.GetComponent<Renderer>();
             Vector3 scale = GetFixedScale(new Vector3(size, isRenderer ? 1f : size * ScaleFactor, isRenderer ? size * ScaleFactor : 1));
             vSurface.transform.localScale = scale;
             vSurface.transform.localEulerAngles = isRenderer ? fixRotationRenderer : fixRotationRawImage;
+
+            return activeSelf;
         }
 
         private Vector3 GetFixedScale(Vector3 v)

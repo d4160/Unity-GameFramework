@@ -10,36 +10,37 @@ namespace d4160.Netcode
     {
         [SerializeField] LoggerSO _logger;
         [SerializeField] ULongEventSO _onClientDisconnect;
+        [SerializeField] VoidEventSO _onTransportFailure;
 
         public void RegisterEvents()
         {
-            if (NetworkManager.Singleton)
-            {
-                Debug.Log("Register NetworkManager Events");
-                NetworkManager.Singleton.OnClientDisconnectCallback += InvokeOnClientDisconnect;
-            }
-            else
-            {
-                Debug.Log("Register NetworkManager Events");
-                var netMan = FindObjectOfType<NetworkManager>();
-                netMan.OnClientDisconnectCallback += InvokeOnClientDisconnect;
-            }
+            //Debug.Log("Register NetworkManager Events Singleton");
+            NetworkManager.Singleton.OnClientDisconnectCallback += InvokeOnClientDisconnect;
+            NetworkManager.Singleton.OnTransportFailure += InvokeOnTransportFailure;
         }
 
         public void UnregisterEvents()
         {
+            //Debug.Log("UnregisterEvents");
             if (NetworkManager.Singleton)
             {
                 NetworkManager.Singleton.OnClientDisconnectCallback -= InvokeOnClientDisconnect;
+                NetworkManager.Singleton.OnTransportFailure -= InvokeOnTransportFailure;
             }
         }
 
         private void InvokeOnClientDisconnect(ulong clientId)
         {
-            Debug.Log("InvokeOnClientDisconnect");
-            if (_logger) _logger.LogInfo($"[OnClientDisconnect] ClientId: {clientId}");
+            if (_logger) _logger.LogInfo($"[OnClientDisconnect] ClientId: {clientId}; LocalClientId: {NetworkManager.Singleton.LocalClientId}");
 
             if (_onClientDisconnect) _onClientDisconnect.Invoke(clientId);
+        }
+
+        private void InvokeOnTransportFailure()
+        {
+            if (_logger) _logger.LogInfo($"[OnTransportFailure]");
+
+            if (_onTransportFailure) _onTransportFailure.Invoke();
         }
     }
 }

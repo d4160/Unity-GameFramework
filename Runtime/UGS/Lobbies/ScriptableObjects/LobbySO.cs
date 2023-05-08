@@ -153,6 +153,8 @@ namespace d4160.UGS.Lobbies
                 {
                     await LeaveLobbyAsync();
                 }
+
+                Lobby = null;
             }
         }
     }

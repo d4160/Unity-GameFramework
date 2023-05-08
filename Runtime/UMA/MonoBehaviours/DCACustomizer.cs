@@ -340,6 +340,7 @@ namespace d4160.UMA
         {
             if (_staticDCA)
             {
+                Debug.Log("[SaveRecipe] StaticDCA");
                 _umaRecipeVar.Value = _staticDCA.GetCurrentRecipe();
             }
             else if (Avatar)
@@ -353,9 +354,16 @@ namespace d4160.UMA
             if (!string.IsNullOrEmpty(_umaRecipeVar))
             {
                 if (forLocalAvatar && Avatar)
-                    Avatar.LoadFromRecipeString(_umaRecipeVar);
+                {
+                    Debug.Log($"[LoadRecipe] ForLocalAvatar");
+                    Avatar.UnloadAllWardrobeCollections();
+                    Avatar.LoadFromRecipeString(_umaRecipeVar, DynamicCharacterAvatar.LoadOptions.useDefaults, true);
+                }
                 if (!forLocalAvatar && _staticDCA)
+                {
+                    _staticDCA.UnloadAllWardrobeCollections();
                     _staticDCA.LoadFromRecipeString(_umaRecipeVar);
+                }
             }
         }
     }
