@@ -1,0 +1,20 @@
+{
+    "name": "com.d4160.AutoHand",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8eac3e4d5ff45f1439013c658989c776",
+        "GUID:6d4810c931e638d489b58e9b332f3fb9",
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
+        "GUID:07f0e5d7ec9e72b45bd8321e7dcdfcc8",
+        "GUID:f3ef048b9f54239419138e41de4b99a5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

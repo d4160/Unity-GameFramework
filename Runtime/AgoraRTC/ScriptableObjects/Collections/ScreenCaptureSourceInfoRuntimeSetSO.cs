@@ -14,6 +14,8 @@ namespace d4160.AgoraRtc
             TextureFormat.RGBA32;
 #elif UNITY_STANDALONE_WIN
             TextureFormat.BGRA32;
+#else
+            TextureFormat.RGBA32;
 #endif
 
         public ScreenCaptureSourceInfo SelectedScreenCaptureSource { get; private set; }
