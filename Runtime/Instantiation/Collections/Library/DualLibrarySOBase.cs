@@ -1,12 +1,13 @@
 using InspectInLine;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace d4160.Collections
 {
     public abstract class DualLibrarySOBase<TLib1, T1> : ScriptableObject where TLib1 : LibrarySOBase<T1>
     {
-        [SerializeField, InspectInline(canEditRemoteTarget = true)] protected TLib1 _library1;
-        [SerializeField, InspectInline(canEditRemoteTarget = true)] protected TLib1 _library2;
+        [SerializeField] protected TLib1 _library1;
+        [SerializeField] protected TLib1 _library2;
 
         public TLib1 Library1 => _library1;
         public TLib1 Library2 => _library2;
@@ -30,8 +31,8 @@ namespace d4160.Collections
 
     public abstract class UnityDualLibrarySOBase<TLib1, T1> : ScriptableObject where TLib1 : UnityLibrarySOBase<T1>
     {
-        [SerializeField, InspectInline(canEditRemoteTarget = true)] protected TLib1 _library1;
-        [SerializeField, InspectInline(canEditRemoteTarget = true)] protected TLib1 _library2;
+        [SerializeField, Expandable] protected TLib1 _library1;
+        [SerializeField, Expandable] protected TLib1 _library2;
 
         public TLib1 Library1 => _library1;
         public TLib1 Library2 => _library2;
