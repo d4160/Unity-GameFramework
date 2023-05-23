@@ -191,14 +191,25 @@ namespace d4160.SceneManagement {
             _loadedCount = 0;
             _sceneOperations.Clear ();
             for (int i = 0; i < _loadedCountTarget; i++) {
-                if (!activateOnLoad) {
-                    AsyncOperation opNoLoad = _sceneCollection[i].LoadSceneAsync(i == 0 ? loadSceneMode : LoadSceneMode.Additive, false);
-                    _sceneOperations.Add (opNoLoad);
-                    opNoLoad.completed += OnSceneLoadedDefault;
-                } else {
-                    AsyncOperation opLoad = _sceneCollection[i].LoadSceneAsync(i == 0 ? loadSceneMode : LoadSceneMode.Additive);
-                    _sceneOperations.Add (opLoad);
-                    opLoad.completed += OnSceneLoadedDefault;
+                if (CheckIfAlreadyLoaded(_sceneCollection[i]))
+                {
+                    OnSceneLoadedDefault(default);
+                }
+                else
+                {
+                    if (!activateOnLoad)
+                    {
+
+                        AsyncOperation opNoLoad = _sceneCollection[i].LoadSceneAsync(i == 0 ? loadSceneMode : LoadSceneMode.Additive, false);
+                        _sceneOperations.Add(opNoLoad);
+                        opNoLoad.completed += OnSceneLoadedDefault;
+                    }
+                    else
+                    {
+                        AsyncOperation opLoad = _sceneCollection[i].LoadSceneAsync(i == 0 ? loadSceneMode : LoadSceneMode.Additive);
+                        _sceneOperations.Add(opLoad);
+                        opLoad.completed += OnSceneLoadedDefault;
+                    }
                 }
             }
         }
@@ -221,6 +232,21 @@ namespace d4160.SceneManagement {
             for (var i = 0; i < _sceneCollection.Length; i++) {
                 _sceneCollection[i].Clear ();
             }
+        }
+
+        private bool CheckIfAlreadyLoaded(SceneReference sceneRef)
+        {
+            int loadedSceneCount = UnityEngine.SceneManagement.SceneManager.loadedSceneCount;
+            for (int i = 0; i < loadedSceneCount; i++)
+            {
+                Scene scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
+                if (scene.path == sceneRef.scenePath)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
 #if ADDRESSABLES

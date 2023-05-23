@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using System.Threading.Tasks;
 using Unity.Services.Lobbies;
 using UnityEngine;
 
@@ -28,7 +29,7 @@ namespace d4160.UGS.Lobbies
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public async void CreateLobbyAsync()
+        public async Task CreateLobbyAsync()
         {
             CreateLobbyOptions options = new()
             {

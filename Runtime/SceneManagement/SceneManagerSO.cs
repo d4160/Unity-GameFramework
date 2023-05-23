@@ -220,7 +220,7 @@ namespace d4160.SceneManagement {
 
             OnLevelLoadForPhoton();
 
-            sceneCollection?.LoadScenesAsyncDefault();
+            if (sceneCollection) sceneCollection.LoadScenesAsyncDefault();
         }
 
         private void OnLevelLoadForPhoton(){

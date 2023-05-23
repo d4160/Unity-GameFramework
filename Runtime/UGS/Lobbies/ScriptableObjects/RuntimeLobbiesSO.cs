@@ -38,17 +38,17 @@ namespace d4160.UGS.Lobbies
 
                 QueryResponse qResponse = await LobbyService.Instance.QueryLobbiesAsync();
 
-                Debug.Log($"[ListLobbiesAsync] Lobbies Found: {qResponse.Results.Count}");
-                for (int i = 0; i < qResponse.Results.Count; i++)
-                {
-                    Debug.Log($"Id: {qResponse.Results[i].Id}; Name: {qResponse.Results[i].Name}; MaxPlayers: {qResponse.Results[i].MaxPlayers}");
-                }
+                //Debug.Log($"[ListLobbiesAsync] Lobbies Found: {qResponse.Results.Count}");
+                //for (int i = 0; i < qResponse.Results.Count; i++)
+                //{
+                //    Debug.Log($"Id: {qResponse.Results[i].Id}; Name: {qResponse.Results[i].Name}; MaxPlayers: {qResponse.Results[i].MaxPlayers}");
+                //}
                 if (qResponse.Results.Count > 0)
                 {
                     AddRange(qResponse.Results);
-
-                    if (_onListUpdated) _onListUpdated.Invoke();
                 }
+
+                if (_onListUpdated) _onListUpdated.Invoke();
             }
             catch(LobbyServiceException e)
             {

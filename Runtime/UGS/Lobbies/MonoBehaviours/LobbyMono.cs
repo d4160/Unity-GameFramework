@@ -123,7 +123,7 @@ namespace d4160.UGS.Lobbies
                 }
             }
 
-            if (_data2 && AuthenticationService.Instance.IsSignedIn)
+            if (_data2 && AuthenticationService.Instance != null && AuthenticationService.Instance.IsSignedIn)
             {
                 _listLobbiesTimer -= Time.deltaTime;
 

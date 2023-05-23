@@ -2,6 +2,7 @@ using NaughtyAttributes;
 using Unity.Services.Lobbies;
 using UnityEngine;
 using d4160.Variables;
+using System.Threading.Tasks;
 
 namespace d4160.UGS.Lobbies
 {
@@ -51,12 +52,12 @@ namespace d4160.UGS.Lobbies
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public void JoinLobbyByIdAsync()
+        public async void JoinLobbyByIdAsync()
         {
-            JoinLobbyByIdAsync(lobbyId);
+            await JoinLobbyByIdAsync(lobbyId);
         }
 
-        public async void JoinLobbyByIdAsync(string id)
+        public async Task JoinLobbyByIdAsync(string id)
         {
             JoinLobbyByIdOptions options = new()
             {
