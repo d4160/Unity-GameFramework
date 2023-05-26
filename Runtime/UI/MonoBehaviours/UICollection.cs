@@ -13,6 +13,11 @@ namespace d4160.UIs
 
         protected Queue<TElem> _stack = new();
 
+        protected virtual void Awake()
+        {
+            _prefab.gameObject.SetActive(false);
+        }
+
         public TElem this[int index]
         {
             get => _items[index];

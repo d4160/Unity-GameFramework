@@ -13,7 +13,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "ENABLE_AVPRO_MOVIE_CAPTURE"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

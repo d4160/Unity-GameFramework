@@ -1,5 +1,4 @@
 using Agora.Rtc;
-using Amazon.Runtime;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 using System.Collections.Generic;
