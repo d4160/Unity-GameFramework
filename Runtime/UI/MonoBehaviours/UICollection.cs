@@ -13,9 +13,12 @@ namespace d4160.UIs
 
         protected Queue<TElem> _stack = new();
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
-            _prefab.gameObject.SetActive(false);
+            base.Awake();
+
+            if (_prefab.gameObject.activeSelf)
+                _prefab.gameObject.SetActive(false);
         }
 
         public TElem this[int index]
@@ -161,5 +164,13 @@ namespace d4160.UIs
     {
         [Header("References")]
         [SerializeField] protected Transform _parent;
+
+        protected virtual void Awake()
+        {
+            for (int i = 0; i < _parent.childCount; i++)
+            {
+                _parent.GetChild(i).gameObject.SetActive(false);
+            }
+        }
     }
 }

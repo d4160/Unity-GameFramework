@@ -33,18 +33,18 @@ namespace d4160.UIs
             //var tempIndex = Index;
             var tempData = _data;
 
-            Debug.Log($"[Swap] From, Index: {Index}, Data: {_data}");
+            //Debug.Log($"[Swap] From, Index: {Index}, Data: {_data}");
 
             //Index = other.Index;
             SetData(other._data);
 
-            Debug.Log($"[Swap] To, Index: {other.Index}, Data: {other._data}");
+            //Debug.Log($"[Swap] To, Index: {other.Index}, Data: {other._data}");
 
             //other.Index = tempIndex;
             other.SetData(tempData);
 
-            Debug.Log($"[Swap] Other, Index: {other.Index}, Data: {other._data}");
-            Debug.Log($"[Swap] This, Index: {Index}, Data: {_data}");
+            //Debug.Log($"[Swap] Other, Index: {other.Index}, Data: {other._data}");
+            //Debug.Log($"[Swap] This, Index: {Index}, Data: {_data}");
         }
     }
 }
