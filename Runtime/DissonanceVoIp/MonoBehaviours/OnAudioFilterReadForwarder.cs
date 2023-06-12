@@ -2,8 +2,6 @@ using d4160.Events;
 using d4160.Variables;
 using UnityEngine.Serialization;
 using UnityEngine;
-using System.Collections;
-using Dissonance.Audio.Capture;
 using NaughtyAttributes;
 
 public class OnAudioFilterReadForwarder : MonoBehaviour, IEventListener<bool>

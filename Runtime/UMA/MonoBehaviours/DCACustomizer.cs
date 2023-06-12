@@ -336,6 +336,14 @@ namespace d4160.UMA
             }
         }
 
+        public void SetRace(int raceIdx, bool applyForLocalAvatar = false)
+        {
+            if (!_umaRacesLib.Items.IsValidIndex(raceIdx)) return;
+
+            DynamicCharacterAvatar avatar = applyForLocalAvatar || ApplyChangesForLocalAvatar ? Avatar : StaticDCA;
+            avatar.ChangeRace(_umaRacesLib.GetAs<RaceData>(raceIdx));
+        }
+
         public void SaveRecipe()
         {
             if (_staticDCA)

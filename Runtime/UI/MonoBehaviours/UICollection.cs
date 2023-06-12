@@ -43,7 +43,7 @@ namespace d4160.UIs
             }
         }
 
-        public void AddOrUpdateElement(TData data, Transform parent = null)
+        public TElem AddOrUpdateElement(TData data, Transform parent = null)
         {
             if (parent == null)
                 parent = _parent;
@@ -55,6 +55,8 @@ namespace d4160.UIs
             _nextIndex = _items.Count;
 
             AddOrUpdateElementInternal(instance, data);
+
+            return instance;
         }
 
         protected virtual void AddOrUpdateElementInternal(TElem instance, TData data)

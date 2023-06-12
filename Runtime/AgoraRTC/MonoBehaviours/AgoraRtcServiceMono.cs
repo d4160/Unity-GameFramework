@@ -15,6 +15,19 @@ namespace d4160.AgoraRtc
         [SerializeField] private VideoSurface _localVSurface;
         [SerializeField] private List<VideoSurface> _staticVSurfaces;
 
+        private static AgoraRtcServiceMono _instance;
+        public static AgoraRtcServiceMono Instance
+        {
+            get
+            {
+                if (!_instance)
+                {
+                    _instance = FindObjectOfType<AgoraRtcServiceMono>();
+                }
+                return _instance;
+            }
+        }
+
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
@@ -31,6 +44,16 @@ namespace d4160.AgoraRtc
                 var surface = _staticVSurfaces[i];
                 _data2.FixVideoSurface(surface);
             }
+        }
+
+        public void AddStaticVideoSurface(VideoSurface surface)
+        {
+            _staticVSurfaces.Add(surface);
+        }
+
+        public void RemoveStaticVideoSurface(VideoSurface surface)
+        {
+            _staticVSurfaces.Remove(surface);
         }
 
         private void Awake()
