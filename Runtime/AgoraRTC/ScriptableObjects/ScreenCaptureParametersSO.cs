@@ -11,7 +11,7 @@ namespace d4160.AgoraRtc
         public BITRATE bitrate = (int) BITRATE.STANDARD_BITRATE;
         public bool captureMouseCursor = true;
         public bool windowFocus = false;
-        public ulong[] excludeWindowList = new ulong[0];
+        public long[] excludeWindowList = new long[0];
         public int excludeWindowCount = 0;
         public int highLightWidth = 0;
         public uint highLightColor = 0;

@@ -336,12 +336,17 @@ namespace d4160.UMA
             }
         }
 
+        public void SetRace(DynamicCharacterAvatar avatar, int raceIdx)
+        {
+            if (!_umaRacesLib.Items.IsValidIndex(raceIdx) || !avatar) return;
+
+            avatar.ChangeRace(_umaRacesLib.GetAs<RaceData>(raceIdx));
+        }
+
         public void SetRace(int raceIdx, bool applyForLocalAvatar = false)
         {
-            if (!_umaRacesLib.Items.IsValidIndex(raceIdx)) return;
-
             DynamicCharacterAvatar avatar = applyForLocalAvatar || ApplyChangesForLocalAvatar ? Avatar : StaticDCA;
-            avatar.ChangeRace(_umaRacesLib.GetAs<RaceData>(raceIdx));
+            SetRace(avatar, raceIdx);
         }
 
         public void SaveRecipe()
