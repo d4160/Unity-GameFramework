@@ -9,6 +9,7 @@ using UnityEngine;
 public class VRIKSetupHelper : MonoBehaviour
 {
     public GameObject copyFrom;
+    public bool isOpenXR;
     public bool useBoxCollidersForFingers;
     [Range(0.1f, 1.5f)]
     public float collidersScaleMultiplier = 1f;
@@ -61,9 +62,12 @@ public class VRIKSetupHelper : MonoBehaviour
         autoHandPlayer.handRight = _thisRightHand;
         autoHandPlayer.handLeft = _thisLeftHand;
 
-        var handPlayerControllerLink = FindObjectOfType<XRHandPlayerControllerLink>();
-        handPlayerControllerLink.moveController = _thisLeftHandControllerLink;
-        handPlayerControllerLink.turnController = _thisRightHandControllerLink;
+        if (!isOpenXR)
+        {
+            var handPlayerControllerLink = FindObjectOfType<XRHandPlayerControllerLink>();
+            handPlayerControllerLink.moveController = _thisLeftHandControllerLink;
+            handPlayerControllerLink.turnController = _thisRightHandControllerLink;
+        }
 
         _thisAutoHandVRIK.rightHand = _thisRightHand;
         _thisAutoHandVRIK.leftHand = _thisLeftHand;

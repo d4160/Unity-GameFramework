@@ -7,5 +7,6 @@ namespace d4160.Dissonance
     public interface IIsSpeakingReceiver
     {
         bool IsSpeaking { get; set; }
+        float Amplitude { get; set; }
     }
 }

@@ -18,6 +18,11 @@ namespace d4160.Dissonance
             get { return _state != null && _state.IsSpeaking; } //_player.Type == NetworkPlayerType.Remote
         }
 
+        private float Amplitude
+        {
+            get { return _state != null ? _state.Amplitude : 0f; } //_player.Type == NetworkPlayerType.Remote
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -41,6 +46,7 @@ namespace d4160.Dissonance
             for (int i = 0; i < _receivers.Length; i++)
             {
                 _receivers[i].IsSpeaking = IsSpeaking;
+                _receivers[i].Amplitude = Amplitude;
             }
         }
 
