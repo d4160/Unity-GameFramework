@@ -13,6 +13,8 @@ namespace d4160.UMA
         private DCARendererManager _renMan;
         private DynamicCharacterAvatar _dca;
 
+        public bool RenderersEnabled { get => _renderersEnabled; set => _renderersEnabled = value; }
+
         private void Awake()
         {
             _renMan = GetComponent<DCARendererManager>();

@@ -69,15 +69,15 @@ namespace d4160.Persistence
                         }
                         break;
                     default:
-                        if (storeVar.encrypt)
-                        {
-                            storeVar.variableSO.RawValue = PlayerPrefsUtility.GetEncryptedString(storeVar.key, storeVar.variableSO.RawValue.ToString());
-                        }
-                        else
-                        {
-                            //Debug.Log(storeVar.key);
-                            storeVar.variableSO.RawValue = PlayerPrefs.GetString(storeVar.key, storeVar.variableSO.RawValue?.ToString());
-                        }
+                        //if (storeVar.encrypt)
+                        //{
+                        //    storeVar.variableSO.RawValue = PlayerPrefsUtility.GetEncryptedString(storeVar.key, storeVar.variableSO.RawValue.ToString());
+                        //}
+                        //else
+                        //{
+                        //    //Debug.Log(storeVar.key);
+                        //    storeVar.variableSO.RawValue = PlayerPrefs.GetString(storeVar.key, storeVar.variableSO.RawValue?.ToString());
+                        //}
                         break;
                 }
             }
