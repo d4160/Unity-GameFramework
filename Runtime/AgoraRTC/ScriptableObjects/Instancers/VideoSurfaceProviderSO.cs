@@ -16,9 +16,9 @@ namespace d4160.AgoraRtc
     [CreateAssetMenu(menuName = "d4160/AgoraRtc/Instancers/VideoSurface Provider")]
     public class VideoSurfaceProviderSO : ScriptableObject
     {
-        public Vector3 fixRotationRawImage = new (0f, 0f, 180.0f);
-        public Vector3 fixRotationRenderer = new (-90f, 0f, 0f);
-        public Vector3 fixLocalScale = new (-1f, 1f, 1f);
+        public Vector3 fixRotationRawImage = new(0f, 0f, 180.0f);
+        public Vector3 fixRotationRenderer = new(-90f, 0f, 0f);
+        public Vector3 fixLocalScale = new(-1f, 1f, 1f);
 
         [Header("Variables")]
         [SerializeField] private BoolVariableSO _desactiveVSurfaceOnDisableVar;
@@ -59,7 +59,7 @@ namespace d4160.AgoraRtc
         public List<VideoSurface> StaticVideoSurfaces { get; set; }
         public VideoSurface LocalVideoSurface { get; set; }
 
-        public float ScaleFactor => _videoEncoderConfig.DimensionsHeight / (float) _videoEncoderConfig.DimensionsWidth;
+        public float ScaleFactor => _videoEncoderConfig.DimensionsHeight / (float)_videoEncoderConfig.DimensionsWidth;
 
         private WaitForEndOfFrame _waitForEndOfFrame;
 
@@ -113,6 +113,9 @@ namespace d4160.AgoraRtc
                 bool stoppedLocalCameraOrScreen = false;
                 VideoSurface vSurface = StaticVideoSurfaces[index];
 
+                if (string.IsNullOrEmpty(_channel.ChannelName))
+                    return;
+
                 if (userId == 0)
                 {
                     if (!isScreenCapture)
@@ -132,8 +135,10 @@ namespace d4160.AgoraRtc
                     {
                         if (i != index)
                         {
+                            // For the current user only
                             if (StaticVideoSurfaces[i].UID == 0 && StaticVideoSurfaces[i].ENABLE)
                             {
+                                // Disable local video or screen ONCE
                                 if (count == 0)
                                 {
 
@@ -154,7 +159,8 @@ namespace d4160.AgoraRtc
                                 StaticVideoSurfaces[i].SetEnable(false);
                                 StaticVideoSurfaces[i].SetForUser(0, "", isScreenCapture ? VIDEO_SOURCE_TYPE.VIDEO_SOURCE_SCREEN : VIDEO_SOURCE_TYPE.VIDEO_SOURCE_CAMERA);
                                 int _i = i;
-                                CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                                CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() =>
+                                {
                                     StaticVideoSurfaces[_i].SetEnable(true);
                                 });
 
@@ -163,10 +169,13 @@ namespace d4160.AgoraRtc
                         }
                     }
                 }
+                // Other users
                 else
                 {
+                    // If this v surface was mine
                     if (vSurface.UID == 0 && vSurface.ENABLE)
                     {
+                        // Check if I have other video surfaces enabled
                         bool moreWithLocalId = false;
                         for (int i = 0; i < StaticVideoSurfaces.Count; i++)
                         {
@@ -180,6 +189,7 @@ namespace d4160.AgoraRtc
                             }
                         }
 
+                        // Disable local video and screen is only have one
                         if (!moreWithLocalId)
                         {
                             if (vSurface.SOURCE_TYPE == VIDEO_SOURCE_TYPE.VIDEO_SOURCE_CAMERA)
@@ -214,7 +224,8 @@ namespace d4160.AgoraRtc
                     }
 
                     vSurface.SetEnable(false);
-                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() =>
+                    {
                         vSurface.SetEnable(true);
                     });
                 }
@@ -227,7 +238,8 @@ namespace d4160.AgoraRtc
                     //else
                     //{
                     vSurface.SetEnable(false);
-                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() =>
+                    {
                         vSurface.SetEnable(true);
                     });
                     //}
@@ -235,6 +247,15 @@ namespace d4160.AgoraRtc
             }
         }
 
+        /// <summary>
+        /// Enable the GameObject and fix rotation and scale of transform
+        /// </summary>
+        /// <param name="vSurface"></param>
+        /// <returns></returns> <summary>
+        /// 
+        /// </summary>
+        /// <param name="vSurface"></param>
+        /// <returns></returns>
         public bool FixVideoSurface(VideoSurface vSurface)
         {
             bool activeSelf = vSurface.gameObject.activeSelf;
@@ -280,8 +301,10 @@ namespace d4160.AgoraRtc
                         _screenCapture.StopScreenCapture();
                 }
 
-                if (desactiveVSurfaceOnDisable) {
-                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                if (desactiveVSurfaceOnDisable)
+                {
+                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() =>
+                    {
                         vSurface.gameObject.SetActive(false);
                     });
                 }
@@ -324,7 +347,8 @@ namespace d4160.AgoraRtc
 
                 if (desactiveVSurfaceOnDisable)
                 {
-                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                    CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() =>
+                    {
                         vSurface.gameObject.SetActive(false);
                     });
                 }
@@ -354,7 +378,8 @@ namespace d4160.AgoraRtc
                         if (desactiveVSurfaceOnDisable)
                         {
                             int _i = i;
-                            CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() => {
+                            CoroutineStarter.Instance.WaitForEndOfFrameAndExecute(() =>
+                            {
                                 StaticVideoSurfaces[_i].gameObject.SetActive(false);
                             });
                         }
