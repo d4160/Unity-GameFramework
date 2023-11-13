@@ -20,7 +20,7 @@ namespace d4160.UGS.Authentication
 
         public async Task<string> UpdatePlayerNameAsync()
         {
-            return await AuthenticationService.Instance.UpdatePlayerNameAsync(_playerName.Value);
+            return await AuthenticationService.Instance.UpdatePlayerNameAsync(_playerName.Value.Replace(' ', '_'));
         }
     }
 }
