@@ -10,8 +10,7 @@
         "GUID:d8427ce70fe4b1541b2621e0d52a1f6b"
     ],
     "includePlatforms": [
-        "Editor",
-        "macOSStandalone"
+        "Editor"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
