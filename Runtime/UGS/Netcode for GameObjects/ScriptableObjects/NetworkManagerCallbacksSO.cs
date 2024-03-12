@@ -8,24 +8,27 @@ namespace d4160.Netcode
     [CreateAssetMenu(menuName = "d4160/UGS/NGO/NetworkManagerCallbacks")]
     public class NetworkManagerCallbacksSO : ScriptableObject
     {
-        [SerializeField] LoggerSO _logger;
         [SerializeField] ULongEventSO _onClientDisconnect;
+        [SerializeField] BoolEventSO _onClientStopped;
         [SerializeField] VoidEventSO _onTransportFailure;
+        [SerializeField] LoggerSO _logger;
 
-        public void RegisterEvents()
+        public void SubscribeEvents()
         {
             //Debug.Log("Register NetworkManager Events Singleton");
             NetworkManager.Singleton.OnClientDisconnectCallback += InvokeOnClientDisconnect;
+            NetworkManager.Singleton.OnClientStopped += InvokeOnClientStopped;
             NetworkManager.Singleton.OnTransportFailure += InvokeOnTransportFailure;
         }
 
-        public void UnregisterEvents()
+        public void UnsubscribeEvents()
         {
             //Debug.Log("UnregisterEvents");
             if (NetworkManager.Singleton)
             {
                 NetworkManager.Singleton.OnClientDisconnectCallback -= InvokeOnClientDisconnect;
                 NetworkManager.Singleton.OnTransportFailure -= InvokeOnTransportFailure;
+                NetworkManager.Singleton.OnClientStopped -= InvokeOnClientStopped;
             }
         }
 
@@ -34,6 +37,13 @@ namespace d4160.Netcode
             if (_logger) _logger.LogInfo($"[OnClientDisconnect] ClientId: {clientId}; LocalClientId: {NetworkManager.Singleton.LocalClientId}");
 
             if (_onClientDisconnect) _onClientDisconnect.Invoke(clientId);
+        }
+
+        private void InvokeOnClientStopped(bool isServer)
+        {
+            if (_logger) _logger.LogInfo($"[OnClientStopped] IsServer: {isServer}");
+
+            if (_onClientStopped) _onClientStopped.Invoke(isServer);
         }
 
         private void InvokeOnTransportFailure()

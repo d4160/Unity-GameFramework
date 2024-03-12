@@ -72,7 +72,7 @@ namespace d4160.Singleton
             }
         }
 
-        protected virtual void OnDestroyImmediateCallback(){}
+        protected virtual void OnDestroyImmediateCallback() { }
 
         private static void SetSingleton()
         {
@@ -96,9 +96,9 @@ namespace d4160.Singleton
 
             if (prefab == null)
             {
-                if(type.IsAbstract)
+                if (type.IsAbstract)
                     return;
-                
+
                 var go = new GameObject(NewName);
                 Instance = go.AddComponent<T>();
             }
@@ -107,14 +107,14 @@ namespace d4160.Singleton
                 var instance = Instantiate(prefab);
                 instance.name = ResourcesName;
                 instance.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-                
+
                 Instance = instance;
             }
         }
 
         private static int SearchInstancesOfT()
         {
-            var objects = FindObjectsOfType<T>();
+            var objects = FindObjectsByType<T>(FindObjectsSortMode.None);
             var length = objects.Length;
 
             if (length > 0)

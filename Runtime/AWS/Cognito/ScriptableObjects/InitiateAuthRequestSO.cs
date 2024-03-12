@@ -56,7 +56,7 @@ namespace d4160.AWS.Cognito
                     AuthFlow = _authFlow.GetAuthFlowType()
                 };
             }
-            else if(forceUpdateAuthParams)
+            else if (forceUpdateAuthParams)
             {
                 _request.AuthParameters = GetAuthParameters();
             }

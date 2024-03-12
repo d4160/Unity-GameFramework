@@ -12,19 +12,30 @@ using NaughtyAttributes;
 namespace d4160.UGS.CloudSave
 {
     [CreateAssetMenu(menuName = "d4160/UGS/CloudSave/ForceSave")]
-    public class ForceSaveSO : ScriptableObject
+    public class SaveSO : ScriptableObject
     {
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Expandable]
 #endif
         [SerializeField] VariableLibrarySO _variablesToSave;
 
-        public async void ForceSave()
+        public void SetInnerStringValue(int index, string value)
         {
-            await ForceSaveAsync();
+            if (_variablesToSave.IsValidIndex(index))
+            {
+                if (_variablesToSave[index] is IDictionaryItem<string> dic)
+                {
+                    dic.InnerStringValue = value;
+                }
+            }
         }
 
-        public async Task ForceSaveAsync()
+        public async void Save()
+        {
+            await SaveAsync();
+        }
+
+        public async Task SaveAsync()
         {
             var data = new Dictionary<string, object>();
             //string log = string.Empty;
@@ -40,7 +51,7 @@ namespace d4160.UGS.CloudSave
 
             //Debug.Log(log);
 
-            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
         }
     }
 }

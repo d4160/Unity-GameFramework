@@ -15,7 +15,7 @@ namespace d4160.Loops
         {
             _updates.Add(updateObj);
 
-            if(!Instanced)
+            if (!Instanced)
             {
                 InstanceSingleton();
             }

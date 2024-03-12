@@ -22,14 +22,14 @@ namespace d4160.UGS.Authentication
 
             if (_logInAnonymouslyInStart)
             {
-                SignInAnonymouslyAsync();
+                SignInAnonymously();
             }
         }
 
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public async void SignInAnonymouslyAsync()
+        public async void SignInAnonymously()
         {
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }

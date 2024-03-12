@@ -22,5 +22,10 @@ namespace d4160.Collections
 
             return default;
         }
+
+        public bool IsValidIndex(int index)
+        {
+            return index >= 0 && index < Items.Length;
+        }
     }
 }

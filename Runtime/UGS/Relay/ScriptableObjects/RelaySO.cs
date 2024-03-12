@@ -15,8 +15,9 @@ namespace d4160.UGS.Relay
     public class RelaySO : ScriptableObject
     {
 #if ENABLE_NAUGHTY_ATTRIBUTES
-        [DropdownDefined("udp", "dtls")]
+        //[DropdownDefined("udp", "dtls", "wss")]
 #endif
+        [Tooltip("Available options: upd, dtls, wss")]
         public string connectionType = "dtls";
 
         public async Task<string> CreateRelayAsync(int maxConnections)
@@ -29,14 +30,14 @@ namespace d4160.UGS.Relay
 
                 Debug.Log($"[CreateRelay] JoinCode: {joinCode}");
 
-                RelayServerData relayServerData = new (alloc, connectionType);
+                RelayServerData relayServerData = new(alloc, connectionType);
 
                 NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
                 NetworkManager.Singleton.StartHost();
 
                 return joinCode;
             }
-            catch (RelayServiceException e) 
+            catch (RelayServiceException e)
             {
                 Debug.LogException(e);
 
@@ -52,7 +53,7 @@ namespace d4160.UGS.Relay
 
                 Debug.Log($"[JoinRelay] JoinCode: {joinCode}");
 
-                RelayServerData relayServerData = new (alloc, connectionType);
+                RelayServerData relayServerData = new(alloc, connectionType);
 
                 NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 

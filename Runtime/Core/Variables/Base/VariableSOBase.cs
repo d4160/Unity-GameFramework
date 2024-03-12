@@ -405,7 +405,7 @@ namespace d4160.Variables
         }
 
         // Is the InnerKey to reuse IDictionaryItem<T>
-        public T2 Key 
+        public T2 Key
         {
             get => _keyVar.Value;
             set => _keyVar.Value = value;
@@ -455,10 +455,11 @@ namespace d4160.Variables
     public interface IVariable
     {
         object RawValue { get; set; }
+        string StringValue { get; set; }
     }
 
     public interface IInnerVariable : IVariable
-    { 
+    {
         object InnerRawValue { get; set; }
 
         string InnerStringValue { get; set; }

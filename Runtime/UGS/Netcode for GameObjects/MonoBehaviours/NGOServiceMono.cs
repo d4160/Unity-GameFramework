@@ -10,13 +10,13 @@ namespace d4160.UGS.Authentication
     {
         private void Start()
         {
-            // Need register always in Start
-            _data.RegisterEvents();
+            // Need subscribe events always in Start since NetworkManager uses Awake-OnEnable to init
+            _data.SubscribeEvents();
         }
 
         private void OnDestroy()
         {
-            _data.UnregisterEvents();
+            _data.UnsubscribeEvents();
         }
 
         [ContextMenu("LogShuttingDown")]
