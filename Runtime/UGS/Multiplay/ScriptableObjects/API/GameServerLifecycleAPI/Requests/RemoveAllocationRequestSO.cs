@@ -1,3 +1,4 @@
+using System;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -12,10 +13,21 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
 
         [SerializeField] private MultiplayLifecycleAllocationsAPI _lifecycleAllocationAPI;
 
+        public string AllocationId
+        {
+            get => _allocationId;
+            set => _allocationId = value;
+        }
+
         [Button]
         public void SendRequest()
         {
-            _lifecycleAllocationAPI.RemoveAllocation(_allocationId);
+            SendRequest(null);
+        }
+
+        public void SendRequest(Action<string> onResult, Action<string> onError = null)
+        {
+            _lifecycleAllocationAPI.RemoveAllocation(_allocationId, onResult, onError);
         }
     }
 }

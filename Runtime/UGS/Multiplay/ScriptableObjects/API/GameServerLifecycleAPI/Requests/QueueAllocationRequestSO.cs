@@ -8,7 +8,7 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
     public class QueueAllocationRequestSO : ScriptableObject
     {
         [SerializeField] private bool _newUuidForAllocation;
-        [SerializeField] private string _allocationId;
+        [SerializeField, HideIf("_newUuidForAllocation")] private string _allocationId;
         [SerializeField] private int _buildConfigurationId;
         [SerializeField] private string _payload;
         [SerializeField] private string _regionId;
@@ -17,6 +17,12 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
         [Space]
 
         [SerializeField] private MultiplayLifecycleAllocationsAPI _lifecycleAllocationAPI;
+
+        public int BuildConfigurationId
+        {
+            get => _buildConfigurationId;
+            set => _buildConfigurationId = value;
+        }
 
         public QueueAllocationRequest GetRequest()
         {
@@ -33,7 +39,13 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
         [Button]
         public void SendRequest()
         {
-            _lifecycleAllocationAPI.QueueAllocation(GetRequest());
+            SendRequest(null);
+        }
+
+        public void SendRequest(Action<string> onResult, Action<string> onError = null)
+        {
+            QueueAllocationRequest req = GetRequest();
+            _lifecycleAllocationAPI.QueueAllocation(req, onResult, onError);
         }
     }
 

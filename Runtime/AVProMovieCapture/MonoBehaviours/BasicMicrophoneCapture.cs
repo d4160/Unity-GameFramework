@@ -29,9 +29,9 @@ public class BasicMicrophoneCapture : MonoBehaviour
 
     private void Start()
     {
-        //StartMicrophone(true);
+        StartMicrophone(true);
 
-        //StartCoroutine(RestartMicCo(true));
+        StartCoroutine(RestartMicCo(true));
     }
 
     [Button]
@@ -49,13 +49,13 @@ public class BasicMicrophoneCapture : MonoBehaviour
     public void StopMicrophone()
     {
         //UNITY_WEBGL
-        //Microphone.End(Microphone.devices[0]);
+        Microphone.End(Microphone.devices[0]);
 
-        //if (_microphoneClip != null)
-        //{
-        //    Destroy(_microphoneClip);
-        //    _microphoneClip = null;
-        //}
+        if (_microphoneClip != null)
+        {
+            Destroy(_microphoneClip);
+            _microphoneClip = null;
+        }
 
         _aSource.Stop();
     }
@@ -67,18 +67,18 @@ public class BasicMicrophoneCapture : MonoBehaviour
 
         // UNITY_WEBGL
 
-        // string microphoneName = Microphone.devices[0];
-        // _microphoneClip = Microphone.Start(microphoneName, true, 10, AudioSettings.outputSampleRate);
+        string microphoneName = Microphone.devices[0];
+        _microphoneClip = Microphone.Start(microphoneName, true, 10, AudioSettings.outputSampleRate);
 
-        // _aSource.clip = _microphoneClip;
-        // _aSource.loop = true;
+        _aSource.clip = _microphoneClip;
+        _aSource.loop = true;
 
-        // while (!(Microphone.GetPosition(microphoneName) > 0))
-        // {
-        //     yield return null;
-        // }
+        while (!(Microphone.GetPosition(microphoneName) > 0))
+        {
+            yield return null;
+        }
 
-        // _aSource.Play();
+        _aSource.Play();
     }
 
     private IEnumerator RestartMicCo(bool delay = false)
@@ -117,20 +117,20 @@ public class BasicMicrophoneCapture : MonoBehaviour
     private float[] GetTrimmedData()
     {
         // UNITY_WEBGL
-        return default;
+        //return default;
 
         // get microphone samples and current position
-        // var pos = Microphone.GetPosition(null);
-        // var origData = new float[_microphoneClip.samples * _microphoneClip.channels];
-        // _microphoneClip.GetData(origData, 0);
+        var pos = Microphone.GetPosition(null);
+        var origData = new float[_microphoneClip.samples * _microphoneClip.channels];
+        _microphoneClip.GetData(origData, 0);
 
-        // // check if mic just reached audio buffer end
-        // if (pos == 0)
-        //     return origData;
+        // check if mic just reached audio buffer end
+        if (pos == 0)
+            return origData;
 
-        // // looks like we need to trim it by pos
-        // var trimData = new float[pos];
-        // Array.Copy(origData, trimData, pos);
-        // return trimData;
+        // looks like we need to trim it by pos
+        var trimData = new float[pos];
+        Array.Copy(origData, trimData, pos);
+        return trimData;
     }
 }

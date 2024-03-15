@@ -5,6 +5,10 @@ using Unity.Services.CloudSave;
 using d4160.Variables;
 using System.Threading.Tasks;
 using d4160.Collections;
+using Unity.Services.CloudSave.Models;
+using Unity.Services.CloudSave.Models.Data.Player;
+
+
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
@@ -53,24 +57,24 @@ namespace d4160.UGS.CloudSave
                 _autoincrement.Key
             };
 
-            Dictionary<string, string> data = await CloudSaveService.Instance.Data.LoadAsync(keys);
+            Dictionary<string, Item> data = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
 
             foreach (var item in data)
             {
                 if (item.Key == _dynamicPairListJson.Key)
                 {
-                    _dynamicPairListJson.Value = item.Value;
+                    _dynamicPairListJson.Value = item.Value.Value.GetAsString();
 
                     DynamicPairList = DynamicPairList.FromJson(_dynamicPairListJson.Value);
                 }
                 else if (item.Key == _autoincrement.Key)
                 {
-                    _autoincrement.Value = int.Parse(item.Value);
+                    _autoincrement.Value = int.Parse(item.Value.Value.GetAsString());
                 }
             }
         }
 
-        public async Task<Dictionary<string, string>> ReadAllDynamicDataAsync()
+        public async Task<Dictionary<string, Item>> ReadAllDynamicDataAsync()
         {
             if (DynamicPairList.Count > 0)
             {
@@ -80,7 +84,7 @@ namespace d4160.UGS.CloudSave
                     keys.Add(DynamicPairList[i].slotKey);
                 }
 
-                return await CloudSaveService.Instance.Data.LoadAsync(keys);
+                return await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
             }
             return null;
         }
@@ -109,7 +113,8 @@ namespace d4160.UGS.CloudSave
             var data = new Dictionary<string, object>();
             //string log = string.Empty;
 
-            var dynamicPair = new DynamicPair() { 
+            var dynamicPair = new DynamicPair()
+            {
                 slotKey = NewSlotKey,
                 id = id,
                 isOwner = isOwner
@@ -126,7 +131,7 @@ namespace d4160.UGS.CloudSave
 
             //Debug.Log(log);
 
-            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
 
             return true;
         }
@@ -152,11 +157,11 @@ namespace d4160.UGS.CloudSave
                 dynamicPair.slotKey
             };
 
-            Dictionary<string, string> data = await CloudSaveService.Instance.Data.LoadAsync(keys);
-            
+            Dictionary<string, Item> data = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
+
             if (data.ContainsKey(dynamicPair.slotKey))
             {
-                return data[dynamicPair.slotKey];
+                return data[dynamicPair.slotKey].Value.GetAsString();
             }
 
             return null;
@@ -196,7 +201,7 @@ namespace d4160.UGS.CloudSave
             data.Add(dynamicPair.slotKey, _jsonToSave.Value);
             data.Add(_dynamicPairListJson.Key, _dynamicPairListJson.Value);
 
-            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
         }
 
         public async void DeleteDynamicPair(string id)
@@ -214,7 +219,7 @@ namespace d4160.UGS.CloudSave
                 {
                     found = true;
                     dynamicPair = DynamicPairList[i];
-                    
+
                     DynamicPairList.RemoveAt(i);
 
                     break;
@@ -230,8 +235,8 @@ namespace d4160.UGS.CloudSave
                 { _dynamicPairListJson.Key, _dynamicPairListJson.Value }
             };
 
-            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
-            await CloudSaveService.Instance.Data.ForceDeleteAsync(dynamicPair.slotKey);
+            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+            await CloudSaveService.Instance.Data.Player.DeleteAsync(dynamicPair.slotKey);
         }
 
         public async void DeleteAllDynamicData()
@@ -245,7 +250,7 @@ namespace d4160.UGS.CloudSave
             {
                 for (int i = 0; i < DynamicPairList.Count; i++)
                 {
-                    await CloudSaveService.Instance.Data.ForceDeleteAsync(DynamicPairList[i].slotKey);
+                    await CloudSaveService.Instance.Data.Player.DeleteAsync(DynamicPairList[i].slotKey);
                 }
 
                 DynamicPairList = new DynamicPairList();
@@ -253,8 +258,8 @@ namespace d4160.UGS.CloudSave
                 _dynamicPairListJson.Value = string.Empty;
                 _jsonToSave.Value = string.Empty;
 
-                await CloudSaveService.Instance.Data.ForceDeleteAsync(_dynamicPairListJson.Key);
-                await CloudSaveService.Instance.Data.ForceDeleteAsync(_autoincrement.Key);
+                await CloudSaveService.Instance.Data.Player.DeleteAsync(_dynamicPairListJson.Key);
+                await CloudSaveService.Instance.Data.Player.DeleteAsync(_autoincrement.Key);
             }
         }
     }
@@ -268,7 +273,7 @@ namespace d4160.UGS.CloudSave
     }
 
     [System.Serializable]
-    public class DynamicPairList 
+    public class DynamicPairList
     {
         public List<DynamicPair> dynamicPairs = new();
 
