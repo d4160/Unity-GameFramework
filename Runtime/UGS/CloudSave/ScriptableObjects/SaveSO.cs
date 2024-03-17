@@ -19,6 +19,17 @@ namespace d4160.UGS.CloudSave
 #endif
         [SerializeField] VariableLibrarySO _variablesToSave;
 
+        public void SetInnerValue<T1, T2>(int index, T2 value) where T1 : VariableSOBase<T2>
+        {
+            if (_variablesToSave.IsValidIndex(index))
+            {
+                if (_variablesToSave[index] is InnerVariableSOBase<T1, T2> innerVar)
+                {
+                    innerVar.InnerValue = value;
+                }
+            }
+        }
+
         public void SetInnerStringValue(int index, string value)
         {
             if (_variablesToSave.IsValidIndex(index))
@@ -28,6 +39,32 @@ namespace d4160.UGS.CloudSave
                     dic.InnerStringValue = value;
                 }
             }
+        }
+
+        public T2 GetInnerValue<T1, T2>(int index) where T1 : VariableSOBase<T2>
+        {
+            if (_variablesToSave.IsValidIndex(index))
+            {
+                if (_variablesToSave[index] is InnerVariableSOBase<T1, T2> innerVar)
+                {
+                    return innerVar.InnerValue;
+                }
+            }
+
+            return default;
+        }
+
+        public string GetInnerStringValue(int index)
+        {
+            if (_variablesToSave.IsValidIndex(index))
+            {
+                if (_variablesToSave[index] is IInnerVariable innerVar)
+                {
+                    return innerVar.InnerStringValue;
+                }
+            }
+
+            return default;
         }
 
         public async void Save()

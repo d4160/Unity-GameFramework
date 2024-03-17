@@ -47,6 +47,28 @@ namespace d4160.UGS.CloudSave
             return default;
         }
 
+        public void SetInnerValue<T1, T2>(int index, T2 value) where T1 : VariableSOBase<T2>
+        {
+            if (_variablesToLoad.IsValidIndex(index))
+            {
+                if (_variablesToLoad[index] is InnerVariableSOBase<T1, T2> innerVar)
+                {
+                    innerVar.InnerValue = value;
+                }
+            }
+        }
+
+        public void SetInnerStringValue(int index, string value)
+        {
+            if (_variablesToLoad.IsValidIndex(index))
+            {
+                if (_variablesToLoad[index] is IDictionaryItem<string> dic)
+                {
+                    dic.InnerStringValue = value;
+                }
+            }
+        }
+
         public async void Load()
         {
             await LoadAsync();

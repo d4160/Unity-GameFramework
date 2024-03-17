@@ -1,6 +1,7 @@
 using d4160.Collections;
 using d4160.Events;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
@@ -22,13 +23,14 @@ namespace d4160.UGS.Lobbies
         [Header("Events")]
         [SerializeField] private VoidEventSO _onListUpdated;
 
-        public async void ListLobbiesAsync()
+        public async Task ListLobbiesAsync()
         {
             try
             {
                 Clear();
 
-                QueryLobbiesOptions options = new() {
+                QueryLobbiesOptions options = new()
+                {
                     Count = count,
                     Skip = skip,
                     SampleResults = randomSampleResults,
@@ -50,7 +52,7 @@ namespace d4160.UGS.Lobbies
 
                 if (_onListUpdated) _onListUpdated.Invoke();
             }
-            catch(LobbyServiceException e)
+            catch (LobbyServiceException e)
             {
                 Debug.LogException(e);
             }

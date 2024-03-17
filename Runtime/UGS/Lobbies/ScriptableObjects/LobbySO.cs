@@ -45,7 +45,7 @@ namespace d4160.UGS.Lobbies
             }
         }
 
-        public async void SendHeartbeatPingAsync()
+        public async Task SendHeartbeatPingAsync()
         {
             if (Lobby != null && Lobby.HostId == AuthenticationService.Instance.PlayerId)
             {
@@ -60,7 +60,7 @@ namespace d4160.UGS.Lobbies
             }
         }
 
-        public async void GetLobbyAsync()
+        public async Task GetLobbyAsync()
         {
             if (Lobby != null)
             {
@@ -92,7 +92,7 @@ namespace d4160.UGS.Lobbies
             }
         }
 
-        public async void RemovePlayerAsync(string playerId)
+        public async Task RemovePlayerAsync(string playerId)
         {
             if (Lobby != null)
             {
@@ -107,14 +107,15 @@ namespace d4160.UGS.Lobbies
             }
         }
 
-        public async void MigrateHostAsync(string playerId)
+        public async Task MigrateHostAsync(string playerId)
         {
             if (Lobby != null)
             {
                 try
                 {
-                    Lobby = await LobbyService.Instance.UpdateLobbyAsync(Lobby.Id, 
-                        new UpdateLobbyOptions() { 
+                    Lobby = await LobbyService.Instance.UpdateLobbyAsync(Lobby.Id,
+                        new UpdateLobbyOptions()
+                        {
                             HostId = playerId
                         });
                 }
@@ -122,6 +123,32 @@ namespace d4160.UGS.Lobbies
                 {
                     Debug.LogException(e);
                 }
+            }
+        }
+
+        private async void TryMigrateHost(string currentHostId)
+        {
+            await GetLobbyAsync();
+
+            string newHostId = string.Empty;
+
+            for (int i = 0; i < Lobby.Players.Count; i++)
+            {
+                if (Lobby.Players[i].Id == currentHostId)
+                {
+                    continue;
+                }
+
+                newHostId = Lobby.Players[i].Id;
+            }
+
+            if (!string.IsNullOrEmpty(newHostId))
+            {
+                await MigrateHostAsync(newHostId);
+            }
+            else
+            {
+                await DeleteLobbyAsync();
             }
         }
 
@@ -141,13 +168,20 @@ namespace d4160.UGS.Lobbies
             }
         }
 
-        public async void LeaveOrDeleteLobby()
+        public async void LeaveOrDeleteLobby(bool migrateHost = false)
         {
             if (Lobby != null)
             {
                 if (IsHost)
                 {
-                    await DeleteLobbyAsync();
+                    if (migrateHost)
+                    {
+                        TryMigrateHost(Lobby.HostId);
+                    }
+                    else
+                    {
+                        await DeleteLobbyAsync();
+                    }
                 }
                 else
                 {
