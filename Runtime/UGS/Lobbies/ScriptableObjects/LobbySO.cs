@@ -145,6 +145,7 @@ namespace d4160.UGS.Lobbies
             if (!string.IsNullOrEmpty(newHostId))
             {
                 await MigrateHostAsync(newHostId);
+                await LeaveLobbyAsync();
             }
             else
             {
