@@ -57,7 +57,7 @@ namespace d4160.UGS.Lobbies
             await JoinLobbyByIdAsync(lobbyId);
         }
 
-        public async Task JoinLobbyByIdAsync(string id)
+        public async Task<bool> JoinLobbyByIdAsync(string id)
         {
             JoinLobbyByIdOptions options = new()
             {
@@ -73,10 +73,13 @@ namespace d4160.UGS.Lobbies
                 Debug.Log($"[JoinLobbyById] Name: {lobby.Lobby.Name}; MaxPlayers: {lobby.Lobby.MaxPlayers}; Id: {lobby.Lobby.Id}: Code: {lobby.Lobby.LobbyCode}");
 
                 lobby.PrintPlayers(lobby.Lobby);
+
+                return true;
             }
             catch (LobbyServiceException e)
             {
                 Debug.Log(e);
+                return false;
             }
         }
 

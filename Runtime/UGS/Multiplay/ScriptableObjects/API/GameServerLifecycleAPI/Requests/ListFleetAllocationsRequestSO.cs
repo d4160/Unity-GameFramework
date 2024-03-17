@@ -118,17 +118,34 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
     {
         public List<ActiveAllocation> allocations;
 
-        public void AddActiveAllocation(string id, string ip, ushort port, bool requester)
+        public ActiveAllocation AddActiveAllocation(string id, string ip, ushort port, string lobbyId, bool requester)
         {
             if (allocations == null) allocations = new List<ActiveAllocation>();
 
-            allocations.Add(new ActiveAllocation()
+            var aa = new ActiveAllocation()
             {
                 id = id,
                 ipAddress = ip,
                 port = port,
+                lobbyId = lobbyId,
                 requester = requester
-            });
+            };
+
+            allocations.Add(aa);
+
+            return aa;
+        }
+
+        public void FixLobbyId(string allocationId, string lobbyId)
+        {
+            for (int i = 0; i < allocations.Count; i++)
+            {
+                if (allocations[i].id == allocationId)
+                {
+                    allocations[i].lobbyId = lobbyId;
+                    break;
+                }
+            }
         }
 
         public void Clear()
@@ -157,6 +174,22 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
 
             return ids;
         }
+
+        public string GetLobbyId(string allocationId)
+        {
+            if (allocations == null)
+                return string.Empty;
+
+            for (int i = 0; i < allocations.Count; i++)
+            {
+                if (allocations[i].id == allocationId)
+                {
+                    return allocations[i].lobbyId;
+                }
+            }
+
+            return string.Empty;
+        }
     }
 
     [Serializable]
@@ -165,6 +198,7 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
         public string id;
         public string ipAddress;
         public ushort port;
+        public string lobbyId;
         public bool requester;
     }
 }
