@@ -24,6 +24,12 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
             set => _buildConfigurationId = value;
         }
 
+        public bool NewUuidForAllocation
+        {
+            get => _newUuidForAllocation;
+            set => _newUuidForAllocation = value;
+        }
+
         public QueueAllocationRequest GetRequest()
         {
             return new QueueAllocationRequest()
@@ -39,7 +45,7 @@ namespace d4160.UGS.Multiplay.LifecycleAPI
         [Button]
         public void SendRequest()
         {
-            SendRequest(null);
+            SendRequest();
         }
 
         public void SendRequest(Action<string> onResult, Action<string> onError = null)
