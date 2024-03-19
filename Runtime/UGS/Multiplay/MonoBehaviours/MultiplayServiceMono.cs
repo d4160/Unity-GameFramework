@@ -1,3 +1,4 @@
+#if DEDICATED_SERVER
 using System.Collections;
 using d4160.Events;
 using d4160.Loops;
@@ -97,3 +98,4 @@ namespace d4160.UGS.Multiplay
         }
     }
 }
+#endif

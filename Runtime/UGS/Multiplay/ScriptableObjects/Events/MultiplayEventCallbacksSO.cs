@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+#if DEDICATED_SERVER
 using d4160.Logging;
 using NaughtyAttributes;
 using Unity.Services.Multiplay;
@@ -70,3 +69,4 @@ namespace d4160.UGS.Multiplay
         }
     }
 }
+#endif

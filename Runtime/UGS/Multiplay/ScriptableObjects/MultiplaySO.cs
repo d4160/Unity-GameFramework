@@ -4,7 +4,9 @@ using d4160.Logging;
 using NaughtyAttributes;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+#if DEDICATED_SERVER
 using Unity.Services.Multiplay;
+#endif
 using UnityEngine;
 
 namespace d4160.UGS.Multiplay
@@ -14,8 +16,10 @@ namespace d4160.UGS.Multiplay
     {
         [SerializeField] private ServerQueryOptionsSO _serverQueryOptions;
 
+#if DEDICATED_SERVER
         [Header("Events")]
         [SerializeField] private MultiplayEventCallbacksSO _eventCallbacks;
+#endif
         [SerializeField] private VoidEventSO _onServerStarted;
 
         [Header("Log")]
@@ -24,14 +28,20 @@ namespace d4160.UGS.Multiplay
 #endif
         [SerializeField] LoggerSO _logger;
 
+#if DEDICATED_SERVER
         public IServerQueryHandler ServerQueryHandler => _serverQueryHandler;
+#endif
         public VoidEventSO OnServerStarted => _onServerStarted;
         public LoggerSO Logger => _logger;
 
+#if DEDICATED_SERVER
         private IServerEvents _serverEvents;
+#endif
         private bool _alreadyAutoAllocated;
+#if DEDICATED_SERVER
         private IServerQueryHandler _serverQueryHandler;
         private MultiplayAllocationEventSO.EventListener _onAllocateLtn;
+#endif
 
         public async void SubscribeEvents()
         {
@@ -42,6 +52,7 @@ namespace d4160.UGS.Multiplay
         {
             LogInfo("Calling SubscribeToServerEventsAsync");
 
+#if DEDICATED_SERVER
             _onAllocateLtn = new(MultiplayEventCallbacks_Allocate);
 
             _eventCallbacks.OnAllocate.AddListener(_onAllocateLtn);
@@ -51,23 +62,29 @@ namespace d4160.UGS.Multiplay
 
             LogInfo("SubscribeToServerEventsAsync was called");
             Debug.Log(_serverEvents.ToString());
+#endif
         }
 
         public async void UnsubscribeEvents()
         {
+#if DEDICATED_SERVER
             await UnsubscribeEventsAsync();
+#endif
         }
 
         public async Task UnsubscribeEventsAsync()
         {
+#if DEDICATED_SERVER
             _eventCallbacks.OnAllocate.RemoveListener(_onAllocateLtn);
 
             if (_serverEvents != null)
             {
                 await _serverEvents.UnsubscribeAsync();
             }
+#endif
         }
 
+#if DEDICATED_SERVER
         public async Task StartServerAsync()
         {
             _serverQueryHandler = await MultiplayService.Instance.StartServerQueryHandlerAsync(_serverQueryOptions.MaxPlayers, _serverQueryOptions.ServerName, _serverQueryOptions.GameType, _serverQueryOptions.BuildId, _serverQueryOptions.Map);
@@ -83,7 +100,9 @@ namespace d4160.UGS.Multiplay
                 LogWarning("ServerConfig.AllocationId is empty. Waiting for Allocate event...");
             }
         }
+#endif
 
+#if DEDICATED_SERVER
         public void LogServerConfig()
         {
             ServerConfig serverConfig = MultiplayService.Instance.ServerConfig;
@@ -95,7 +114,9 @@ namespace d4160.UGS.Multiplay
             Debug.Log($"QueryPort: {serverConfig.QueryPort}");
             Debug.Log($"LogDirectory: {serverConfig.ServerLogDirectory}");
         }
+#endif
 
+#if DEDICATED_SERVER
         private void MultiplayEventCallbacks_Allocate(MultiplayAllocation allocation)
         {
             if (_alreadyAutoAllocated)
@@ -105,6 +126,7 @@ namespace d4160.UGS.Multiplay
             }
 
             _alreadyAutoAllocated = true;
+
 
             LogServerConfig();
 
@@ -118,6 +140,8 @@ namespace d4160.UGS.Multiplay
 
             LogInfo($"[Allocated] AllocationId: {allocation.AllocationId}, ServerId:{allocation.ServerId}, EventId:{allocation.EventId}");
         }
+#endif
+
 
         public void LogInfo(string message, GameObject context = null)
         {
