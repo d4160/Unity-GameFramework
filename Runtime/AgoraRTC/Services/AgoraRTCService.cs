@@ -11,6 +11,8 @@ namespace d4160.AgoraRtc
         public AgoraRtcSettingsSO Settings { get; set; }
         public LoggerSO Logger { get; set; }
 
+        public uint LocalUid { get; internal set; }
+
         public IntStringEventSO OnError { get; set; }
         public JoinChannelEventSO OnJoinChannelSuccess { get; set; }
         public JoinChannelEventSO OnRejoinChannelSuccess { get; set; }
@@ -207,7 +209,7 @@ namespace d4160.AgoraRtc
         public override void OnError(int err, string msg)
         {
             _service.LogInfo($"OnError(int, string); ErrorCode:{err}; Message:{msg};");
-            if(_service.OnError) _service.OnError.Invoke(err, msg);
+            if (_service.OnError) _service.OnError.Invoke(err, msg);
         }
 
         public override void OnJoinChannelSuccess(RtcConnection connection, int elapsed)
@@ -215,6 +217,8 @@ namespace d4160.AgoraRtc
             int build = 0;
             _service.LogInfo($"SDK Version: {_service.RtcEngine.GetVersion(ref build)}");
             _service.LogInfo($"OnJoinChannelSuccess(RtcConnection, int); ChannelId:{connection.channelId}; LocalUid:{connection.localUid}; Elapsed:{elapsed};");
+
+            _service.LocalUid = connection.localUid;
 
             //Debug.Log($"[OnJoinChannelSuccess] IsCallbackNull?: {_service.OnJoinChannelSuccess == null}");
             if (_service.OnJoinChannelSuccess) _service.OnJoinChannelSuccess.Invoke(connection, elapsed);
@@ -229,6 +233,9 @@ namespace d4160.AgoraRtc
         public override void OnLeaveChannel(RtcConnection connection, RtcStats stats)
         {
             _service.LogInfo($"OnLeaveChannel(RtcConnection, RtcStats); ChannelId:{connection.channelId}; LocalUid:{connection.localUid}; Duration:{stats.duration}; UserCount:{stats.userCount};");
+
+            _service.LocalUid = 0;
+
             if (_service.OnLeaveChannelSuccess) _service.OnLeaveChannelSuccess.Invoke(connection, stats);
         }
 
