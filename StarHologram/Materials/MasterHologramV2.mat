@@ -1,0 +1,236 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1679160006839783797
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 9
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MasterHologramV2
+  m_Shader: {fileID: 4800000, guid: 201bfe32219648746806a6aeb0a9d1d7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _USE_SCENE_INTERSECTIONS
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseEmissionTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HoloLines:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LinesTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ProjectionTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AddPrecomputedVelocity: 0
+    - _AlphaClip: 0.741
+    - _AlphaClipThreshold: 0
+    - _AlphaToMask: 0
+    - _AmbientOcclusion: 1
+    - _BUILTIN_QueueControl: -1
+    - _BUILTIN_QueueOffset: 0
+    - _BaseAmount: 0.482
+    - _BlazeStrength: 3.78
+    - _Blend: 0
+    - _BlendModePreserveSpecular: 1
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _CoreDensity: 1
+    - _CoreIntensity: 0.55
+    - _CorePulseAmount: 1
+    - _CoreStrength: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DataCorruption: 0.1
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DiagIntensity: 0
+    - _DiagonalPatternIntensity: 0
+    - _DistortAmount: 0.025
+    - _DistortStrength: 0.012
+    - _DstBlend: 0
+    - _DstBlendAlpha: 0
+    - _EdgeBrightness: 0
+    - _EdgePower: 2.46
+    - _ElectricFreq: 24
+    - _ElectricSpeed: 7.1
+    - _EnvironmentReflections: 1
+    - _FillAmount: 0.5
+    - _FlickerStr: 0
+    - _FresnelOuter: 1.6
+    - _FresnelPower: 1.2
+    - _Fresnel_Power: 1
+    - _GenesisState: 0
+    - _GlitchFreq: 3.3
+    - _GlitchSpeed: 10
+    - _GlitchStr: 0.788
+    - _GlobalAlpha: 0.413
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _GlowPower: 6.9
+    - _GlowStrength: 7.47
+    - _HaloFresnelPower: 2.84
+    - _HaloPower: 8
+    - _HaloRange: 0.971
+    - _HaloSpread: 2
+    - _HaloStrength: 0
+    - _HoloAmount: 0.138
+    - _Intensity: 1.5
+    - _Intersection_Power: 20
+    - _JitterAmount: 0
+    - _LinesStrength: 0
+    - _Metallic: 0
+    - _MicroNoiseIntensity: 0
+    - _NoiseAmount: 0.446
+    - _NoiseDetail: 0
+    - _NoiseScale: 70.3
+    - _NoiseSpeed: 3
+    - _NormalStrength: 1
+    - _OcclusionStrength: 1
+    - _OuterGlow: 4.87
+    - _OuterGlowPower: 5
+    - _OutlineStrength: 5.35
+    - _Parallax: 0.005
+    - _ParticleSeed: 0
+    - _PulseAmount: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _RimPower: 5
+    - _ScanFreq: 15
+    - _ScanSize: 0.01
+    - _ScanSpeed: 0.05
+    - _ScanStrength: 0.799
+    - _ScanlineFrequency: 1
+    - _ScanlineScale: 900
+    - _ScanlineSpeed: 0
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _SrcBlendAlpha: 1
+    - _StreakFreq: 18
+    - _Surface: 0
+    - _TimeJump: 0
+    - _TimeOffset: 0
+    - _USE_SCENE_INTERSECTIONS: 1
+    - _VertLineFreq: 1
+    - _WaveAnim: 0
+    - _WaveAnimationSpeed: 0
+    - _WorkflowMode: 1
+    - _XRMotionVectorsPass: 1
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 0.48584908, g: 0.55817974, b: 1, a: 1}
+    - _BaseEmissionColor: {r: 0, g: 0.1647059, b: 1.498039, a: 0.1568628}
+    - _BlazeColor: {r: 0, g: 0.7999997, b: 1, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _CoreColor: {r: 0.058962256, g: 0.42685655, b: 0.5, a: 1}
+    - _EchoColor: {r: 1, g: 0, b: 0, a: 1}
+    - _EdgeColor: {r: 0, g: 0.46379292, b: 0.70617795, a: 1}
+    - _EdgeHaloColor: {r: 0, g: 0.26215687, b: 0.7490196, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FillColor: {r: 0.09999997, g: 0.19999996, b: 0.29999998, a: 0.1}
+    - _FresnelColor: {r: 0, g: 3.513726, b: 32, a: 1}
+    - _GlowColor: {r: 0, g: 1, b: 2, a: 1}
+    - _HaloColor: {r: 0, g: 0.8000001, b: 1, a: 1}
+    - _HologramColor: {r: 0.5, g: 0.8, b: 1, a: 1}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
