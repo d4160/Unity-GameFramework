@@ -17,6 +17,9 @@ namespace d4160.AgoraRtc
         [SerializeField] private bool _domainLimit = false;
         [SerializeField] private bool _autoRegisterAgoraExtensions = true;
 
+        // AppID Contiverso: 2a048ad297754c119bf5e00c39fcf313
+        // AppID Temp: b0f346799b524fa1b625ae7d9eb5f9d0
+
         public string AppID => _appID;
         public ulong Context => _context;
         public string License => _license;
@@ -26,6 +29,12 @@ namespace d4160.AgoraRtc
         public bool UseExternalEglContext => _useExternalEglContext;
         public bool DomainLimit => _domainLimit;
         public bool AutoRegisterAgoraExtensions => _autoRegisterAgoraExtensions;
+
+        public void SetAppId(string appId)
+        {
+            _appID = appId;
+        }
+
 
         public RtcEngineContext GetRtcEngineContext()
         {

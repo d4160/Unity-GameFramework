@@ -6,8 +6,11 @@ using Sirenix.OdinInspector;
 
 namespace d4160.MonoBehaviours
 {
-    public abstract class DelayedStartBase : MonoBehaviour
+    public abstract class DelayedStartBehaviourBase : MonoBehaviour
     {
+#if ODIN_INSPECTOR || ODIN_INSPECTOR_3 || ODIN_INSPECTOR_3_1
+        [HideIf("_setOnAwake")]
+#endif
         [SerializeField] protected bool _waitEndOfFrame;
 #if ODIN_INSPECTOR || ODIN_INSPECTOR_3 || ODIN_INSPECTOR_3_1
         [HideIf("_ShowDelayProperty")]
@@ -18,7 +21,7 @@ namespace d4160.MonoBehaviours
         protected virtual bool _ShowDelayProperty => _waitEndOfFrame;
 #endif
 
-        protected IEnumerator Start()
+        protected virtual IEnumerator Start()
         {
             if (!_waitEndOfFrame)
             {

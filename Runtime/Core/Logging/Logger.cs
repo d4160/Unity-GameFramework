@@ -1,7 +1,6 @@
 using d4160.Core;
 using UnityEngine;
 using d4160.Texts;
-using System;
 
 namespace d4160.Logging
 {
@@ -23,19 +22,6 @@ namespace d4160.Logging
         public static void LogError(LoggerSO logger, string message, GameObject context = null)
         {
             Log(logger, message, LogLevelType.Error, context);
-        }
-
-        public static void LogException(LoggerSO logger, Exception ex, GameObject context = null)
-        {
-            Log(logger, ex, LogLevelType.Error, context);
-        }
-
-        public static void Log(LoggerSO logger, Exception ex, LogLevelType logLevel, GameObject context = null)
-        {
-            if (logger && logger.CanSendLog(logLevel))
-            {
-                Log(ex, logLevel, context);
-            }
         }
 
         public static void Log(LoggerSO logger, string message, LogLevelType logLevel, GameObject context = null)
@@ -95,59 +81,56 @@ namespace d4160.Logging
         #endregion
 
         #region Passing storedLogLevel
-        public static void LogWarning(string message, LogLevelType storedLogLevel, string heading = "", GameObject context = null)
+        public static void LogWarning(string message, LogLevelType storedLogLevel, string heading = "", GameObject context = null) 
         {
             Log(string.IsNullOrEmpty(heading) ? $"{message}" : $"{heading}: {message}", storedLogLevel, LogLevelType.Warning, context);
         }
 
-        public static void LogWarning(string message, LogLevelType storedLogLevel, string heading, Color headingColor, GameObject context = null)
+        public static void LogWarning(string message, LogLevelType storedLogLevel, string heading, Color headingColor, GameObject context = null) 
         {
             Log($"{heading.Color(headingColor)}: {message}", storedLogLevel, LogLevelType.Warning, context);
         }
 
-        public static void LogWarning(string message, LogLevelType storedLogLevel, string heading, Color headingColor, Color messageColor, GameObject context = null)
+        public static void LogWarning(string message, LogLevelType storedLogLevel, string heading, Color headingColor, Color messageColor, GameObject context = null) 
         {
             Log($"{heading.Color(headingColor)}: {message.Color(messageColor)}", storedLogLevel, LogLevelType.Warning, context);
         }
 
-        public static void LogInfo(string message, LogLevelType storedLogLevel, string heading = "", GameObject context = null)
+        public static void LogInfo(string message, LogLevelType storedLogLevel, string heading = "", GameObject context = null) 
         {
             Log(string.IsNullOrEmpty(heading) ? $"{message}" : $"{heading}: {message}", storedLogLevel, LogLevelType.Info, context);
         }
 
-        public static void LogInfo(string message, LogLevelType storedLogLevel, string heading, Color headingColor, GameObject context = null)
+        public static void LogInfo(string message, LogLevelType storedLogLevel, string heading, Color headingColor, GameObject context = null) 
         {
             Log($"{heading.Color(headingColor)}: {message}", storedLogLevel, LogLevelType.Info, context);
         }
 
-        public static void LogInfo(string message, LogLevelType storedLogLevel, string heading, Color headingColor, Color messageColor, GameObject context = null)
+        public static void LogInfo(string message, LogLevelType storedLogLevel, string heading, Color headingColor, Color messageColor, GameObject context = null) 
         {
             Log($"{heading.Color(headingColor)}: {message.Color(messageColor)}", storedLogLevel, LogLevelType.Info, context);
         }
 
-        public static void LogError(string message, LogLevelType storedLogLevel, string heading = "", GameObject context = null)
+        public static void LogError(string message, LogLevelType storedLogLevel, string heading = "", GameObject context = null) 
         {
             Log(string.IsNullOrEmpty(heading) ? $"{message}" : $"{heading}: {message}", storedLogLevel, LogLevelType.Error, context);
         }
 
-        public static void LogError(string message, LogLevelType storedLogLevel, string heading, Color headingColor, GameObject context = null)
+        public static void LogError(string message, LogLevelType storedLogLevel, string heading, Color headingColor, GameObject context = null) 
         {
             Log($"{heading.Color(headingColor)}: {message}", storedLogLevel, LogLevelType.Error, context);
         }
 
-        public static void LogError(string message, LogLevelType storedLogLevel, string heading, Color headingColor, Color messageColor, GameObject context = null)
+        public static void LogError(string message, LogLevelType storedLogLevel, string heading, Color headingColor, Color messageColor, GameObject context = null) 
         {
             Log($"{heading.Color(headingColor)}: {message.Color(messageColor)}", storedLogLevel, LogLevelType.Error, context);
         }
         #endregion
 
         [System.Diagnostics.Conditional("ENABLE_LOG")]
-        public static void Log(string message, LogLevelType storedLogLevel, LogLevelType logLevel, GameObject context = null)
-        {
-            if ((int)storedLogLevel >= (int)logLevel)
-            {
-                switch (logLevel)
-                {
+        public static void Log(string message, LogLevelType storedLogLevel, LogLevelType logLevel, GameObject context = null) {
+            if((int)storedLogLevel >= (int)logLevel) {
+                switch(logLevel) {
                     case LogLevelType.None:
                         break;
                     case LogLevelType.Critical:
@@ -162,15 +145,6 @@ namespace d4160.Logging
                         if (context) Debug.Log(message, context); else Debug.Log(message);
                         break;
                 }
-            }
-        }
-
-        [System.Diagnostics.Conditional("ENABLE_LOG")]
-        public static void Log(Exception ex, LogLevelType storedLogLevel, GameObject context = null)
-        {
-            if ((int)storedLogLevel >= (int)LogLevelType.Critical)
-            {
-                if (context) Debug.LogException(ex, context); else Debug.LogException(ex);
             }
         }
     }

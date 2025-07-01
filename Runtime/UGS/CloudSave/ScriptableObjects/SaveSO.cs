@@ -72,7 +72,7 @@ namespace d4160.UGS.CloudSave
             await SaveAsync();
         }
 
-        public async Task<bool> SaveAsync()
+        public async Task SaveAsync()
         {
             var data = new Dictionary<string, object>();
             //string log = string.Empty;
@@ -88,21 +88,7 @@ namespace d4160.UGS.CloudSave
 
             //Debug.Log(log);
 
-            try
-            {
-                await CloudSaveService.Instance.Data.Player.SaveAsync(data);
-
-                return true;
-            }
-            catch (CloudSaveException ex)
-            {
-                if (ex.Reason != CloudSaveExceptionReason.AccessTokenMissing)
-                {
-                    Debug.LogException(ex);
-                }
-
-                return false;
-            }
+            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
         }
     }
 }

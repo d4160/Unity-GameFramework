@@ -29,7 +29,7 @@ namespace d4160.Runtime.OpenAI.ScriptableObjects
 
         public string ThreadId { get => _threadId; set => _threadId = value; }
         public string Assistant_id { get => _assistant_id; set => _assistant_id = value; }
-        public bool Stream { get => _stream; set => _stream = value; }
+        public bool Stream => _stream;
         public RetrieveThreadRunRequestSO RetrieveRunRequest => _retrieveRunRequest;
 
         public CreateThreadRunRequest GetRequest() => new(_assistant_id, _instructions, _stream);

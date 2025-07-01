@@ -1,4 +1,3 @@
-using System;
 using d4160.Core;
 using d4160.Texts;
 using UnityEngine;
@@ -37,7 +36,7 @@ namespace d4160.Logging
             LoggerM31.LogInfo(this, message, context);
         }
 
-        public void LogInfo(string message)
+        public void LogInfo(string message) 
         {
             LoggerM31.LogInfo(this, message, Context);
         }
@@ -47,7 +46,7 @@ namespace d4160.Logging
             LoggerM31.LogWarning(this, message, context);
         }
 
-        public void LogWarning(string message)
+        public void LogWarning(string message) 
         {
             LoggerM31.LogWarning(this, message, Context);
         }
@@ -57,17 +56,7 @@ namespace d4160.Logging
             LoggerM31.LogError(this, message, context);
         }
 
-        public void LogError(string message)
-        {
-            LoggerM31.LogError(this, message, Context);
-        }
-
-        public void LogException(Exception ex, GameObject context)
-        {
-            LoggerM31.LogException(this, ex, context);
-        }
-
-        public void LogException(string message)
+        public void LogError(string message) 
         {
             LoggerM31.LogError(this, message, Context);
         }

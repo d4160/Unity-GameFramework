@@ -137,6 +137,7 @@ public class TooltipManager : MonoBehaviour
         {
             // UI element
             RectTransform rectTransform = target.GetComponent<RectTransform>();
+            //rectTransform.
             return RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, rectTransform.position);
         }
         else
@@ -159,11 +160,18 @@ public class TooltipManager : MonoBehaviour
         yield return null; // Wait for the end of the frame to get correct layout
 
         Vector2 anchoredPosition;
-        //Vector2 uiElementScreenPosition = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, uiElement.position);
-        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRectTransform, screenPosition, canvas.worldCamera, out anchoredPosition))
+
+        try
         {
-            Debug.LogError("Failed to convert screen point to local point.");
-            yield break;
+            //Vector2 uiElementScreenPosition = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, uiElement.position);
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRectTransform, screenPosition, canvas.worldCamera, out anchoredPosition))
+            {
+                Debug.LogError("Failed to convert screen point to local point.");
+                yield break;
+            }
+        }
+        catch {
+            anchoredPosition = screenPosition;
         }
 
         tooltipPanel.anchoredPosition = anchoredPosition;

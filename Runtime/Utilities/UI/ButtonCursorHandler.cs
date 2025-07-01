@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace d4160.Utilities.UIs
 {
     [DisallowMultipleComponent]
-    public class UIElementCursorChanger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class ButtonCursorHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public Texture2D handCursor; // Assign a hand cursor texture in the Inspector
         public Color tint = Color.white; // Tint color for the cursor
