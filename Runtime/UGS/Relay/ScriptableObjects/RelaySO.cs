@@ -17,8 +17,8 @@ namespace d4160.UGS.Relay
 #if ENABLE_NAUGHTY_ATTRIBUTES
         //[DropdownDefined("udp", "dtls", "wss")]
 #endif
-        [Tooltip("Available options: upd, dtls, wss")]
-        public string connectionType = "dtls";
+        //[Tooltip("Available options: upd, dtls, wss")]
+        public bool isSecure = true;
 
         public async Task<string> CreateRelayAsync(int maxConnections)
         {
@@ -30,9 +30,20 @@ namespace d4160.UGS.Relay
 
                 Debug.Log($"[CreateRelay] JoinCode: {joinCode}");
 
-                RelayServerData relayServerData = new(alloc, connectionType);
+                //RelayServerData relayServerData = new(alloc, connectionType);
+                //NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
-                NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+                var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+                transport.SetRelayServerData(
+                    alloc.RelayServer.IpV4, 
+                    (ushort)alloc.RelayServer.Port, 
+                    alloc.AllocationIdBytes, 
+                    alloc.Key, 
+                    alloc.ConnectionData, 
+                    alloc.ConnectionData,   // Para el host se repite
+                    isSecure                  // o "udp"
+                );
+
                 NetworkManager.Singleton.StartHost();
 
                 return joinCode;
@@ -53,9 +64,19 @@ namespace d4160.UGS.Relay
 
                 Debug.Log($"[JoinRelay] JoinCode: {joinCode}");
 
-                RelayServerData relayServerData = new(alloc, connectionType);
+                //RelayServerData relayServerData = new RelayServerData(alloc, connectionType);
+                //NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
-                NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+                var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+                transport.SetRelayServerData(
+                    alloc.RelayServer.IpV4, 
+                    (ushort)alloc.RelayServer.Port, 
+                    alloc.AllocationIdBytes, 
+                    alloc.Key, 
+                    alloc.ConnectionData, 
+                    alloc.ConnectionData,   // Para el host se repite
+                    isSecure                  // o "udp"
+                );
 
                 NetworkManager.Singleton.StartClient();
 
