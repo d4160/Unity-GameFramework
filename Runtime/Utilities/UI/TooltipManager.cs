@@ -178,7 +178,7 @@ public class TooltipManager : MonoBehaviour
 
         AdjustPositionToStayOnScreen();
 
-        tooltipPanel.DOAnchorPos(anchoredPosition, animationDuration).SetEase(Ease.OutSine);
+        //tooltipPanel.DOAnchorPos(anchoredPosition, animationDuration).SetEase(Ease.OutSine);
     }
 
     /// <summary>
@@ -205,10 +205,10 @@ public class TooltipManager : MonoBehaviour
             return;
         }
 
-        _hidingTween = tooltipPanel.DOAnchorPos(tooltipPanel.anchoredPosition, animationDuration).SetEase(Ease.InSine).OnComplete(() =>
-        {
-            tooltipPanel.gameObject.SetActive(false);
-        });
+        //_hidingTween = tooltipPanel.DOAnchorPos(tooltipPanel.anchoredPosition, animationDuration).SetEase(Ease.InSine).OnComplete(() =>
+        // {
+        //     tooltipPanel.gameObject.SetActive(false);
+        // });
     }
 
     private void AdjustPositionToStayOnScreen()

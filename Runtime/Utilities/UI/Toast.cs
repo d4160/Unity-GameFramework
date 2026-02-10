@@ -45,7 +45,7 @@ public class Toast : MonoBehaviour
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
         canvasGroup.alpha = 0;
-        canvasGroup.DOFade(1, fadeDuration);
+        //canvasGroup.DOFade(1, fadeDuration);
     }
 
     public void FadeOut()
@@ -55,6 +55,6 @@ public class Toast : MonoBehaviour
         {
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
-        canvasGroup.DOFade(0, fadeDuration);
+        //canvasGroup.DOFade(0, fadeDuration);
     }
 }
