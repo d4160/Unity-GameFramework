@@ -1,7 +1,7 @@
 #if DEDICATED_SERVER
-using UnityEngine;
 using d4160.Events;
 using Unity.Services.Multiplay;
+using UnityEngine;
 
 namespace d4160.UGS.Multiplay
 {

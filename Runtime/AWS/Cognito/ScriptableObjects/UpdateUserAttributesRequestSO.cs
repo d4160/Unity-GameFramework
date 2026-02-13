@@ -1,3 +1,4 @@
+#if !DEDICATED_SERVER
 using Amazon.CognitoIdentityProvider.Model;
 using d4160.Variables;
 #if ENABLE_NAUGHTY_ATTRIBUTES
@@ -69,3 +70,4 @@ namespace d4160.AWS.Cognito
         }
     }
 }
+#endif

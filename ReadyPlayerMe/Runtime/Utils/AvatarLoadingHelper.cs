@@ -1,5 +1,5 @@
 using UnityEngine;
-using ReadyPlayerMe.Core;
+//using ReadyPlayerMe.Core;
 using System;
 using System.Threading.Tasks;
 
@@ -16,7 +16,7 @@ public static class AvatarLoadingHelper
     /// <param name="config">The config asset for loading avatar</param>
     /// <param name="onCompleted">Callback after avatar loading completes</param>
     /// <param name="configEyePosition">If we need to configure the eye's positions of avatar placeholder after transfer mesh</param>
-    public static void LoadAndTransferAvatar(string url, GameObject avatarPlaceholder, AvatarConfig config, Action onCompleted = null, bool configEyePosition = true)
+    public static void LoadAndTransferAvatar(string url, GameObject avatarPlaceholder, Action onCompleted = null, bool configEyePosition = true) // , AvatarConfig config,
     {
         Transform leftEye = null, rightEye = null;
         if (configEyePosition)
@@ -25,22 +25,22 @@ public static class AvatarLoadingHelper
             rightEye = avatarPlaceholder.transform.Find(FULL_BODY_RIGHT_EYE_BONE_NAME);
         }
 
-        var loader = new AvatarObjectLoader();
-        loader.LoadAvatar(url);
-        loader.AvatarConfig = config;
-        loader.OnCompleted += (sender, args) =>
-        {
-            if (configEyePosition)
-            {
-                leftEye.transform.localPosition = args.Avatar.transform.Find(FULL_BODY_LEFT_EYE_BONE_NAME).localPosition;
-                rightEye.transform.localPosition = args.Avatar.transform.Find(FULL_BODY_RIGHT_EYE_BONE_NAME).localPosition;
-            }
+        // var loader = new AvatarObjectLoader();
+        // loader.LoadAvatar(url);
+        // loader.AvatarConfig = config;
+        // loader.OnCompleted += (sender, args) =>
+        // {
+        //     if (configEyePosition)
+        //     {
+        //         leftEye.transform.localPosition = args.Avatar.transform.Find(FULL_BODY_LEFT_EYE_BONE_NAME).localPosition;
+        //         rightEye.transform.localPosition = args.Avatar.transform.Find(FULL_BODY_RIGHT_EYE_BONE_NAME).localPosition;
+        //     }
 
-            AvatarMeshHelper.TransferMesh(args.Avatar, avatarPlaceholder);
-            UnityEngine.Object.Destroy(args.Avatar);
+        //     AvatarMeshHelper.TransferMesh(args.Avatar, avatarPlaceholder);
+        //     UnityEngine.Object.Destroy(args.Avatar);
 
-            onCompleted?.Invoke();
-        };
+        //     onCompleted?.Invoke();
+        // };
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public static class AvatarLoadingHelper
     /// <param name="avatarPlaceholder">The GameObject the loaded avatar will transfer to</param>
     /// <param name="config">The config asset for loading avatar</param>
     /// <param name="configEyePosition">If we need to configure the eye's positions of avatar placeholder after transfer mesh</param>
-    public static async Task LoadAndTransferAvatarAsync(string url, GameObject avatarPlaceholder, AvatarConfig config, bool configEyePosition = true)
+    public static async Task LoadAndTransferAvatarAsync(string url, GameObject avatarPlaceholder, bool configEyePosition = true)
     {
         Transform leftEye = null, rightEye = null;
         if (configEyePosition)
@@ -60,22 +60,22 @@ public static class AvatarLoadingHelper
         }
 
         var loading = true;
-        var loader = new AvatarObjectLoader();
-        loader.LoadAvatar(url);
-        loader.AvatarConfig = config;
-        loader.OnCompleted += (sender, args) =>
-        {
-            if (configEyePosition)
-            {
-                leftEye.transform.localPosition = args.Avatar.transform.Find(FULL_BODY_LEFT_EYE_BONE_NAME).localPosition;
-                rightEye.transform.localPosition = args.Avatar.transform.Find(FULL_BODY_RIGHT_EYE_BONE_NAME).localPosition;
-            }
+        // var loader = new AvatarObjectLoader();
+        // loader.LoadAvatar(url);
+        // loader.AvatarConfig = config;
+        // loader.OnCompleted += (sender, args) =>
+        // {
+        //     if (configEyePosition)
+        //     {
+        //         leftEye.transform.localPosition = args.Avatar.transform.Find(FULL_BODY_LEFT_EYE_BONE_NAME).localPosition;
+        //         rightEye.transform.localPosition = args.Avatar.transform.Find(FULL_BODY_RIGHT_EYE_BONE_NAME).localPosition;
+        //     }
 
-            AvatarMeshHelper.TransferMesh(args.Avatar, avatarPlaceholder);
-            UnityEngine.Object.Destroy(args.Avatar);
+        //     AvatarMeshHelper.TransferMesh(args.Avatar, avatarPlaceholder);
+        //     UnityEngine.Object.Destroy(args.Avatar);
 
-            loading = false;
-        };
+        //     loading = false;
+        // };
 
         while (loading)
         {

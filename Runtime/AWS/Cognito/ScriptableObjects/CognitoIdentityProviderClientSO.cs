@@ -1,3 +1,4 @@
+#if !DEDICATED_SERVER
 using Amazon.CognitoIdentityProvider;
 using UnityEngine;
 using d4160.AWS.Core;
@@ -66,3 +67,5 @@ namespace d4160.AWS.Cognito
         USER_SRP_AUTH
     }
 }
+#endif
+
