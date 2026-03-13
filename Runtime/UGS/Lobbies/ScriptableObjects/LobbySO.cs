@@ -32,16 +32,22 @@ namespace d4160.UGS.Lobbies
 
         public string GetPlayerName(Player player)
         {
-            return player.Data[playerNameKey].Value;
+            if (player.Data != null && player.Data.ContainsKey(playerNameKey))
+                return player.Data[playerNameKey].Value;
+            return "Desconocido";
         }
 
         internal void PrintPlayers(Lobby lobby)
         {
+            if (lobby == null || lobby.Players == null) return;
+
             Debug.Log($"Players in Lobby {lobby.Name} {lobby.Players.Count}");
             for (int i = 0; i < lobby.Players.Count; i++)
             {
                 Player p = lobby.Players[i];
-                Debug.Log($"{p.Id} {p.Data[playerNameKey].Value}");
+                string pName = (p.Data != null && p.Data.ContainsKey(playerNameKey))
+                    ? p.Data[playerNameKey].Value : "N/A";
+                Debug.Log($"{p.Id} {pName}");
             }
         }
 
@@ -55,7 +61,19 @@ namespace d4160.UGS.Lobbies
                 }
                 catch (LobbyServiceException e)
                 {
-                    Debug.LogException(e);
+                    if (e.Reason == LobbyExceptionReason.RateLimited)
+                    {
+                        Debug.LogWarning("[BugFix#71] SendHeartbeatPingAsync: Rate limited (429). Will retry next cycle.");
+                    }
+                    else if (e.Reason == LobbyExceptionReason.LobbyNotFound)
+                    {
+                        Debug.LogWarning("[BugFix#71] SendHeartbeatPingAsync: Lobby expired (404). Clearing reference.");
+                        Lobby = null;
+                    }
+                    else
+                    {
+                        Debug.LogException(e);
+                    }
                 }
             }
         }
@@ -71,8 +89,68 @@ namespace d4160.UGS.Lobbies
                 }
                 catch (LobbyServiceException e)
                 {
-                    Debug.LogException(e);
+                    if (e.Reason == LobbyExceptionReason.LobbyNotFound)
+                    {
+                        Debug.LogWarning($"[BugFix#71] GetLobbyAsync: Lobby expired (404). Clearing reference.");
+                        Lobby = null;
+                    }
+                    else
+                    {
+                        Debug.LogException(e);
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// BugFix#68: Fetches a lobby by ID and assigns it to this SO.
+        /// Used after CreateSessionAsync/CreateOrJoinSessionAsync (UMS) to populate
+        /// the Lobby reference so LobbyMono polling, heartbeat, and
+        /// ParticipantsInClassUI can function.
+        /// This is a READ-only operation (no join/create), safe from 429 errors.
+        /// </summary>
+        public async Task FetchAndSetLobbyAsync(string lobbyId)
+        {
+            try
+            {
+                Lobby = await LobbyService.Instance.GetLobbyAsync(lobbyId);
+                Debug.Log($"[BugFix#68] FetchAndSetLobbyAsync: Lobby '{Lobby.Name}' loaded, {PlayersCount} player(s)");
+                if (_onGetLobby) _onGetLobby.Invoke();
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.LogWarning($"[BugFix#68] FetchAndSetLobbyAsync failed for lobbyId={lobbyId}: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// BugFix#73: Uploads local player data (name, role, etc.) to the lobby.
+        /// Must be called AFTER FetchAndSetLobbyAsync so Lobby reference is valid.
+        /// Fixes "Desconocido" in ParticipantsInClass — player data was never uploaded
+        /// because DisplayNameVar.OnValueChange fired before lobby existed.
+        /// </summary>
+        public async Task UpdateLocalPlayerDataAsync(LobbyPlayerSO playerData)
+        {
+            if (Lobby == null || playerData == null) return;
+
+            try
+            {
+                var options = new UpdatePlayerOptions
+                {
+                    Data = LobbyPlayerData.GetPlayerData(playerData.playerData)
+                };
+
+                Lobby = await LobbyService.Instance.UpdatePlayerAsync(
+                    Lobby.Id,
+                    AuthenticationService.Instance.PlayerId,
+                    options);
+
+                Debug.Log($"[BugFix#73] UpdateLocalPlayerDataAsync: Player data uploaded to lobby '{Lobby.Name}'");
+                PrintPlayers(Lobby);
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.LogWarning($"[BugFix#73] UpdateLocalPlayerDataAsync failed: {e.Message}");
             }
         }
 
@@ -126,14 +204,21 @@ namespace d4160.UGS.Lobbies
             }
         }
 
-        private async void TryMigrateHost(string currentHostId)
+        // BugFix#74: Changed from async void to async Task so LeaveOrDeleteLobby can await it
+        private async Task TryMigrateHost(string currentHostId)
         {
+            Debug.Log($"[BugFix#74] TryMigrateHost: Starting migration from host '{currentHostId}'");
             await GetLobbyAsync();
 
             string newHostId = string.Empty;
 
-            if (Lobby == null || Lobby.Players == null) return;
+            if (Lobby == null || Lobby.Players == null)
+            {
+                Debug.LogWarning("[BugFix#74] TryMigrateHost: Lobby is null after refresh — cannot migrate.");
+                return;
+            }
 
+            Debug.Log($"[BugFix#74] TryMigrateHost: Lobby has {Lobby.Players.Count} players");
             for (int i = 0; i < Lobby.Players.Count; i++)
             {
                 if (Lobby.Players[i].Id == currentHostId)
@@ -146,11 +231,15 @@ namespace d4160.UGS.Lobbies
 
             if (!string.IsNullOrEmpty(newHostId))
             {
+                Debug.Log($"[BugFix#74] TryMigrateHost: Migrating host to '{newHostId}'");
                 await MigrateHostAsync(newHostId);
+                Debug.Log($"[BugFix#74] TryMigrateHost: Host migrated. Now leaving lobby...");
                 await LeaveLobbyAsync();
+                Debug.Log("[BugFix#74] TryMigrateHost: Left lobby successfully.");
             }
             else
             {
+                Debug.LogWarning("[BugFix#74] TryMigrateHost: No other player found — deleting lobby.");
                 await DeleteLobbyAsync();
             }
         }
@@ -181,7 +270,8 @@ namespace d4160.UGS.Lobbies
                     {
                         if (migrateHost)
                         {
-                            TryMigrateHost(Lobby.HostId);
+                            // BugFix#74: Await migration so it completes before Lobby = null
+                            await TryMigrateHost(Lobby.HostId);
                         }
                         else
                         {
@@ -196,9 +286,37 @@ namespace d4160.UGS.Lobbies
                     Lobby = null;
                 }
             }
-            catch
+            catch (System.Exception ex)
             {
+                Debug.LogWarning($"[BugFix#74] LeaveOrDeleteLobby failed: {ex.Message}");
+                Lobby = null;
+            }
+        }
 
+        /// <summary>
+        /// BugFix#74v3: Leaves all active UMS sessions gracefully.
+        /// In DA mode (non-server), LeaveAsync() does NOT delete the session — it just
+        /// removes the player and disconnects transport cleanly. This ensures UMS internal
+        /// state stays consistent with our manual lobby operations.
+        /// </summary>
+        public static async Task TryLeaveUmsSessionsAsync()
+        {
+            try
+            {
+                var sessions = Unity.Services.Multiplayer.MultiplayerService.Instance.Sessions;
+                foreach (var kvp in sessions)
+                {
+                    if (kvp.Value != null && kvp.Value.State == Unity.Services.Multiplayer.SessionState.Connected)
+                    {
+                        Debug.Log($"[BugFix#74] Leaving UMS session '{kvp.Key}'...");
+                        await kvp.Value.LeaveAsync();
+                        Debug.Log($"[BugFix#74] UMS session '{kvp.Key}' left successfully.");
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[BugFix#74] TryLeaveUmsSessionsAsync failed: {ex.Message}");
             }
         }
     }

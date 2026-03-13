@@ -27,6 +27,12 @@ namespace d4160.AgoraRtc
         public static AgoraRtcService Instance => _instance ??= new AgoraRtcService();
         private static AgoraRtcService _instance;
 
+        /// <summary>
+        /// BugFix#70: True when the local user is actively speaking (detected by Agora VAD).
+        /// Updated by OnAudioVolumeIndication callback every 200ms.
+        /// </summary>
+        public bool IsLocalSpeaking { get; internal set; }
+
         public void InitRtcEngine()
         {
             if (!CheckAppId())
@@ -58,11 +64,13 @@ namespace d4160.AgoraRtc
         {
             if ((modules & JoinChannelModules.EnableAudio) != 0)
             {
-                RtcEngine.EnableAudio();
+                int ret = RtcEngine.EnableAudio();
+                Debug.Log($"[BugFix#67b] EnableAudio() returned {ret}");
 
                 if ((modules & JoinChannelModules.EnableLocalAudio) == 0)
                 {
-                    RtcEngine.EnableLocalAudio(false);
+                    int ret2 = RtcEngine.EnableLocalAudio(false);
+                    Debug.Log($"[BugFix#67b] EnableLocalAudio(false) returned {ret2}");
                 }
             }
             else
@@ -88,19 +96,37 @@ namespace d4160.AgoraRtc
             RtcEngine.SetChannelProfile(channelProfileType);
             RtcEngine.SetClientRole(clientRoleType);
 
+            // BugFix#67b: Always use ChannelMediaOptions overload with explicit autoSubscribeAudio/Video.
+            // The legacy JoinChannel(token, channelName, "", 0) API does not guarantee autoSubscribeAudio=true
+            // in Agora 4.x, causing remote audio to not be received even though video works
+            // (video uses explicit VideoSurface.SetForUser subscription, audio relies on autoSubscribe).
             if (options == null)
             {
-                RtcEngine.JoinChannel(token, channelName, "", 0);
+                options = new ChannelMediaOptions();
             }
-            else
-            {
-                RtcEngine.JoinChannel(token, channelName, 0, options);
-            }
+            // Ensure audio/video subscription is always enabled
+            if (!options.autoSubscribeAudio.HasValue())
+                options.autoSubscribeAudio.SetValue(true);
+            if (!options.autoSubscribeVideo.HasValue())
+                options.autoSubscribeVideo.SetValue(true);
+            // Set publish flags based on module configuration
+            if (!options.publishMicrophoneTrack.HasValue())
+                options.publishMicrophoneTrack.SetValue((modules & JoinChannelModules.EnableLocalAudio) != 0);
+            if (!options.publishCameraTrack.HasValue())
+                options.publishCameraTrack.SetValue((modules & JoinChannelModules.EnableLocalVideo) != 0);
+
+            Debug.Log($"[BugFix#67b] JoinChannel: autoSubAudio={options.autoSubscribeAudio.GetValue()}, autoSubVideo={options.autoSubscribeVideo.GetValue()}, pubMic={options.publishMicrophoneTrack.GetValue()}, pubCam={options.publishCameraTrack.GetValue()}");
+            RtcEngine.JoinChannel(token, channelName, 0, options);
+
+            // BugFix#70: Enable audio volume indication for speaking detection.
+            // 200ms interval, smooth factor 3, VAD (Voice Activity Detection) enabled.
+            RtcEngine.EnableAudioVolumeIndication(200, 3, true);
         }
 
         public void LeaveChannel()
         {
             //RtcEngine.InitEventHandler(null);
+            IsLocalSpeaking = false;
             RtcEngine?.LeaveChannel();
         }
 
@@ -253,6 +279,42 @@ namespace d4160.AgoraRtc
         {
             _service.LogInfo($"OnUserOffline(RtcConnection, uint, USER_OFFLINE_REASON_TYPE); ChannelId:{connection.channelId}; LocalUid:{connection.localUid}; Uid:{uid}; USER_OFFLINE_REASON_TYPE:{reason};");
             if (_service.OnUserOffline) _service.OnUserOffline.Invoke(connection, uid, reason);
+        }
+
+        // BugFix#70: Detect local user speaking state via Agora VAD
+        public override void OnAudioVolumeIndication(RtcConnection connection, AudioVolumeInfo[] speakers, uint speakerNumber, int totalVolume)
+        {
+            bool localSpeaking = false;
+            for (int i = 0; i < speakerNumber; i++)
+            {
+                if (speakers[i].uid == 0) // uid 0 = local user
+                {
+                    localSpeaking = speakers[i].vad == 1;
+                    break;
+                }
+            }
+            _service.IsLocalSpeaking = localSpeaking;
+        }
+
+        // BugFix#67b: Diagnostic callbacks for audio state tracking
+        public override void OnRemoteAudioStateChanged(RtcConnection connection, uint remoteUid, REMOTE_AUDIO_STATE state, REMOTE_AUDIO_STATE_REASON reason, int elapsed)
+        {
+            Debug.Log($"[BugFix#67b] OnRemoteAudioStateChanged: Uid={remoteUid}, State={state}, Reason={reason}, Elapsed={elapsed}");
+        }
+
+        public override void OnLocalAudioStateChanged(RtcConnection connection, LOCAL_AUDIO_STREAM_STATE state, LOCAL_AUDIO_STREAM_REASON reason)
+        {
+            Debug.Log($"[BugFix#67b] OnLocalAudioStateChanged: State={state}, Reason={reason}");
+        }
+
+        public override void OnAudioPublishStateChanged(string channel, STREAM_PUBLISH_STATE oldState, STREAM_PUBLISH_STATE newState, int elapseSinceLastState)
+        {
+            Debug.Log($"[BugFix#67b] OnAudioPublishStateChanged: Channel={channel}, OldState={oldState}, NewState={newState}, Elapsed={elapseSinceLastState}");
+        }
+
+        public override void OnAudioSubscribeStateChanged(string channel, uint uid, STREAM_SUBSCRIBE_STATE oldState, STREAM_SUBSCRIBE_STATE newState, int elapseSinceLastState)
+        {
+            Debug.Log($"[BugFix#67b] OnAudioSubscribeStateChanged: Channel={channel}, Uid={uid}, OldState={oldState}, NewState={newState}, Elapsed={elapseSinceLastState}");
         }
     }
 }

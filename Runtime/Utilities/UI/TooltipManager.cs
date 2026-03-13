@@ -1,9 +1,9 @@
+using System;
+using System.Collections;
+using DG.Tweening; // Ensure you have DOTween imported in your project
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening; // Ensure you have DOTween imported in your project
-using System.Collections;
-using TMPro;
-using System;
 
 /// <summary>
 /// Manages the display and positioning of tooltips in the UI.
@@ -47,6 +47,7 @@ public class TooltipManager : MonoBehaviour
 
     private RectTransform _canvasRectTransform;
     private Tweener _hidingTween;
+    private GameObject _currentTarget;
 
     public TooltipTrigger LastToolTipTrigger { get; internal set; }
 
@@ -105,6 +106,8 @@ public class TooltipManager : MonoBehaviour
             Debug.LogError("Target is null.");
             return;
         }
+
+        _currentTarget = target;
 
         if (_hidingTween != null)
         {
@@ -170,7 +173,8 @@ public class TooltipManager : MonoBehaviour
                 yield break;
             }
         }
-        catch {
+        catch
+        {
             anchoredPosition = screenPosition;
         }
 
@@ -205,10 +209,21 @@ public class TooltipManager : MonoBehaviour
             return;
         }
 
-        //_hidingTween = tooltipPanel.DOAnchorPos(tooltipPanel.anchoredPosition, animationDuration).SetEase(Ease.InSine).OnComplete(() =>
-        // {
-        //     tooltipPanel.gameObject.SetActive(false);
-        // });
+        tooltipPanel.gameObject.SetActive(false);
+        _currentTarget = null;
+    }
+
+    /// <summary>
+    /// Hides the tooltip only if the source requested it.
+    /// This prevents accidentally hiding another element's tooltip when moving the cursor quickly between two UI elements.
+    /// </summary>
+    /// <param name="source">The GameObject that originally requested the tooltip.</param>
+    public void HideTooltip(GameObject source)
+    {
+        if (source != null && _currentTarget != source)
+            return;
+
+        HideTooltip();
     }
 
     private void AdjustPositionToStayOnScreen()

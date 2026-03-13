@@ -1,8 +1,8 @@
 #if !DEDICATED_SERVER
 using d4160.Events;
 using d4160.Variables;
-using UnityEngine.Serialization;
 using UnityEngine;
+using UnityEngine.Serialization;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
 #endif
@@ -56,7 +56,7 @@ public class OnAudioFilterReadForwarder : MonoBehaviour, IEventListener<bool>
         if (_isMutedVar != null)
             SetIsMuted(_isMutedVar.Value);
 
-        if (_isGlobalMutedVar != null) SetIsGlobalMuted(_isGlobalMutedVar.Value);
+        //if (_isGlobalMutedVar != null) SetIsGlobalMuted(_isGlobalMutedVar.Value);
 
         if (_micCapture)
         {
@@ -130,11 +130,6 @@ public class OnAudioFilterReadForwarder : MonoBehaviour, IEventListener<bool>
     private void SetIsMuted(bool isMuted)
     {
         _isMutedPrev = isMuted;
-        if (isMuted && !_isGlobalMutedPrev)
-        {
-            isMuted = false;
-        }
-
         _muteState = isMuted ? MuteState.Before : MuteState.After;
     }
 

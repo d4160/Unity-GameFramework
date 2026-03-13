@@ -74,11 +74,26 @@ namespace d4160.Dissonance
             }
         }
 
+        /// <summary>
+        /// Disables all voice pairs (mutes everything). Used when exiting a voice zone with no default pair.
+        /// </summary>
+        public void DisableAll()
+        {
+            _enabledIndex = -1;
+            DisableAllVoicePairs(false);
+        }
+
         public void SetEnableVoiceReceipt(int index, bool enabled)
         {
             if (!_voicePairs.IsValidIndex(index)) return;
 
             _voicePairs[index].SetEnableReceipt(enabled);
         }
+
+        /// <summary>Number of configured voice pairs (for diagnostics).</summary>
+        public int VoicePairCount => _voicePairs != null ? _voicePairs.Length : 0;
+
+        /// <summary>Currently active voice pair index, -1 if none (for diagnostics).</summary>
+        public int EnabledIndex => _enabledIndex;
     }
 }

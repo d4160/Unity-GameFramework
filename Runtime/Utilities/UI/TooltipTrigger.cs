@@ -59,7 +59,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     internal void HideTooltip()
     {
-        tooltipManager.HideTooltip();
+        tooltipManager.HideTooltip(gameObject);
 
         _shown = false;
     }
