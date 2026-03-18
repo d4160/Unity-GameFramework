@@ -38,22 +38,29 @@ public class ToastManager : Singleton<ToastManager>
     protected override void Awake()
     {
         base.Awake();
+        Color successColor, errorColor, infoColor, warningColor;
+        ColorUtility.TryParseHtmlString("#2E7D32", out successColor); // Material Green 800
+        ColorUtility.TryParseHtmlString("#C62828", out errorColor); // Material Red 800
+        ColorUtility.TryParseHtmlString("#0277BD", out infoColor); 
+        ColorUtility.TryParseHtmlString("#F9A825", out warningColor); 
+
         themeColors = new Dictionary<ToastTheme, Color>
         {
-            { ToastTheme.Info, Color.cyan },
-            { ToastTheme.Dark, Color.black },
+            { ToastTheme.Info, infoColor },
+            { ToastTheme.Dark, new Color(0.15f, 0.15f, 0.15f) },
             { ToastTheme.White, Color.white },
-            { ToastTheme.Success, Color.green },
-            { ToastTheme.Warning, Color.yellow },
-            { ToastTheme.Error, Color.red }
+            { ToastTheme.Success, successColor },
+            { ToastTheme.Warning, warningColor },
+            { ToastTheme.Error, errorColor }
         };
     }
 
-    public void ShowToast(string message, ToastPosition position = ToastPosition.TopCenter, ToastTheme theme = ToastTheme.Dark, float duration = 2.0f, bool isPermanent = false)
+    public void ShowToast(string title, string message, ToastPosition position = ToastPosition.TopCenter, ToastTheme theme = ToastTheme.Dark, float duration = 2.0f, bool isPermanent = false)
     {
         GameObject toastInstance = Instantiate(toastPrefab, canvas.transform);
         Toast toastComponent = toastInstance.GetComponent<Toast>();
 
+        toastComponent.SetTitle(title);
         toastComponent.SetMessage(message);
         toastComponent.SetTheme(themeColors[theme]);
         toastComponent.SetDuration(duration, isPermanent);

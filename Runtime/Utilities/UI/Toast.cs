@@ -1,18 +1,32 @@
-using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Toast : MonoBehaviour
 {
+    public TextMeshProUGUI titleText;
     public TextMeshProUGUI messageText;
     public Button closeButton;
     public Image background;
     public float fadeDuration = 0.5f;
 
+    public void SetTitle(string title)
+    {
+        if (titleText != null)
+        {
+            titleText.text = title;
+            titleText.gameObject.SetActive(!string.IsNullOrEmpty(title));
+        }
+    }
+
     public void SetMessage(string message)
     {
-        messageText.text = message;
+        if (messageText != null)
+        {
+            messageText.text = message;
+            messageText.gameObject.SetActive(!string.IsNullOrEmpty(message));
+        }
     }
 
     public void SetTheme(Color color)
@@ -45,7 +59,7 @@ public class Toast : MonoBehaviour
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
         canvasGroup.alpha = 0;
-        //canvasGroup.DOFade(1, fadeDuration);
+        canvasGroup.DOFade(1, fadeDuration);
     }
 
     public void FadeOut()
@@ -55,6 +69,6 @@ public class Toast : MonoBehaviour
         {
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
-        //canvasGroup.DOFade(0, fadeDuration);
+        canvasGroup.DOFade(0, fadeDuration);
     }
 }

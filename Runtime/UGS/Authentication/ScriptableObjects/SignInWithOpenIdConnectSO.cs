@@ -25,9 +25,24 @@ namespace d4160.UGS.Authentication
 
         public async Task SignInWithOpenIdConnectAsync()
         {
-            //Debug.Log("[SignInWithOpenIdConnectAsync]");
+            if (Unity.Services.Core.UnityServices.State == Unity.Services.Core.ServicesInitializationState.Initialized)
+            {
+                try 
+                {
+                    AuthenticationService.Instance.SignOut(true);
+                    AuthenticationService.Instance.ClearSessionToken();
+                    Debug.Log("[SignInWithOpenIdConnectSO] Purged previous UGS session successfully.");
+                }
+                catch (System.Exception e) { Debug.LogWarning($"[SignInWithOpenIdConnectSO] SignOut warning: {e.Message}"); }
+            }
+
+            string provider = _providerName != null ? _providerName.Value : "null";
+            string token = _idToken != null ? _idToken.Value : "null";
+            
+            Debug.Log($"[SignInWithOpenIdConnectSO] providerName: {provider}, idToken length: {token?.Length}");
+
             await AuthenticationService.Instance.SignInWithOpenIdConnectAsync(
-                _providerName, _idToken);
+                provider, token);
         }
     }
 }
