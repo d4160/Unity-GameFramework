@@ -25,6 +25,8 @@ namespace d4160.AgoraRtc
 #endif
         public int StartScreenCapture()
         {
+            if (_service.RtcEngine == null) { Debug.LogWarning("[ScreenCaptureSO] StartScreenCapture skipped — RtcEngine is null."); return -1; }
+
             int nRet = -1;
             ScreenCaptureSourceInfo selectedInfo = _deviceOptions.ScreenCaptureSourceInfoRuntimeSet.SelectedScreenCaptureSource;
 
@@ -57,6 +59,10 @@ namespace d4160.AgoraRtc
 #if ENABLE_NAUGHTY_ATTRIBUTES
         [Button]
 #endif
-        public int StopScreenCapture() => _service.RtcEngine.StopScreenCapture();
+        public int StopScreenCapture()
+        {
+            if (_service.RtcEngine == null) { Debug.LogWarning("[ScreenCaptureSO] StopScreenCapture skipped — RtcEngine is null."); return -1; }
+            return _service.RtcEngine.StopScreenCapture();
+        }
     }
 }

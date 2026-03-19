@@ -33,11 +33,20 @@ namespace d4160.AgoraRtc
         /// </summary>
         public bool IsLocalSpeaking { get; internal set; }
 
+        /// <summary>
+        /// When true, Agora's audio device (mic/speaker) is kept disabled at all times.
+        /// Set this BEFORE calling InitRtcEngine() so that the native AudioRecord is never
+        /// claimed, leaving the hardware free for Dissonance VoIP.
+        /// </summary>
+        public bool DisableAudioDevice { get; set; }
+
         public void InitRtcEngine()
         {
+            Debug.Log($"[AgoraRtcService] InitRtcEngine: Settings={Settings != null}, AppID={(Settings != null ? Settings.AppID : "null")}, DisableAudioDevice={DisableAudioDevice}");
+
             if (!CheckAppId())
             {
-                LogInfo($"Please fill in your appId in (AgoraRtcSettingsSO asset)");
+                Debug.LogError($"[AgoraRtcService] InitRtcEngine FAILED — CheckAppId returned false. Settings is {(Settings == null ? "NULL" : "assigned")}. Agora video/screen share will not work. Assign AgoraRtcSettingsSO in the AgoraRtcServiceSO asset.");
                 return;
             }
 
@@ -47,10 +56,25 @@ namespace d4160.AgoraRtc
             _rtcEngine.Initialize(Settings.GetRtcEngineContext());
             _rtcEngine.InitEventHandler(handler);
 
+            // BugFix#80: When Dissonance handles voice, prevent Agora from ever claiming
+            // the native audio device. On Android, Agora's Initialize() alone doesn't grab
+            // the mic, but EnableAudio()/JoinChannel with audio DOES — and even after
+            // DisableAudio() the native AudioRecord handle isn't fully released, causing
+            // Dissonance's Microphone.Start() to fail with FMOD error 80.
+            // By disabling audio immediately, we ensure no subsequent call can activate it.
+            if (DisableAudioDevice)
+            {
+                _rtcEngine.DisableAudio();
+                _rtcEngine.EnableLocalAudio(false);
+                _rtcEngine.MuteLocalAudioStream(true);
+                _rtcEngine.MuteAllRemoteAudioStreams(true);
+                Debug.Log("[BugFix#80] Agora audio device disabled at init — Dissonance will handle voice.");
+            }
+
             LogInfo($"[InitRtcEngine] Success");
         }
 
-        private bool CheckAppId() => Settings.AppID.Length > 10;
+        private bool CheckAppId() => Settings != null && Settings.AppID.Length > 10;
 
         public void DisposeRtcEngine()
         {
@@ -62,7 +86,19 @@ namespace d4160.AgoraRtc
 
         public void JoinChannel(string token, string channelName, JoinChannelModules modules = JoinChannelModules.EnableAudio | JoinChannelModules.EnableVideo, CLIENT_ROLE_TYPE clientRoleType = CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER, CHANNEL_PROFILE_TYPE channelProfileType = CHANNEL_PROFILE_TYPE.CHANNEL_PROFILE_LIVE_BROADCASTING, VideoEncoderConfiguration videoEncoderConfig = null, ChannelMediaOptions options = null)
         {
-            if ((modules & JoinChannelModules.EnableAudio) != 0)
+            if (_rtcEngine == null)
+            {
+                Debug.LogError("[AgoraRtcService] JoinChannel failed — RtcEngine is null. Was InitRtcEngine() called with a valid Settings asset?");
+                return;
+            }
+
+            // BugFix#80: When audio device is disabled (Dissonance handles voice),
+            // never call EnableAudio() — it would reclaim the native AudioRecord on Android.
+            if (DisableAudioDevice)
+            {
+                Debug.Log("[BugFix#80] JoinChannel: audio device disabled, skipping all audio init.");
+            }
+            else if ((modules & JoinChannelModules.EnableAudio) != 0)
             {
                 int ret = RtcEngine.EnableAudio();
                 Debug.Log($"[BugFix#67b] EnableAudio() returned {ret}");
@@ -104,14 +140,23 @@ namespace d4160.AgoraRtc
             {
                 options = new ChannelMediaOptions();
             }
-            // Ensure audio/video subscription is always enabled
-            if (!options.autoSubscribeAudio.HasValue())
-                options.autoSubscribeAudio.SetValue(true);
+            // BugFix#80: Force audio off in channel options when audio device is disabled
+            if (DisableAudioDevice)
+            {
+                options.autoSubscribeAudio.SetValue(false);
+                options.publishMicrophoneTrack.SetValue(false);
+            }
+            else
+            {
+                // Ensure audio subscription is always enabled
+                if (!options.autoSubscribeAudio.HasValue())
+                    options.autoSubscribeAudio.SetValue(true);
+                if (!options.publishMicrophoneTrack.HasValue())
+                    options.publishMicrophoneTrack.SetValue((modules & JoinChannelModules.EnableLocalAudio) != 0);
+            }
+            // Video subscription is always needed (Agora still handles video)
             if (!options.autoSubscribeVideo.HasValue())
                 options.autoSubscribeVideo.SetValue(true);
-            // Set publish flags based on module configuration
-            if (!options.publishMicrophoneTrack.HasValue())
-                options.publishMicrophoneTrack.SetValue((modules & JoinChannelModules.EnableLocalAudio) != 0);
             if (!options.publishCameraTrack.HasValue())
                 options.publishCameraTrack.SetValue((modules & JoinChannelModules.EnableLocalVideo) != 0);
 
@@ -132,76 +177,100 @@ namespace d4160.AgoraRtc
 
         public void EnableVideo()
         {
+            if (_rtcEngine == null) { Debug.LogWarning("[AgoraRtcService] EnableVideo skipped — RtcEngine is null."); return; }
             RtcEngine.EnableVideo();
         }
 
         public void EnableLocalVideo(bool enabled)
         {
+            if (_rtcEngine == null) { Debug.LogWarning("[AgoraRtcService] EnableLocalVideo skipped — RtcEngine is null."); return; }
             RtcEngine.EnableLocalVideo(enabled);
         }
 
         public void MuteLocalVideoStream(bool mute)
         {
+            if (_rtcEngine == null) { Debug.LogWarning("[AgoraRtcService] MuteLocalVideoStream skipped — RtcEngine is null."); return; }
             RtcEngine.MuteLocalVideoStream(mute);
         }
 
         public void EnableAudio()
         {
+            if (DisableAudioDevice) { Debug.Log("[BugFix#80] EnableAudio blocked — audio device disabled."); return; }
+            if (_rtcEngine == null) { Debug.LogWarning("[AgoraRtcService] EnableAudio skipped — RtcEngine is null."); return; }
             RtcEngine.EnableAudio();
         }
 
         public void EnableLocalAudio(bool enabled)
         {
+            if (DisableAudioDevice) { Debug.Log("[BugFix#80] EnableLocalAudio blocked — audio device disabled."); return; }
+            if (_rtcEngine == null) { Debug.LogWarning("[AgoraRtcService] EnableLocalAudio skipped — RtcEngine is null."); return; }
             RtcEngine.EnableLocalAudio(enabled);
         }
 
         public void MuteLocalAudioStream(bool mute)
         {
+            if (DisableAudioDevice && !mute) { Debug.Log("[BugFix#80] MuteLocalAudioStream(false) blocked — audio device disabled."); return; }
+            if (_rtcEngine == null) { Debug.LogWarning("[AgoraRtcService] MuteLocalAudioStream skipped — RtcEngine is null."); return; }
             RtcEngine.MuteLocalAudioStream(mute);
         }
 
         public void DisableVideo()
         {
+            if (_rtcEngine == null) return;
             RtcEngine.DisableVideo();
         }
 
         public void DisableAudio()
         {
+            if (_rtcEngine == null) return;
             RtcEngine.DisableAudio();
+            if (DisableAudioDevice)
+            {
+                RtcEngine.EnableLocalAudio(false);
+                RtcEngine.MuteLocalAudioStream(true);
+                RtcEngine.MuteAllRemoteAudioStreams(true);
+            }
         }
 
         public void StartPreview()
         {
+            if (_rtcEngine == null) return;
             RtcEngine.StartPreview();
         }
 
         public void StopPreview()
         {
+            if (_rtcEngine == null) return;
             RtcEngine.StopPreview();
         }
 
         public void UpdateChannelMediaOptions(ChannelMediaOptions options)
         {
+            if (_rtcEngine == null) { Debug.LogWarning("[AgoraRtcService] UpdateChannelMediaOptions skipped — RtcEngine is null."); return; }
             RtcEngine.UpdateChannelMediaOptions(options);
         }
 
         public void SetVideoEncoderConfiguration(VideoEncoderConfiguration config)
         {
+            if (_rtcEngine == null) return;
             RtcEngine.SetVideoEncoderConfiguration(config);
         }
 
         public IVideoDeviceManager GetVideoDeviceManager()
         {
+            if (_rtcEngine == null) return null;
             return RtcEngine.GetVideoDeviceManager();
         }
 
         public IAudioDeviceManager GetAudioDeviceManager()
         {
+            if (_rtcEngine == null) return null;
             return RtcEngine.GetAudioDeviceManager();
         }
 
         public ScreenCaptureSourceInfo[] GetScreenCaptureSources(SIZE thumbSize, SIZE iconSize, bool includeScreen)
         {
+            if (_rtcEngine == null) return null;
             return RtcEngine.GetScreenCaptureSources(thumbSize, iconSize, includeScreen);
         }
 

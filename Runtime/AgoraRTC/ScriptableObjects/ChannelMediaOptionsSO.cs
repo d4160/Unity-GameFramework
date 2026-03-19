@@ -35,6 +35,7 @@ namespace d4160.AgoraRtc
 
         public void UpdateChannelMediaOptions()
         {
+            if (_service.RtcEngine == null) { Debug.LogWarning("[ChannelMediaOptionsSO] UpdateChannelMediaOptions skipped — RtcEngine is null."); return; }
             _service.RtcEngine.UpdateChannelMediaOptions(GetChannelMediaOptions());
         }
     }

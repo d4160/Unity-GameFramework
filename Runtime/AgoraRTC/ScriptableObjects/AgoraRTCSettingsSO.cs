@@ -17,6 +17,11 @@ namespace d4160.AgoraRtc
         [SerializeField] private bool _domainLimit = false;
         [SerializeField] private bool _autoRegisterAgoraExtensions = true;
 
+        [Header("BugFix#80: Disable audio device when Dissonance handles voice")]
+        [Tooltip("When enabled, Agora will never claim the native audio device (mic/speaker). " +
+                 "This prevents conflicts with Dissonance VoIP on all platforms, especially Android.")]
+        [SerializeField] private bool _disableAudioDevice = false;
+
         // AppID Contiverso: 2a048ad297754c119bf5e00c39fcf313
         // AppID Temp: b0f346799b524fa1b625ae7d9eb5f9d0
 
@@ -29,6 +34,7 @@ namespace d4160.AgoraRtc
         public bool UseExternalEglContext => _useExternalEglContext;
         public bool DomainLimit => _domainLimit;
         public bool AutoRegisterAgoraExtensions => _autoRegisterAgoraExtensions;
+        public bool DisableAudioDevice => _disableAudioDevice;
 
         public void SetAppId(string appId)
         {

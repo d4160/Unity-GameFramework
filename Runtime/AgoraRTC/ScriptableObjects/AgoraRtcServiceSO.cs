@@ -30,8 +30,11 @@ namespace d4160.AgoraRtc
 
         public void Setup()
         {
+            Debug.Log($"[AgoraRtcServiceSO] Setup: _settings={(_settings != null ? _settings.name : "NULL")}, _logger={(_logger != null ? _logger.name : "NULL")}");
             _service.Settings = _settings;
             _service.Logger = _logger;
+            // BugFix#80: Pass the disable audio device flag before InitRtcEngine
+            _service.DisableAudioDevice = _settings != null && _settings.DisableAudioDevice;
         }
 
         public void RegisterEvents()
