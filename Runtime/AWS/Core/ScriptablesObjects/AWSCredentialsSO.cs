@@ -28,8 +28,6 @@ namespace d4160.AWS.Core
         {
             switch (selected)
             {
-                case AWSRegionEndpoint.APEast1:
-                    return Amazon.RegionEndpoint.APEast1;
                 case AWSRegionEndpoint.APNortheast1:
                     return Amazon.RegionEndpoint.APNortheast1;
                 case AWSRegionEndpoint.APNortheast2:
@@ -54,8 +52,6 @@ namespace d4160.AWS.Core
                     return Amazon.RegionEndpoint.EUWest2;
                 case AWSRegionEndpoint.EUWest3:
                     return Amazon.RegionEndpoint.EUWest3;
-                case AWSRegionEndpoint.MESouth1:
-                    return Amazon.RegionEndpoint.MESouth1;
                 case AWSRegionEndpoint.SAEast1:
                     return Amazon.RegionEndpoint.SAEast1;
                 case AWSRegionEndpoint.USEast1:
