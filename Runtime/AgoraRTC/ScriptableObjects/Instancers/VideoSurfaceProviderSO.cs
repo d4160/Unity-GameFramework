@@ -188,17 +188,20 @@ namespace d4160.AgoraRtc
                 {
                     if (!isScreenCapture)
                     {
+                        _screenCapture.StopScreenCapture();
                         _channel.EnableLocalVideo();
                         _mediaOptionsCameraTrack.UpdateChannelMediaOptions();
                     }
                     else
                     {
+                        _channel.DisableLocalVideo();
                         _screenCapture.StartScreenCapture();
                         _mediaOptionsScreenTrack.UpdateChannelMediaOptions();
                     }
 
+                    stoppedLocalCameraOrScreen = true;
+
                     // Sync correctly for local. Agora API 4.1 doesn't allow share camera and screen at the same moment with one uid
-                    int count = 0;
                     for (int i = 0; i < StaticVideoSurfaces.Count; i++)
                     {
                         if (i != index)
@@ -206,24 +209,6 @@ namespace d4160.AgoraRtc
                             // For the current user only
                             if (StaticVideoSurfaces[i].UID == 0 && StaticVideoSurfaces[i].ENABLE)
                             {
-                                // Disable local video or screen ONCE
-                                if (count == 0)
-                                {
-
-                                    if (isScreenCapture && StaticVideoSurfaces[i].SOURCE_TYPE == VIDEO_SOURCE_TYPE.VIDEO_SOURCE_CAMERA)
-                                    {
-                                        _channel.DisableLocalVideo();
-                                    }
-                                    else if (!isScreenCapture && StaticVideoSurfaces[i].SOURCE_TYPE == VIDEO_SOURCE_TYPE.VIDEO_SOURCE_SCREEN)
-                                    {
-                                        _screenCapture.StopScreenCapture();
-                                    }
-
-                                    stoppedLocalCameraOrScreen = true;
-                                    count++;
-                                }
-
-
                                 StaticVideoSurfaces[i].SetEnable(false);
                                 StaticVideoSurfaces[i].SetForUser(0, "", isScreenCapture ? VIDEO_SOURCE_TYPE.VIDEO_SOURCE_SCREEN : VIDEO_SOURCE_TYPE.VIDEO_SOURCE_CAMERA);
                                 int _i = i;
@@ -231,8 +216,6 @@ namespace d4160.AgoraRtc
                                 {
                                     StaticVideoSurfaces[_i].SetEnable(true);
                                 });
-
-                                // TODO: Update locally the new state, so need to override the logic for local, not NetworkList
                             }
                         }
                     }
