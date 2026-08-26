@@ -266,7 +266,17 @@ namespace d4160.UGS.Lobbies
             {
                 if (Lobby != null)
                 {
-                    if (IsHost)
+                    bool isHost = false;
+                    try
+                    {
+                        if (AuthenticationService.Instance.IsSignedIn)
+                        {
+                            isHost = IsHost;
+                        }
+                    }
+                    catch {}
+
+                    if (isHost)
                     {
                         if (migrateHost)
                         {
@@ -294,23 +304,36 @@ namespace d4160.UGS.Lobbies
         }
 
         /// <summary>
-        /// BugFix#74v3: Leaves all active UMS sessions gracefully.
+        /// BugFix#74v3 / Sprint07: Leaves all active UMS sessions gracefully.
         /// In DA mode (non-server), LeaveAsync() does NOT delete the session — it just
-        /// removes the player and disconnects transport cleanly. This ensures UMS internal
-        /// state stays consistent with our manual lobby operations.
+        /// removes the player and disconnects transport cleanly.
+        /// Iterates over a snapshot list of sessions to avoid 'Collection was modified' exceptions.
         /// </summary>
         public static async Task TryLeaveUmsSessionsAsync()
         {
             try
             {
+                if (Unity.Services.Multiplayer.MultiplayerService.Instance == null ||
+                    Unity.Services.Multiplayer.MultiplayerService.Instance.Sessions == null)
+                    return;
+
                 var sessions = Unity.Services.Multiplayer.MultiplayerService.Instance.Sessions;
-                foreach (var kvp in sessions)
+                var sessionList = new List<KeyValuePair<string, Unity.Services.Multiplayer.ISession>>(sessions);
+
+                foreach (var kvp in sessionList)
                 {
                     if (kvp.Value != null && kvp.Value.State == Unity.Services.Multiplayer.SessionState.Connected)
                     {
                         Debug.Log($"[BugFix#74] Leaving UMS session '{kvp.Key}'...");
-                        await kvp.Value.LeaveAsync();
-                        Debug.Log($"[BugFix#74] UMS session '{kvp.Key}' left successfully.");
+                        try
+                        {
+                            await kvp.Value.LeaveAsync();
+                            Debug.Log($"[BugFix#74] UMS session '{kvp.Key}' left successfully.");
+                        }
+                        catch (System.Exception leaveEx)
+                        {
+                            Debug.LogWarning($"[BugFix#74] LeaveAsync for session '{kvp.Key}' error: {leaveEx.Message}");
+                        }
                     }
                 }
             }
