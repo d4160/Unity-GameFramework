@@ -1,7 +1,11 @@
 using UnityEngine;
+using Unity.Services.Core;
+using Unity.Services.Authentication;
 using Unity.Services.Leaderboards;
+using System;
 using System.Threading.Tasks;
 using Unity.Services.Leaderboards.Models;
+using Unity.Services.Leaderboards.Exceptions;
 using d4160.Variables;
 #if ENABLE_NAUGHTY_ATTRIBUTES
 using NaughtyAttributes;
@@ -33,7 +37,39 @@ namespace d4160.LeaderBoards
 
         private async Task<LeaderboardEntry> AddPlayerScoreInternalAsync(double score)
         {
-            return await LeaderboardsService.Instance.AddPlayerScoreAsync(_leaderboardId, score);
+            if (UnityServices.State != ServicesInitializationState.Initialized)
+            {
+                Debug.LogWarning("[AddPlayerScoreSO] UnityServices is not initialized. Skipping AddPlayerScore.");
+                return null;
+            }
+
+            if (AuthenticationService.Instance == null || !AuthenticationService.Instance.IsSignedIn)
+            {
+                Debug.LogWarning("[AddPlayerScoreSO] AuthenticationService is not signed in. Skipping AddPlayerScore.");
+                return null;
+            }
+
+            try
+            {
+                string id = _leaderboardId != null ? _leaderboardId.Value : string.Empty;
+                if (string.IsNullOrEmpty(id))
+                {
+                    Debug.LogWarning("[AddPlayerScoreSO] LeaderboardId is null or empty. Skipping AddPlayerScore.");
+                    return null;
+                }
+
+                return await LeaderboardsService.Instance.AddPlayerScoreAsync(id, score);
+            }
+            catch (LeaderboardsException ex)
+            {
+                Debug.LogWarning($"[AddPlayerScoreSO] LeaderboardsException: {ex.Reason} (Code: {ex.ErrorCode})");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[AddPlayerScoreSO] Failed to add player score: {ex.Message}");
+                return null;
+            }
         }
     }
 }
