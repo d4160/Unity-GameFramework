@@ -1,4 +1,4 @@
-﻿/* 
+/* 
     ------------------- Code Monkey -------------------
 
     Thank you for downloading the Code Monkey Utilities
@@ -300,7 +300,7 @@ namespace CodeMonkey.Utils
         // Is Mouse over a UI Element? Used for ignoring World clicks through UI
         public static bool IsPointerOverUI()
         {
-            //Debug.Log(EventSystem.current.IsPointerOverGameObject());
+            if (EventSystem.current == null) return false;
 
             PointerEventData pe = new PointerEventData(EventSystem.current);
 
@@ -322,7 +322,7 @@ namespace CodeMonkey.Utils
 
             List<RaycastResult> hits = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pe, hits);
-            return hits.Count > 0 && !hits[0].gameObject.GetComponent<Collider>();
+            return hits.Count > 0 && hits[0].gameObject != null && !hits[0].gameObject.GetComponent<Collider>();
             // }
         }
 
