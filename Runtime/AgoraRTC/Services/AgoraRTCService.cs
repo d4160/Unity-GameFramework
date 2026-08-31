@@ -50,6 +50,12 @@ namespace d4160.AgoraRtc
                 return;
             }
 
+            if (_rtcEngine != null)
+            {
+                Debug.LogWarning("[AgoraRtcService] InitRtcEngine: Previous _rtcEngine instance detected. Disposing before recreation...");
+                DisposeRtcEngine();
+            }
+
             _rtcEngine = Agora.Rtc.RtcEngine.CreateAgoraRtcEngine();
             UserEventHandler handler = new(this);
 
@@ -78,10 +84,22 @@ namespace d4160.AgoraRtc
 
         public void DisposeRtcEngine()
         {
-            if (RtcEngine == null) return;
-            RtcEngine.InitEventHandler(null);
-            RtcEngine.LeaveChannel();
-            RtcEngine.Dispose();
+            if (_rtcEngine == null) return;
+            try
+            {
+                _rtcEngine.InitEventHandler(null);
+                _rtcEngine.LeaveChannel();
+                _rtcEngine.Dispose();
+                Debug.Log("[AgoraRtcService] DisposeRtcEngine: Native RTC Engine successfully disposed.");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[AgoraRtcService] DisposeRtcEngine exception: {ex.Message}");
+            }
+            finally
+            {
+                _rtcEngine = null;
+            }
         }
 
         public void JoinChannel(string token, string channelName, JoinChannelModules modules = JoinChannelModules.EnableAudio | JoinChannelModules.EnableVideo, CLIENT_ROLE_TYPE clientRoleType = CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER, CHANNEL_PROFILE_TYPE channelProfileType = CHANNEL_PROFILE_TYPE.CHANNEL_PROFILE_LIVE_BROADCASTING, VideoEncoderConfiguration videoEncoderConfig = null, ChannelMediaOptions options = null)

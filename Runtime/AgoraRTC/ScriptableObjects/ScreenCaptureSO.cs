@@ -28,7 +28,23 @@ namespace d4160.AgoraRtc
             if (_service.RtcEngine == null) { Debug.LogWarning("[ScreenCaptureSO] StartScreenCapture skipped — RtcEngine is null."); return -1; }
 
             int nRet = -1;
-            ScreenCaptureSourceInfo selectedInfo = _deviceOptions.ScreenCaptureSourceInfoRuntimeSet.SelectedScreenCaptureSource;
+            ScreenCaptureSourceInfo selectedInfo = _deviceOptions != null && _deviceOptions.ScreenCaptureSourceInfoRuntimeSet != null
+                ? _deviceOptions.ScreenCaptureSourceInfoRuntimeSet.SelectedScreenCaptureSource
+                : null;
+
+            // BugFix: If no screen capture source was selected yet (because discovery is now on-demand),
+            // fetch available sources immediately and default to the primary screen/window.
+            if (selectedInfo == null && _deviceOptions != null)
+            {
+                var sources = _deviceOptions.GetScreenCaptureSources("Monitor");
+                if (sources != null && sources.Count > 0)
+                {
+                    _deviceOptions.SetScreenCaptureSource(0);
+                    selectedInfo = _deviceOptions.ScreenCaptureSourceInfoRuntimeSet != null
+                        ? _deviceOptions.ScreenCaptureSourceInfoRuntimeSet.SelectedScreenCaptureSource
+                        : null;
+                }
+            }
 
             if (selectedInfo != null)
             {
@@ -51,6 +67,10 @@ namespace d4160.AgoraRtc
                     default:
                         break;
                 }
+            }
+            else
+            {
+                Debug.LogWarning("[ScreenCaptureSO] StartScreenCapture: No screen capture source found to share.");
             }
 
             return nRet;

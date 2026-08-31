@@ -102,6 +102,11 @@ namespace d4160.AgoraRtc
 
                 public int SetVideoDevice(int index)
                 {
+                        if (_videoManagerVar.Value == null)
+                        {
+                                GetVideoDevices();
+                        }
+
                         if (_videoManagerVar.Value != null)
                         {
                                 return _videoManagerVar.Value.SetDevice(index);
