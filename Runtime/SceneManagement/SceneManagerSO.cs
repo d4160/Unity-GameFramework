@@ -58,7 +58,7 @@ namespace d4160.SceneManagement
 
         public SceneCollectionSO GetSceneCollectionAt(int index, out string label)
         {
-            if (_sceneCollections.IsValidIndex(index))
+            if (_sceneCollections.IsValidIndex(index) && _sceneCollections[index] != null)
             {
                 label = _sceneCollections[index].Label;
                 return _sceneCollections[index];
@@ -245,6 +245,13 @@ namespace d4160.SceneManagement
 
         public void LoadSceneCollectionAsyncDefault(SceneCollectionSO sceneCollection, bool reload = false)
         {
+            if (sceneCollection == null)
+            {
+                Debug.LogWarning("[SceneManagerSO] Cannot load null SceneCollectionSO. Falling back to SceneManager.LoadScene(0)...");
+                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+                return;
+            }
+
             sceneCollection.SceneManager = this;
             sceneCollection.ManagerIndex = _lastLoadedIndex;
 
