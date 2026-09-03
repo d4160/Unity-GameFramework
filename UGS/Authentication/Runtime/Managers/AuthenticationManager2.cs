@@ -19,7 +19,7 @@ namespace d4160.Runtime.UGS.Authentication
         public event Action OnUsernameAlreadyExists;
         public event Action OnSignedInFailed;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void OnSubsystemsInit()
         {
             Instance.WakeUp();
@@ -29,23 +29,42 @@ namespace d4160.Runtime.UGS.Authentication
         {
             base.OnCreate();
 
-            if (UnityServices.State != ServicesInitializationState.Initialized)
+            try
             {
-                _ = WaitUntilUnityServicesInitialized(() =>
+                if (UnityServices.State != ServicesInitializationState.Initialized)
+                {
+                    _ = WaitUntilUnityServicesInitialized(() =>
+                    {
+                        try
+                        {
+                            if (AuthenticationService.Instance != null)
+                                AuthenticationService.Instance.SignInFailed += OnSignedInFailedCallback;
+                        }
+                        catch (Exception) { }
+                    });
+                }
+                else
                 {
                     AuthenticationService.Instance.SignInFailed += OnSignedInFailedCallback;
-                });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                AuthenticationService.Instance.SignInFailed += OnSignedInFailedCallback;
+                Debug.LogWarning($"[AuthenticationManager2] UnityServices state check deferred: {ex.Message}");
             }
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            AuthenticationService.Instance.SignInFailed -= OnSignedInFailedCallback;
+            try
+            {
+                if (UnityServices.State == ServicesInitializationState.Initialized && AuthenticationService.Instance != null)
+                {
+                    AuthenticationService.Instance.SignInFailed -= OnSignedInFailedCallback;
+                }
+            }
+            catch (Exception) { }
         }
 
         protected virtual void OnSignedInFailedCallback(RequestFailedException exception)
